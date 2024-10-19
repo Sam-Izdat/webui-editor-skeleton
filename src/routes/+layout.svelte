@@ -5,6 +5,7 @@
 
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	import { assets, base, resolveRoute } from '$app/paths';
 </script>
 
 <!-- App Shell -->
@@ -25,22 +26,19 @@
 			<svelte:fragment slot="trail">
 				<a
 					class="badge variant-ghost-surface"
-					href="/foo"
-					rel="noreferrer"
+					href="{base}/foo"
 				>
 					Foo
 				</a>
 				<a
 					class="badge variant-ghost-surface"
-					href="/bar"
-					rel="noreferrer"
+					href="{base}/bar"
 				>
 					Bar
 				</a>
 				<a
 					class="badge variant-ghost-surface"
-					href="/"
-					rel="noreferrer"
+					href="{base}/"
 				>
 					Baz
 				</a>

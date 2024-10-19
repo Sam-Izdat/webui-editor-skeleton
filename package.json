@@ -19,6 +19,7 @@
     "@types/node": "22.7.7",
     "autoprefixer": "10.4.20",
     "postcss": "8.4.47",
+    "sass-embedded": "^1.80.3",
     "svelte": "^4.2.7",
     "svelte-check": "^4.0.0",
     "tailwindcss": "3.4.14",
@@ -30,6 +31,7 @@
   "dependencies": {
     "@sveltejs/adapter-static": "^3.0.5",
     "svelte-golden-layout": "^0.1.1",
+    "svelte-splitpanes": "^8.0.8",
     "svelte-writable-derived": "^3.1.1"
   }
 }

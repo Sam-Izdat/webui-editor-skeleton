@@ -4,240 +4,105 @@
 	import type { Writable } from 'svelte/store';
 	import { writable } from 'svelte/store';
 	import { propertyStore } from 'svelte-writable-derived';
+ 
 
-	import type { JsonValue, ResolvedLayoutConfig, VirtualLayout } from 'golden-layout';
-	import { LayoutConfig } from 'golden-layout';
-
-	
-	// import 'svelte-golden-layout/css/themes/goldenlayout-dark-theme.css'
-	import GoldenLayout from 'svelte-golden-layout';
-	import Test from './Test.svelte';
-	// ... import a Test component
-
-	const names = ['foo', 'bar', 'baz'];
-	const files = writable<{ [name: string]: string }>({
-		foo: '',
-		bar: '',
-		baz: '',
-	});
-
-	function fileStore(name: string): Writable<string> {
-		return propertyStore(files, name);
-	}
-
-	let display = true;
-	let rows = 4;
-
-	const components: Record<string, ComponentType> = { Test };
-
-	let layout: LayoutConfig;
-	let saved: ResolvedLayoutConfig | void = undefined;
-
-	let goldenLayout: VirtualLayout;
-
-	$: layout = {
-		root: {
-			type: 'column',
-			content: Array.from({ length: rows }, (_, i) => {
-				const name = names[i % names.length];
-
-				return {
-					type: 'component',
-					title: name,
-					componentType: 'Test',
-					componentState: {
-						name,
-						file: propertyStore(files, name),
-					},
-				};
-			}),
-		},
-	};
-
+  import { Pane, Splitpanes } from 'svelte-splitpanes';
 </script>
 
-<div class="layout-container">
-	<GoldenLayout config={layout} let:componentType let:componentState>
-		<svelte:component this={components[componentType]} {...componentState} />
-	</GoldenLayout>
-</div>
 
-<style lang="postcss">
-.layout-container {
-	width: 100%;
-	height: 100%;
+<Splitpanes theme="skeleton-theme" style="height: 100%">
+  <Pane minSize={20}>
+    1
+    <br />
+    <em class="specs">I have a min width of 20%</em>
+  </Pane>
+  <Pane>
+    <Splitpanes horizontal={true}>
+      <Pane minSize={15}>
+        2
+        <br />
+        <em class="specs">I have a min height of 15%</em>
+      </Pane>
+      <Pane>3</Pane>
+      <Pane>4</Pane>
+    </Splitpanes>
+  </Pane>
+  <Pane>5</Pane>
+</Splitpanes>
+
+
+<style>	
+:global(.splitpanes.skeleton-theme .splitpanes__pane) {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+:global(.splitpanes.skeleton-theme .splitpanes__splitter) {
+  background-color: #fff;
+  box-sizing: border-box;
+  position: relative;
+  flex-shrink: 0;
+}
+:global(.splitpanes.skeleton-theme .splitpanes__splitter:before, .splitpanes.skeleton-theme .splitpanes__splitter:after) {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s;
+}
+:global(.splitpanes.skeleton-theme .splitpanes__splitter:hover:before, .splitpanes.skeleton-theme .splitpanes__splitter:hover:after) {
+  background-color: rgba(0, 0, 0, 0.25);
 }
 
-:global(.lm_goldenlayout) {
-	background: transparent !important;
+:global(.splitpanes.skeleton-theme .splitpanes__splitter:first-child) {
+  cursor: auto;
 }
-:global(.lm_content) {
-	background: rgba(255, 255, 255, 0.1);
-	box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
-	color: whitesmoke;
+
+:global(.skeleton-theme.splitpanes .splitpanes .splitpanes__splitter) {
+  z-index: 1;
 }
-:global(.lm_dragProxy .lm_content) {
-	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+
+:global(.skeleton-theme.splitpanes--vertical > .splitpanes__splitter,
+.skeleton-theme .splitpanes--vertical > .splitpanes__splitter) {
+  width: 7px;
+  border-left: 1px solid #eee;
+  cursor: col-resize;
 }
-:global(.lm_dropTargetIndicator) {
-	box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
-	outline: 1px dashed #ffffff;
-	/*.lm_inner
-  {
-    background:@color0;
-    opacity:0.1;
-  }*/
+
+:global(.skeleton-theme.splitpanes--vertical > .splitpanes__splitter:before, .skeleton-theme.splitpanes--vertical > .splitpanes__splitter:after,
+.skeleton-theme .splitpanes--vertical > .splitpanes__splitter:before,
+.skeleton-theme .splitpanes--vertical > .splitpanes__splitter:after) {
+  transform: translateY(-50%);
+  width: 1px;
+  height: 30px;
 }
-:global(.lm_splitter) {
-	background: #ffffff;
-	opacity: 0.001;
-	transition: opacity 200ms ease;
+
+:global(.skeleton-theme.splitpanes--vertical > .splitpanes__splitter:before,
+.skeleton-theme .splitpanes--vertical > .splitpanes__splitter:before) {
+  margin-left: -2px;
 }
-:global(.lm_splitter:hover,
-.lm_splitter.lm_dragging) {
-	background: #ffffff;
-	opacity: 0.4;
+:global(.skeleton-theme.splitpanes--vertical > .splitpanes__splitter:after,
+.skeleton-theme .splitpanes--vertical > .splitpanes__splitter:after) {
+  margin-left: 1px;
 }
-:global(.lm_header) {
-	height: 20px;
+:global(.skeleton-theme.splitpanes--horizontal > .splitpanes__splitter,
+.skeleton-theme .splitpanes--horizontal > .splitpanes__splitter) {
+  height: 7px;
+  border-top: 1px solid #eee;
+  cursor: row-resize;
 }
-:global(html.dark .lm_header .lm_tab) {
-	font-family: Arial, sans-serif;
-	font-size: 12px;
-	/*color: #fbe7d1;*/
-	color: rgba(255, 255, 255, 0.7);
-	background: rgba(255, 255, 255, 0.1);
-	margin-right: 2px;
-	padding-bottom: 4px;
+:global(.skeleton-theme.splitpanes--horizontal > .splitpanes__splitter:before, .skeleton-theme.splitpanes--horizontal > .splitpanes__splitter:after,
+.skeleton-theme .splitpanes--horizontal > .splitpanes__splitter:before,
+.skeleton-theme .splitpanes--horizontal > .splitpanes__splitter:after) {
+  transform: translateX(-50%);
+  width: 30px;
+  height: 1px;
 }
-:global(html:not(.dark) .lm_header .lm_tab) {
-	font-family: Arial, sans-serif;
-	font-size: 12px;
-	/*color: #73420d;*/
-	color: rgba(0, 0, 0, 0.7);
-	background: rgba(255, 255, 255, 0.1);
-	margin-right: z2px;
-	padding-bottom: 4px;
+:global(.skeleton-theme.splitpanes--horizontal > .splitpanes__splitter:before,
+.skeleton-theme .splitpanes--horizontal > .splitpanes__splitter:before) {
+  margin-top: -2px;
 }
-:global(.lm_header .lm_tab .lm_close_tab) {
-	width: 11px;
-	height: 11px;
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAATElEQVR4nG3OwQ0DMQwDwZGRBtR/j1YJzMc5+IDoR+yCVO29g+pu981MFgqZmRdAfU7+CYWcbF11LwALjpBL0N0qybNx/RPU+gOeiS/+XCRwDlTgkQAAAABJRU5ErkJggg==);
-	background-position: center center;
-	background-repeat: no-repeat;
-	right: 6px;
-	top: 4px;
-	opacity: 0.4;
-}
-:global(.lm_header .lm_tab .lm_close_tab:hover) {
-	opacity: 1;
-}
-:global(.lm_header .lm_tab.lm_active) {
-	border-bottom: none;
-	box-shadow: 2px -2px 2px -2px rgba(0, 0, 0, 0.2);
-	padding-bottom: 5px;
-}
-:global(.lm_header .lm_tab.lm_active .lm_close_tab) {
-	opacity: 1;
-}
-:global(.lm_dragProxy.lm_right .lm_header .lm_tab.lm_active,
-.lm_stack.lm_right .lm_header .lm_tab.lm_active) {
-	box-shadow: 2px -2px 2px -2px rgba(0, 0, 0, 0.2);
-}
-:global(.lm_dragProxy.lm_bottom .lm_header .lm_tab.lm_active,
-.lm_stack.lm_bottom .lm_header .lm_tab.lm_active) {
-	box-shadow: 2px 2px 2px -2px rgba(0, 0, 0, 0.2);
-}
-:global(.lm_selected) {
-	/*.lm_header
-  {
-    background-color:@color6;
-  }*/
-}
-:global(.lm_tab:hover,
-.lm_tab.lm_active) {
-	background: rgba(255, 255, 255, 0.3);
-	color: #ffffff;
-}
-/*
-.lm_header .lm_controls .lm_tabdropdown:before 
-{
-  color:@color1;
-}*/
-:global(.lm_controls > *) {
-	position: relative;
-	background-position: center center;
-	background-repeat: no-repeat;
-	opacity: 0.4;
-	transition: opacity 300ms ease;
-}
-:global(.lm_controls > *:hover) {
-	opacity: 1;
-}
-:global(.lm_controls .lm_popout) {
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAPklEQVR4nI2Q0QoAIAwCNfr/X7aXCpGN8snBdgejJOzckpkxs9jR6K6T5JpU0nWl5pSXTk7qwh8SnNT+CAAWCgkKFpuSWsUAAAAASUVORK5CYII=);
-}
-:global(.lm_controls .lm_maximise) {
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR4nGP8////fwYCgImQAgYGBgYWKM2IR81/okwajIpgvsMbVgAwgQYRVakEKQAAAABJRU5ErkJggg==);
-}
-:global(.lm_controls .lm_close) {
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAQUlEQVR4nHXOQQ4AMAgCQeT/f6aXpsGK3jSTuCVJAAr7iBdoAwCKd0nwfaAdHbYERw5b44+E8JoBjEYGMBq5gAYP3usUDu2IvoUAAAAASUVORK5CYII=);
-}
-:global(.lm_controls .lm_dock) {
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QQLEyI6TJPB/QAAAXdJREFUOMul08uKE2EQhuGnMj0m4gk1C3Wj4lZRUXDhSsSb0Cvwbty7de0diAvxcBEqiIgndDBRnJlMutzUQJvEJGBB0w1/1ft/VfV1mInM7OMohthAdp4JvkTEaLauMR+HcA83MCpAiyP1/TAzn0dEuwo0xTH8xBNsYROXca3OYx1FLcbYxkt8qMKDOIutiJjOFvUWgHbxqVQ01UIPx0vljwU186CI2KnZDDDMzKhWz5Wy3bVAmXkSJ/YVVU6LnUo5lZkHloIycxNXcAev8SYiphHxHc8KfguHVyka4m5t5hG+ZWZTCl7gKW7j6j+3lpm9ammIr7iOSx1TRsek5zNzEBHbc6CIaDNzUi2dwc0y4emaz+dy9qjefy9pZkZNFTbYw0Xcxys8LsAEv8pP7UJDRsQe3hd0o0w4Ll+9i4jfmRkRkesYch86rYuiYwGLIEtBnfNpQdpVicviIy5gHBGT/wH1S1E/MwfLEpsVoAke4G3nF1kYfwAzNYI/6q7lywAAAABJRU5ErkJggg==);
-}
-:global(.lm_stack.lm_docked .lm_controls .lm_dock) {
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QQLExoPDb+5JQAAAKZJREFUOMvV0tENgjAUhWFGYBQ20FG6iYzgBo4gG8gIbAAbyAafD5akwWIATYz3sWn+e/qfFsUvBsevQDzn8gmkRI8a3W4YGjQJdD0MFQ44YUQ5S/geFgF99NFhyEmOz5QtIG4a0aYJMneuSwvmiUaEhebu0Vm51s8LLKaotzY1OQjJWbvpUyJESD0li26g2goJs2feMOyCZJxVuyFp7WvTnJcg/zkPjGQks0ox9/8AAAAASUVORK5CYII=);
-}
-:global(.lm_stack.lm_docked > .lm_items) {
-	border-color: #5555ff;
-	border-image: linear-gradient(to right, #5555ff 1%, #ffffff 100%);
-	box-shadow: 2px -2px 2px -2px rgba(0, 0, 0, 0.2);
-}
-/*
-.lm_maximised 
-{
-    // Pane Header (container of Tabs for each pane) can have different style when is Maximized
-    .lm_header 
-    {
-      background-color:@color4;
-    }
-  
-    // Pane controls are different in Maximized Mode, especially the old Icon "Maximise" that now has a different meaning, so "Minimize" (even if CSS Class did not change)
-    .lm_controls 
-    {
-        .lm_maximise 
-        {
-          background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAJklEQVR4nGP8//8/AyHARFDFUFbEwsDAwMDIyIgzHP7//89IlEkApSkHEScJTKoAAAAASUVORK5CYII=);
-        }
-    }
-}
-*/
-/*
-.lm_transition_indicator 
-{
-	background-color:@color1;
-	border:1px dashed @color5;
-}*/
-:global(.lm_popin) {
-	cursor: pointer;
-	/*
-  .lm_bg
-  {
-    background:@color1;
-    opacity:0.7;
-  }*/
-}
-:global(.lm_popin .lm_icon) {
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAJCAYAAADpeqZqAAAAWklEQVR4nJWOyw3AIAxDHcQC7L8jbwT3AlJBfNp3SiI7dtRaLSlKKeoA1oEsKSQZCEluexw8Tm3ohk+E7bnOUHUGcNh+HwbBygw4AZ7FN/Lt84p0l+yTflV8AKQyLdcCRJi/AAAAAElFTkSuQmCC);
-	background-position: center center;
-	background-repeat: no-repeat;
-	opacity: 0.7;
-}
-:global(.lm_popin:hover .lm_icon) {
-	opacity: 1;
-}
-:global(.lm_item) {
-	box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+:global(.skeleton-theme.splitpanes--horizontal > .splitpanes__splitter:after,
+.skeleton-theme .splitpanes--horizontal > .splitpanes__splitter:after) {
+  margin-top: 1px;
 }
 </style>

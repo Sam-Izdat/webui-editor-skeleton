@@ -1,11 +1,11 @@
 {
   "name": "webui-editor-skeleton",
-  "scope": "/webui-editor-skeleton/",
+  "scope": "https://sam-izdat.github.io/webui-editor-skeleton/*",
   "short_name": "App",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#73420d",
   // "icons": [
   //   {
   //     "src": "/icons/icon-192.png",

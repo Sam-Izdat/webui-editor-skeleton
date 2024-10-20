@@ -6,7 +6,31 @@
 	let monaco: typeof Monaco;
 	let editorContainer: HTMLElement;
 
+	import  { LightSwitch }  from '$lib/components';
+
+  const isDarkMode = () => {
+    return document.documentElement.classList.contains('dark');
+  };
+
+  const switchMonacoTheme = (theme: string) => {
+    monaco.editor.setTheme(theme);
+  };
+
+  const observeThemeChange = () => {
+    const observer = new MutationObserver(() => {
+      const theme = isDarkMode() ? 'vs-dark' : 'vs-light';
+      switchMonacoTheme(theme);
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'] // Watch for changes to the class attribute
+    });
+  };
+
 	onMount(async () => {
+
+
 		// Import our 'monaco.ts' file here
 		// (onMount() will only be executed in the browser, which is what we want)
 		monaco = (await import('./monaco')).default;
@@ -20,7 +44,7 @@
 	    },
 	    tabSize: 2,
 	    automaticLayout: true,
-	    theme: "vs-dark",
+	    theme: isDarkMode() ? 'vs-dark' : 'vs-light',
 	  });
 		const model = monaco.editor.createModel(`void ColorPass(
   in float r,
@@ -153,6 +177,8 @@ void RenderGraphMain()
 			'c'
 		);
 		editor.setModel(model);
+		
+		observeThemeChange();
 	});
 
 	onDestroy(() => {
@@ -211,9 +237,8 @@ void RenderGraphMain()
 				</AppRailTile> 
 				<!-- --- -->
 				<svelte:fragment slot="trail">
-					<AppRailAnchor href="/" target="_blank" title="Account">
-						(ico)
-						<!-- <LightSwitch /> -->
+					<AppRailAnchor href="#" title="Account">
+						<LightSwitch />
 					</AppRailAnchor>
 				</svelte:fragment>
 			</AppRail>
@@ -222,7 +247,7 @@ void RenderGraphMain()
 
 				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;">
 				  <Pane minSize={20}>
-						<div class="container" bind:this={editorContainer}/>
+						<div class="container" bind:this={editorContainer} style="display: block; height: 100vh;"/>
 				  </Pane>
 				  <Pane minSize={20}>
 				    <Splitpanes horizontal={true}>
@@ -249,13 +274,19 @@ void RenderGraphMain()
 
 
 :global(.splitpanes.skeleton-theme .splitpanes__pane) {
-  background-color: #cccccc !important;
+  background-color: rgba(210, 210, 210, 0.2) !important;
 }
 :global(.dark .splitpanes.skeleton-theme .splitpanes__pane) {
-  background-color: #333333 !important;
+  background-color: rgba(60, 60, 60, 0.2) !important;
 }
 :global(.splitpanes.skeleton-theme .splitpanes__splitter) {
-  background-color: #550000 !important;
+  background-color: rgba(210, 210, 210, 0.7) !important;
+  box-sizing: border-box;
+  position: relative;
+  flex-shrink: 0;
+}
+:global(.dark .splitpanes.skeleton-theme .splitpanes__splitter) {
+  background-color: rgba(60, 60, 60, 0.7) !important;
   box-sizing: border-box;
   position: relative;
   flex-shrink: 0;
@@ -282,8 +313,14 @@ void RenderGraphMain()
 
 :global(.skeleton-theme.splitpanes--vertical > .splitpanes__splitter,
 .skeleton-theme .splitpanes--vertical > .splitpanes__splitter) {
-  width: 7px;
-  border-left: 1px solid #550000 !important;
+  width: 5px;
+  background-color: rgba(210, 210, 210, 1) !important;
+  cursor: col-resize;
+}
+:global(.dark .skeleton-theme.splitpanes--vertical > .splitpanes__splitter,
+.dark .skeleton-theme .splitpanes--vertical > .splitpanes__splitter) {
+  width: 5px;
+  background-color: rgba(60, 60, 60, 1) !important;
   cursor: col-resize;
 }
 
@@ -305,8 +342,14 @@ void RenderGraphMain()
 }
 :global(.skeleton-theme.splitpanes--horizontal > .splitpanes__splitter,
 .skeleton-theme .splitpanes--horizontal > .splitpanes__splitter) {
-  height: 7px;
-  border-top: 1px solid #550000 !important;
+  height: 5px;
+  border-top: rgba(210, 210, 210, 1) !important;
+  cursor: row-resize;
+}
+:global(.dark .skeleton-theme.splitpanes--horizontal > .splitpanes__splitter,
+.dark .skeleton-theme .splitpanes--horizontal > .splitpanes__splitter) {
+  height: 5px;
+  border-top: rgba(255, 0, 0, 1) !important;
   cursor: row-resize;
 }
 :global(.skeleton-theme.splitpanes--horizontal > .splitpanes__splitter:before, .skeleton-theme.splitpanes--horizontal > .splitpanes__splitter:after,

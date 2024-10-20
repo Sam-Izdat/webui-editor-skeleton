@@ -79,6 +79,8 @@
     }
 		const source = document.querySelector('#'+id_content);
 		const dest = document.querySelector('#'+id_container);
+		dest.appendChild(source);
+		dest.style.display = "block";
 	};
 
 	const returnContentToPanes = () => {
@@ -276,6 +278,14 @@ void RenderGraphMain()
 
   import { Pane, Splitpanes } from 'svelte-splitpanes';
   let currentTile: number = 0;
+  let activePane = 'split'; // Possible values: 'split', 'pane1', 'pane2', 'pane3'
+
+
+  // DELETME
+  const setActivePane = (pane) => {
+    activePane = pane;
+  }
+
 
   import { Icon, ArrowUp, ViewColumns, CodeBracket, AdjustmentsHorizontal, ArrowsPointingOut, Photo, LockOpen, LockClosed} from "svelte-hero-icons";
 
@@ -333,7 +343,9 @@ void RenderGraphMain()
 				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;">
 				  <Pane minSize={20}>
 				  	<div id="cr_pane1">
-							<div id="ct1" class="container" bind:this={editorContainer} style="display: block; height: 100vh;"/>
+							<div id="ct1">
+						 		<div id="editor-wrap" bind:this={editorContainer} style="height: 100dvh; overflow: hidden;" />
+							</div>
 						</div>
 				  </Pane>
 				  <Pane minSize={20}>
@@ -367,12 +379,16 @@ void RenderGraphMain()
 <style>	
 
 
-	.container {
-		width: 100%;
-		height: 100%;
+	:global(body) {
+    margin: 0 !impoortant;
+    padding: 0 !important;
 	}
 
-
+	#editor-wrap {
+    height: 100vh;
+    height: 100dvh !important;
+    overflow: hidden;
+	}
 
 :global(.splitpanes.skeleton-theme .splitpanes__pane) {
   background-color: rgba(210, 210, 210, 0.2) !important;

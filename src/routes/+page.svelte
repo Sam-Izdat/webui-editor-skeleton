@@ -11,7 +11,7 @@
   let currentTile: number = 0;
 </script>
 		<div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
-			<AppRail class="w-10">
+			<AppRail class="w-8">
 				<svelte:fragment slot="lead">
 					<AppRailAnchor href="#" >(ico)</AppRailAnchor>
 				</svelte:fragment>
@@ -30,7 +30,7 @@
 				</AppRailTile> 
 				<!-- --- -->
 				<svelte:fragment slot="trail">
-					<AppRailAnchor href="/" target="_blank" title="Account">(icon)</AppRailAnchor>
+					<AppRailAnchor href="/" target="_blank" title="Account">(ico)</AppRailAnchor>
 				</svelte:fragment>
 			</AppRail>
 			<div class="grid">

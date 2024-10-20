@@ -22,13 +22,13 @@
 		</nav>
 	</svelte:fragment> -->
 
-	<svelte:fragment slot="header">
+	<!-- <svelte:fragment slot="header">
 		<AppBar class="p-0">
 			<svelte:fragment slot="lead">
 				<strong class="text-sm uppercase">Foo</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<!-- <a
+				<a
 					class="badge variant-ghost-surface"
 					href="{base}/foo"
 				>
@@ -45,11 +45,11 @@
 					href="{base}/"
 				>
 					Baz
-				</a> -->
+				</a>
 				<LightSwitch />
 			</svelte:fragment>
 		</AppBar>
-	</svelte:fragment>
+	</svelte:fragment> -->
 
 	<!-- Page Route Content -->
 	<slot />

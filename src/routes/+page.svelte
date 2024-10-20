@@ -268,7 +268,7 @@ void RenderGraphMain()
     activePane = pane;
   }
 
-  import { Icon, ArrowUp, TableCells, Newspaper, AdjustmentsHorizontal, ArrowsPointingOut, Eye} from "svelte-hero-icons";
+  import { Icon, ArrowUp, ViewColumns, CodeBracket, AdjustmentsHorizontal, ArrowsPointingOut, Photo} from "svelte-hero-icons";
 
 	// import { LightSwitch } from '@skeletonlabs/skeleton';
 
@@ -281,12 +281,12 @@ void RenderGraphMain()
 				<!-- --- -->
 				<AppRailTile on:click={() => {setActivePane('split'); returnContentToPanes(); } } bind:group={currentTile} name="tile-1" value={0} title="tile-1">
 					<svelte:fragment slot="lead">
-						<Icon src="{TableCells}" size="16" style="margin: 4px auto;" solid/>
+						<Icon src="{ViewColumns}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
 				<AppRailTile on:click={() => {setActivePane('pane1'); movePaneContent('ct1', 'cr_full1') } } bind:group={currentTile} name="tile-1" value={1} title="tile-1">
 					<svelte:fragment slot="lead">
-						<Icon src="{Newspaper}" size="16" style="margin: 4px auto;" solid/>
+						<Icon src="{CodeBracket}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
 				<AppRailTile on:click={() => {setActivePane('pane2'); movePaneContent('ct2', 'cr_full2') } } bind:group={currentTile} name="tile-2" value={2} title="tile-2">
@@ -296,7 +296,7 @@ void RenderGraphMain()
 				</AppRailTile>
 				<AppRailTile on:click={() => {setActivePane('pane3'); movePaneContent('ct3', 'cr_full3') } } bind:group={currentTile} name="tile-2" value={3} title="tile-2">
 					<svelte:fragment slot="lead">
-						<Icon src="{Eye}" size="16" style="margin: 4px auto;" solid/>
+						<Icon src="{Photo}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
 

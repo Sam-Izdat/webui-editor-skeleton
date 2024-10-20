@@ -6,9 +6,12 @@
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { assets, base, resolveRoute } from '$app/paths';
+
+	import { autoModeWatcher } from '@skeletonlabs/skeleton';
 </script>
 
 <!-- App Shell -->
+<svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
 <AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
 <!-- 	<svelte:fragment slot="sidebarLeft">
 		<nav class="list-nav">
@@ -18,14 +21,14 @@
 			</ul>
 		</nav>
 	</svelte:fragment> -->
-	
-	<!-- <svelte:fragment slot="header">
-		<AppBar>
+
+	<svelte:fragment slot="header">
+		<AppBar class="p-0">
 			<svelte:fragment slot="lead">
-				<strong class="text-m uppercase">Foo</strong>
+				<strong class="text-sm uppercase">Foo</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<a
+				<!-- <a
 					class="badge variant-ghost-surface"
 					href="{base}/foo"
 				>
@@ -42,11 +45,11 @@
 					href="{base}/"
 				>
 					Baz
-				</a>
+				</a> -->
 				<LightSwitch />
 			</svelte:fragment>
 		</AppBar>
-	</svelte:fragment> -->
+	</svelte:fragment>
 
 	<!-- Page Route Content -->
 	<slot />

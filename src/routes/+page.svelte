@@ -9,28 +9,55 @@
 
   import { Pane, Splitpanes } from 'svelte-splitpanes';
   let currentTile: number = 0;
+
+
+
+  import { Icon, ArrowUp, TableCells, Newspaper, AdjustmentsHorizontal, ArrowsPointingOut, Eye} from "svelte-hero-icons";
+
+	// import { LightSwitch } from '@skeletonlabs/skeleton';
 </script>
 		<div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
 			<AppRail class="w-8">
-				<svelte:fragment slot="lead">
-					<AppRailAnchor href="#" >(ico)</AppRailAnchor>
-				</svelte:fragment>
+				<!-- <svelte:fragment slot="lead">
+					<AppRailAnchor href="#" ><Icon src="{ArrowUp}" size="16" style="margin:auto;"/></AppRailAnchor>
+				</svelte:fragment> -->
 				<!-- --- -->
 				<AppRailTile bind:group={currentTile} name="tile-1" value={0} title="tile-1">
-					<svelte:fragment slot="lead">(ico)</svelte:fragment>
-					<span>T 1</span>
+					<svelte:fragment slot="lead">
+						<Icon src="{TableCells}" size="16" style="margin: 4px auto;" solid/>
+					</svelte:fragment>
+					<span>SPLIT</span>
 				</AppRailTile>
-				<AppRailTile bind:group={currentTile} name="tile-2" value={1} title="tile-2">
-					<svelte:fragment slot="lead">(ico)</svelte:fragment>
-					<span>T 2</span>
+				<AppRailTile bind:group={currentTile} name="tile-1" value={1} title="tile-1">
+					<svelte:fragment slot="lead">
+						<Icon src="{Newspaper}" size="16" style="margin: 4px auto;" solid/>
+					</svelte:fragment>
+					<span>GLSL</span>
 				</AppRailTile>
-				<AppRailTile bind:group={currentTile} name="tile-3" value={2} title="tile-3">
-					<svelte:fragment slot="lead">(ico)</svelte:fragment>
-					<span>T 3</span>
+				<AppRailTile bind:group={currentTile} name="tile-2" value={2} title="tile-2">
+					<svelte:fragment slot="lead">
+						<Icon src="{AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
+					</svelte:fragment>
+					<span>CTRL</span>
+				</AppRailTile>
+				<AppRailTile bind:group={currentTile} name="tile-2" value={3} title="tile-2">
+					<svelte:fragment slot="lead">
+						<Icon src="{Eye}" size="16" style="margin: 4px auto;" solid/>
+					</svelte:fragment>
+					<span>SH</span>
+				</AppRailTile>
+				<AppRailTile bind:group={currentTile} name="tile-3" value={4} title="tile-3">
+					<svelte:fragment slot="lead">
+						<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
+					</svelte:fragment>
+					<span>FS</span>
 				</AppRailTile> 
 				<!-- --- -->
 				<svelte:fragment slot="trail">
-					<AppRailAnchor href="/" target="_blank" title="Account">(ico)</AppRailAnchor>
+					<AppRailAnchor href="/" target="_blank" title="Account">
+						(ico)
+						<!-- <LightSwitch /> -->
+					</AppRailAnchor>
 				</svelte:fragment>
 			</AppRail>
 			<div class="grid">

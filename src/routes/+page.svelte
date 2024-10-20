@@ -180,7 +180,7 @@ void RenderGraphMain()
 </script>
 
 		<div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
-			<AppRail class="w-8">
+			<AppRail class="w-10">
 				<!-- <svelte:fragment slot="lead">
 					<AppRailAnchor href="#" ><Icon src="{ArrowUp}" size="16" style="margin:auto;"/></AppRailAnchor>
 				</svelte:fragment> -->

@@ -28,6 +28,41 @@
     });
   };
 
+  let isFullscreen = false;
+
+  function toggleFullscreen() {
+    if (!isFullscreen) {
+      enterFullscreen();
+    } else {
+      exitFullscreen();
+    }
+    isFullscreen = !isFullscreen; // Toggle the state
+  }
+
+  function enterFullscreen() {
+    const docEl = document.documentElement;
+    if (docEl.requestFullscreen) {
+      docEl.requestFullscreen();
+    } else if (docEl.mozRequestFullScreen) {
+      docEl.mozRequestFullScreen();
+    } else if (docEl.webkitRequestFullscreen) {
+      docEl.webkitRequestFullscreen();
+    } else if (docEl.msRequestFullscreen) {
+      docEl.msRequestFullscreen();
+    }
+  }
+
+  function exitFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  }
 	onMount(async () => {
 
 
@@ -230,11 +265,15 @@ void RenderGraphMain()
 						<Icon src="{Eye}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
-				<AppRailTile bind:group={currentTile} name="tile-3" value={4} title="tile-3">
+
+				<AppRailAnchor href="#" title="Account" on:click={toggleFullscreen} class={isFullscreen ? 'bg-secondary-500' : ''} style="display:block;" name="tile-3">
+					<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
+				</AppRailAnchor>
+				<!-- <AppRailTile bind:group={currentTile} on:click={toggleFullscreen} class={isFullscreen ? 'bg-primary-hover-token' : 'fullscreen-inacive'} name="tile-3" value={4} title="tile-3">
 					<svelte:fragment slot="lead">
 						<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
-				</AppRailTile> 
+				</AppRailTile>  -->
 				<!-- --- -->
 				<svelte:fragment slot="trail">
 					<AppRailAnchor href="#" title="Account">

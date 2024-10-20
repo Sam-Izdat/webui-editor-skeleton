@@ -65,7 +65,9 @@
 </AppShell>
 
 <style>
-body {
+:global(body) {
+	min-height: 100vh;
+	overflow-y: auto;
 	background: #333 !important;
 }
 </style>

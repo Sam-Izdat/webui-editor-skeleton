@@ -1,5 +1,6 @@
 {
   "name": "webui-editor-skeleton",
+  "scope": "/webui-editor-skeleton/",
   "short_name": "App",
   "start_url": "/",
   "display": "standalone",

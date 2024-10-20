@@ -435,26 +435,25 @@ void RenderGraphMain()
 		  <div id="cr_full2" class="cr_dynamic" style="width:100%; height: 100%;" />
 			<div id="cr_full3" class="cr_dynamic" style="width:100%; height: 100%;" />
 		</div>
-		<div class="card p-1 w-auto bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" data-popup="error-popup">
-			<aside class="alert variant-filled-surface p-2">
-				<div><Icon class="text-error-500" src="{ExclamationCircle}" size="22" solid/></div>
-				<div class="alert-message text-sm">
-					Error error womp womp!
-				</div>
-			</aside>
-			<aside class="alert variant-filled-surface p-2">
-				<div><Icon class="text-warning-500" src="{ExclamationTriangle}" size="22" solid/></div>
-				<div class="alert-message text-sm">
-					Also another thing!
-				</div>
-			</aside>
-			<aside class="alert variant-filled-surface p-2">
-				<div><Icon class="text-warning-500" src="{ExclamationTriangle}" size="22" solid/></div>
-				<div class="alert-message text-sm">
-					This is a longer and more verbose warning message about something or other.
-				</div>
-			</aside>
-			<div class="arrow bg-gradient-to-br  variant-gradient-error-warning" />
+		<div class="card place-content-stretch p-1 w-96 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" data-popup="error-popup">
+			<div class="card p-1 variant-filled-surface">
+				<aside class="alert variant-filled-error p-1 m-1">
+					<div class="alert-message  text-sm">
+						Error error womp womp!
+					</div>
+				</aside>
+				<aside class="alert variant-filled-warning p-1 m-1">
+					<div class="alert-message  text-sm">
+						Also another thing!
+					</div>
+				</aside>
+				<aside class="alert variant-filled-warning p-1 m-1">
+					<div class="alert-message  text-sm">
+						This is a longer and more verbose warning message about something or other.
+					</div>
+				</aside>
+				<div class="arrow bg-gradient-to-br  variant-gradient-error-warning" />
+			</div>
 		</div>
 <style>	
 

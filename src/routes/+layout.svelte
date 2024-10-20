@@ -21,7 +21,7 @@
 	<svelte:fragment slot="header">
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<strong class="text-m uppercase">Lorem Ipsum</strong>
+				<strong class="text-m uppercase">Foo</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<a

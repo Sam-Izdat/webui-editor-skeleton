@@ -5,32 +5,58 @@
 	import { writable } from 'svelte/store';
 	import { propertyStore } from 'svelte-writable-derived';
  
+ 	import { AppRail, AppRailTile, AppRailAnchor } from '@skeletonlabs/skeleton';
 
   import { Pane, Splitpanes } from 'svelte-splitpanes';
+  let currentTile: number = 0;
 </script>
+		<div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
+			<AppRail>
+				<svelte:fragment slot="lead">
+					<AppRailAnchor href="/" >(icon)</AppRailAnchor>
+				</svelte:fragment>
+				<!-- --- -->
+				<AppRailTile bind:group={currentTile} name="tile-1" value={0} title="tile-1">
+					<svelte:fragment slot="lead">(icon)</svelte:fragment>
+					<span>Tile 1</span>
+				</AppRailTile>
+				<AppRailTile bind:group={currentTile} name="tile-2" value={1} title="tile-2">
+					<svelte:fragment slot="lead">(icon)</svelte:fragment>
+					<span>Tile 2</span>
+				</AppRailTile>
+				<AppRailTile bind:group={currentTile} name="tile-3" value={2} title="tile-3">
+					<svelte:fragment slot="lead">(icon)</svelte:fragment>
+					<span>Tile 3</span>
+				</AppRailTile> 
+				<!-- --- -->
+				<svelte:fragment slot="trail">
+					<AppRailAnchor href="/" target="_blank" title="Account">(icon)</AppRailAnchor>
+				</svelte:fragment>
+			</AppRail>
+			<div class="grid">
+				<!-- <span class="badge variant-soft">Tile Value: {currentTile}</span> -->
 
-
-<Splitpanes theme="skeleton-theme" style="height: 100%">
-  <Pane minSize={20}>
-    1
-    <br />
-    <em class="specs">I have a min width of 20%</em>
-  </Pane>
-  <Pane>
-    <Splitpanes horizontal={true}>
-      <Pane minSize={15}>
-        2
-        <br />
-        <em class="specs">I have a min height of 15%</em>
-      </Pane>
-      <Pane>3</Pane>
-      <Pane>4</Pane>
-    </Splitpanes>
-  </Pane>
-  <Pane>5</Pane>
-</Splitpanes>
-
-
+				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;">
+				  <Pane minSize={20}>
+				    1
+				    <br />
+				    <em class="specs">I have a min width of 20%</em>
+				  </Pane>
+				  <Pane>
+				    <Splitpanes horizontal={true}>
+				      <Pane minSize={15}>
+				        2
+				        <br />
+				        <em class="specs">I have a min height of 15%</em>
+				      </Pane>
+				      <Pane>3 <span class="badge variant-soft">Tile Value: {currentTile}</span></Pane>
+				      <!-- <Pane>4</Pane> -->
+				    </Splitpanes>
+				  </Pane>
+				  <!-- <Pane>5</Pane> -->
+				</Splitpanes>
+			</div>
+		</div>
 <style>	
 :global(.splitpanes.skeleton-theme .splitpanes__pane) {
   background-color: rgba(255, 255, 255, 0.15) !important;

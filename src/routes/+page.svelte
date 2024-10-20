@@ -225,7 +225,7 @@ void RenderGraphMain()
 				  <Pane minSize={20}>
 						<div class="container" bind:this={editorContainer}/>
 				  </Pane>
-				  <Pane>
+				  <Pane minSize={20}>
 				    <Splitpanes horizontal={true}>
 				      <Pane minSize={15}>
 				        2

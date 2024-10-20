@@ -8,10 +8,14 @@
 	import { assets, base, resolveRoute } from '$app/paths';
 
 	import { autoModeWatcher } from '@skeletonlabs/skeleton';
+
+	//DELETEME
+	import { browser } from '$app/environment';
+	if (browser) document.documentElement.classList.add('dark')
 </script>
 
 <!-- App Shell -->
-<svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
+<!-- <svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head> -->
 <AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
 <!-- 	<svelte:fragment slot="sidebarLeft">
 		<nav class="list-nav">

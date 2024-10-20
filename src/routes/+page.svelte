@@ -30,16 +30,16 @@
 
   let isFullscreen = false;
 
-  function toggleFullscreen() {
+  const toggleFullscreen = () => {
     if (!isFullscreen) {
       enterFullscreen();
     } else {
       exitFullscreen();
     }
     isFullscreen = !isFullscreen; // Toggle the state
-  }
+  };
 
-  function enterFullscreen() {
+  const enterFullscreen = () => {
     const docEl = document.documentElement;
     if (docEl.requestFullscreen) {
       docEl.requestFullscreen();
@@ -50,7 +50,7 @@
     } else if (docEl.msRequestFullscreen) {
       docEl.msRequestFullscreen();
     }
-    
+
 
 	  // Request landscape orientation
 	  if (screen.orientation && screen.orientation.lock) {
@@ -58,9 +58,9 @@
 	      console.error(`Failed to lock orientation: ${error}`);
 	    });
 	  }
-  }
+  };
 
-  function exitFullscreen() {
+  const exitFullscreen = () => {
     if (document.exitFullscreen) {
       document.exitFullscreen();
     } else if (document.mozCancelFullScreen) {
@@ -70,7 +70,29 @@
     } else if (document.msExitFullscreen) {
       document.msExitFullscreen();
     }
-  }
+  };
+
+	const movePaneContent = (id_content, id_container) => {
+    var containers = document.getElementsByClassName("cr_dynamic");
+    for(var i = 0; i < containers.length; i++){
+        containers[i].style.display = "none";
+    }
+		const source = document.querySelector('#'+id_content);
+		const dest = document.querySelector('#'+id_container);
+		dest.appendChild(source);
+		console.log('before',dest);
+		dest.style.display = "block";
+		console.log('after', dest);
+	};
+
+	const returnContentToPanes = () => {
+		movePaneContent('ct1', 'cr_pane1');
+		movePaneContent('ct2', 'cr_pane2');
+		movePaneContent('ct3', 'cr_pane3');
+		document.querySelector('#cr_panes').style.display = "block";
+	};
+
+
 	onMount(async () => {
 
 
@@ -238,37 +260,41 @@ void RenderGraphMain()
 
   import { Pane, Splitpanes } from 'svelte-splitpanes';
   let currentTile: number = 0;
+  let activePane = 'split'; // Possible values: 'split', 'pane1', 'pane2', 'pane3'
 
 
+  // DELETME
+  const setActivePane = (pane) => {
+    activePane = pane;
+  }
 
   import { Icon, ArrowUp, TableCells, Newspaper, AdjustmentsHorizontal, ArrowsPointingOut, Eye} from "svelte-hero-icons";
 
 	// import { LightSwitch } from '@skeletonlabs/skeleton';
 
-</script>
-
+</script>		
 		<div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
 			<AppRail class="w-8">
 				<!-- <svelte:fragment slot="lead">
 					<AppRailAnchor href="#" ><Icon src="{ArrowUp}" size="16" style="margin:auto;"/></AppRailAnchor>
 				</svelte:fragment> -->
 				<!-- --- -->
-				<AppRailTile bind:group={currentTile} name="tile-1" value={0} title="tile-1">
+				<AppRailTile on:click={() => {setActivePane('split'); returnContentToPanes(); } } bind:group={currentTile} name="tile-1" value={0} title="tile-1">
 					<svelte:fragment slot="lead">
 						<Icon src="{TableCells}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
-				<AppRailTile bind:group={currentTile} name="tile-1" value={1} title="tile-1">
+				<AppRailTile on:click={() => {setActivePane('pane1'); movePaneContent('ct1', 'cr_full1') } } bind:group={currentTile} name="tile-1" value={1} title="tile-1">
 					<svelte:fragment slot="lead">
 						<Icon src="{Newspaper}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
-				<AppRailTile bind:group={currentTile} name="tile-2" value={2} title="tile-2">
+				<AppRailTile on:click={() => {setActivePane('pane2'); movePaneContent('ct2', 'cr_full2') } } bind:group={currentTile} name="tile-2" value={2} title="tile-2">
 					<svelte:fragment slot="lead">
 						<Icon src="{AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
-				<AppRailTile bind:group={currentTile} name="tile-2" value={3} title="tile-2">
+				<AppRailTile on:click={() => {setActivePane('pane3'); movePaneContent('ct3', 'cr_full3') } } bind:group={currentTile} name="tile-2" value={3} title="tile-2">
 					<svelte:fragment slot="lead">
 						<Icon src="{Eye}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
@@ -289,27 +315,42 @@ void RenderGraphMain()
 					</AppRailAnchor>
 				</svelte:fragment>
 			</AppRail>
-			<div class="grid">
+			<div id="cr_panes" class="grid cr_dynamic">
 				<!-- <span class="badge variant-soft">Tile Value: {currentTile}</span> -->
 
 				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;">
 				  <Pane minSize={20}>
-						<div class="container" bind:this={editorContainer} style="display: block; height: 100vh;"/>
+				  	<div id="cr_pane1">
+							<div id="ct1" class="container" bind:this={editorContainer} style="display: block; height: 100vh;"/>
+						</div>
 				  </Pane>
 				  <Pane minSize={20}>
 				    <Splitpanes horizontal={true}>
 				      <Pane minSize={15}>
-				        2
-				        <br />
-				        <em class="specs">I have a min height of 15%</em>
+				      	<div id="cr_pane2">
+					      	<div id="ct2">
+						        2
+						        <br />
+						        <em class="specs">I have a min height of 15%</em>
+						      </div>
+						     </div>
 				      </Pane>
-				      <Pane>3 <span class="badge variant-soft">Tile Value: {currentTile}</span></Pane>
+				      <Pane>
+				      	<div id="cr_pane3">
+					      	<div id="ct3">
+					      		3 <span class="badge variant-soft">Tile Value: {currentTile}</span>
+					      	</div>
+					      </div>
+				      </Pane>
 				      <!-- <Pane>4</Pane> -->
 				    </Splitpanes>
 				  </Pane>
 				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
 			</div>
+			<div id="cr_full1" class="cr_dynamic" style="width:100%; height: 100%;"/>
+		  <div id="cr_full2" class="cr_dynamic" style="width:100%; height: 100%;" />
+			<div id="cr_full3" class="cr_dynamic" style="width:100%; height: 100%;" />
 		</div>
 <style>	
 
@@ -318,6 +359,7 @@ void RenderGraphMain()
 		width: 100%;
 		height: 100%;
 	}
+
 
 
 :global(.splitpanes.skeleton-theme .splitpanes__pane) {

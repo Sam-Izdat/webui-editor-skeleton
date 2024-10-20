@@ -331,7 +331,7 @@ void RenderGraphMain()
 					</svelte:fragment>
 				</AppRailTile>
 				<AppRailTile 
-					title="View shader code"
+					title="View script"
 					on:click={() => {setActivePane('pane1'); movePaneContent('ct1', 'cr_full1') } } 
 					bind:group={currentTile} 
 					name="tile-1" 
@@ -379,7 +379,7 @@ void RenderGraphMain()
 				</AppRailAnchor>
 				<AppRailAnchor 
 					href="#" 
-					title="ExclamationTriangle" 
+					title="Errors and warnings" 
 					class={true ? 'bg-error-500' : ''} 
 					style="display:block;">
 					<div class="foooo" use:popup={{ event: 'click', target: 'error-popup', placement: 'right' }}>

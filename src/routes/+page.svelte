@@ -79,10 +79,6 @@
     }
 		const source = document.querySelector('#'+id_content);
 		const dest = document.querySelector('#'+id_container);
-		dest.appendChild(source);
-		console.log('before',dest);
-		dest.style.display = "block";
-		console.log('after', dest);
 	};
 
 	const returnContentToPanes = () => {
@@ -106,7 +102,6 @@
 	}
 
 	const toggleEditing = () => {
-		console.log('editor!!', codeEditor);
 		if (readonly) {
 			enableEditing();
 		} else {
@@ -281,13 +276,6 @@ void RenderGraphMain()
 
   import { Pane, Splitpanes } from 'svelte-splitpanes';
   let currentTile: number = 0;
-  let activePane = 'split'; // Possible values: 'split', 'pane1', 'pane2', 'pane3'
-
-
-  // DELETME
-  const setActivePane = (pane) => {
-    activePane = pane;
-  }
 
   import { Icon, ArrowUp, ViewColumns, CodeBracket, AdjustmentsHorizontal, ArrowsPointingOut, Photo, LockOpen, LockClosed} from "svelte-hero-icons";
 

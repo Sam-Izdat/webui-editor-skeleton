@@ -92,6 +92,27 @@
 		document.querySelector('#cr_panes').style.display = "block";
 	};
 
+	let codeEditor = null;
+	let readonly = false;
+
+	const disableEditing = () => {
+		codeEditor.updateOptions({ readOnly: true });
+		readonly = true;
+	};
+
+	const enableEditing = () => {
+		codeEditor.updateOptions({ readOnly: false });
+		readonly = false;
+	}
+
+	const toggleEditing = () => {
+		console.log('editor!!', codeEditor);
+		if (readonly) {
+			enableEditing();
+		} else {
+			disableEditing();
+		}
+	}
 
 	onMount(async () => {
 
@@ -101,7 +122,7 @@
 		monaco = (await import('./monaco')).default;
 
 		// Your monaco instance is ready, let's display some code!
-		const editor = monaco.editor.create(editorContainer, {
+		codeEditor = monaco.editor.create(editorContainer, {
 	    value: "",
 	    language: "c",
 	    minimap: {
@@ -241,14 +262,14 @@ void RenderGraphMain()
 			,
 			'c'
 		);
-		editor.setModel(model);
+		codeEditor.setModel(model);
 		
 		observeThemeChange();
 	});
 
 	onDestroy(() => {
 		monaco?.editor.getModels().forEach((model) => model.dispose());
-		editor?.dispose();
+		codeEditor?.dispose();
 	});
 
 	import type { ComponentType } from 'svelte';
@@ -268,7 +289,7 @@ void RenderGraphMain()
     activePane = pane;
   }
 
-  import { Icon, ArrowUp, ViewColumns, CodeBracket, AdjustmentsHorizontal, ArrowsPointingOut, Photo} from "svelte-hero-icons";
+  import { Icon, ArrowUp, ViewColumns, CodeBracket, AdjustmentsHorizontal, ArrowsPointingOut, Photo, LockOpen, LockClosed} from "svelte-hero-icons";
 
 	// import { LightSwitch } from '@skeletonlabs/skeleton';
 
@@ -300,8 +321,11 @@ void RenderGraphMain()
 					</svelte:fragment>
 				</AppRailTile>
 
-				<AppRailAnchor href="#" title="Account" on:click={toggleFullscreen} class={isFullscreen ? 'bg-secondary-500' : ''} style="display:block;" name="tile-3">
+				<AppRailAnchor href="#" title="Fullscreen" on:click={toggleFullscreen} class={isFullscreen ? 'bg-secondary-500' : ''} style="display:block;" name="tile-3">
 					<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
+				</AppRailAnchor>
+				<AppRailAnchor href="#" title="Readonly" on:click={toggleEditing} class={readonly ? 'bg-secondary-500' : ''} style="display:block;" name="tile-3">
+					<Icon src="{readonly ? LockClosed : LockOpen}" size="16" style="margin: 4px auto;" solid/>
 				</AppRailAnchor>
 				<!-- <AppRailTile bind:group={currentTile} on:click={toggleFullscreen} class={isFullscreen ? 'bg-primary-hover-token' : 'fullscreen-inacive'} name="tile-3" value={4} title="tile-3">
 					<svelte:fragment slot="lead">

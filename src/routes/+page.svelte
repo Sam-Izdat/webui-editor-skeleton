@@ -435,7 +435,10 @@ void RenderGraphMain()
 		  <div id="cr_full2" class="cr_dynamic" style="width:100%; height: 100%;" />
 			<div id="cr_full3" class="cr_dynamic" style="width:100%; height: 100%;" />
 		</div>
-		<div class="card place-content-stretch p-1 max-w-72 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" data-popup="error-popup">
+		<div 
+			class="card place-content-stretch p-1 max-w-72 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" 
+			data-popup="error-popup"
+			style="z-index: 100;">
 			<div class="card p-1 variant-filled-surface">
 				<aside class="alert variant-filled-error p-1 m-1">
 					<div class="alert-message  text-xs">

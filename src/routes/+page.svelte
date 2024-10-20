@@ -50,6 +50,14 @@
     } else if (docEl.msRequestFullscreen) {
       docEl.msRequestFullscreen();
     }
+    
+
+	  // Request landscape orientation
+	  if (screen.orientation && screen.orientation.lock) {
+	    screen.orientation.lock('landscape').catch((error) => {
+	      console.error(`Failed to lock orientation: ${error}`);
+	    });
+	  }
   }
 
   function exitFullscreen() {

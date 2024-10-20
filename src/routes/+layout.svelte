@@ -18,7 +18,8 @@
 			</ul>
 		</nav>
 	</svelte:fragment> -->
-	<svelte:fragment slot="header">
+	
+	<!-- <svelte:fragment slot="header">
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<strong class="text-m uppercase">Foo</strong>
@@ -45,7 +46,7 @@
 				<LightSwitch />
 			</svelte:fragment>
 		</AppBar>
-	</svelte:fragment>
+	</svelte:fragment> -->
 
 	<!-- Page Route Content -->
 	<slot />

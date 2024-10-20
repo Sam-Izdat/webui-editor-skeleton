@@ -11,22 +11,22 @@
   let currentTile: number = 0;
 </script>
 		<div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
-			<AppRail>
+			<AppRail class="w-10">
 				<svelte:fragment slot="lead">
-					<AppRailAnchor href="/" >(icon)</AppRailAnchor>
+					<AppRailAnchor href="#" >(ico)</AppRailAnchor>
 				</svelte:fragment>
 				<!-- --- -->
 				<AppRailTile bind:group={currentTile} name="tile-1" value={0} title="tile-1">
-					<svelte:fragment slot="lead">(icon)</svelte:fragment>
-					<span>Tile 1</span>
+					<svelte:fragment slot="lead">(ico)</svelte:fragment>
+					<span>T 1</span>
 				</AppRailTile>
 				<AppRailTile bind:group={currentTile} name="tile-2" value={1} title="tile-2">
-					<svelte:fragment slot="lead">(icon)</svelte:fragment>
-					<span>Tile 2</span>
+					<svelte:fragment slot="lead">(ico)</svelte:fragment>
+					<span>T 2</span>
 				</AppRailTile>
 				<AppRailTile bind:group={currentTile} name="tile-3" value={2} title="tile-3">
-					<svelte:fragment slot="lead">(icon)</svelte:fragment>
-					<span>Tile 3</span>
+					<svelte:fragment slot="lead">(ico)</svelte:fragment>
+					<span>T 3</span>
 				</AppRailTile> 
 				<!-- --- -->
 				<svelte:fragment slot="trail">

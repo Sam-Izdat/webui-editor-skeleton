@@ -66,8 +66,9 @@
 
 <style>
 :global(body) {
-	min-height: 100vh;
-	overflow-y: auto;
+/*Some problems with this on mobile, and doesn't accomplish goal of hiding addressbar with PWA manifest:*/
+/*	min-height: 100vh;*/
+/*	overflow-y: auto;*/
 	background: #333 !important;
 }
 </style>

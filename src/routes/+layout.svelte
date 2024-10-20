@@ -15,7 +15,12 @@
 </script>
 
 <!-- App Shell -->
-<svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
+<svelte:head>
+	{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}
+
+	<link rel="manifest" href="/manifest.json">
+	<meta name="theme-color" content="#000000">
+</svelte:head>
 <AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
 <!-- 	<svelte:fragment slot="sidebarLeft">
 		<nav class="list-nav">

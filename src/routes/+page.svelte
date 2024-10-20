@@ -313,13 +313,13 @@ void RenderGraphMain()
 
 :global(.skeleton-theme.splitpanes--vertical > .splitpanes__splitter,
 .skeleton-theme .splitpanes--vertical > .splitpanes__splitter) {
-  width: 5px;
+  width: 4px;
   background-color: rgba(210, 210, 210, 1) !important;
   cursor: col-resize;
 }
 :global(.dark .skeleton-theme.splitpanes--vertical > .splitpanes__splitter,
 .dark .skeleton-theme .splitpanes--vertical > .splitpanes__splitter) {
-  width: 5px;
+  width: 4px;
   background-color: rgba(60, 60, 60, 1) !important;
   cursor: col-resize;
 }
@@ -342,13 +342,13 @@ void RenderGraphMain()
 }
 :global(.skeleton-theme.splitpanes--horizontal > .splitpanes__splitter,
 .skeleton-theme .splitpanes--horizontal > .splitpanes__splitter) {
-  height: 5px;
+  height: 4px;
   border-top: rgba(210, 210, 210, 1) !important;
   cursor: row-resize;
 }
 :global(.dark .skeleton-theme.splitpanes--horizontal > .splitpanes__splitter,
 .dark .skeleton-theme .splitpanes--horizontal > .splitpanes__splitter) {
-  height: 5px;
+  height: 4px;
   border-top: rgba(255, 0, 0, 1) !important;
   cursor: row-resize;
 }

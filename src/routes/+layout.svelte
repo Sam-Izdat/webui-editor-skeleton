@@ -12,6 +12,10 @@
 	//DELETEME
 	import { browser } from '$app/environment';
 	// if (browser) document.documentElement.classList.add('dark')
+
+	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
+	import { storePopup } from '@skeletonlabs/skeleton';
+	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
 
 <!-- App Shell -->

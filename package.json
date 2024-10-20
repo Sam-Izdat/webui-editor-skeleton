@@ -30,6 +30,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@floating-ui/dom": "^1.6.11",
     "@sveltejs/adapter-static": "^3.0.5",
     "monaco-editor": "^0.52.0",
     "svelte-golden-layout": "^0.1.1",

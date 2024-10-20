@@ -30,6 +30,15 @@
 
   let isFullscreen = false;
 
+
+	import { popup } from '@skeletonlabs/skeleton';
+	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	// const popupHover: PopupSettings = {
+	// 	event: 'hover',
+	// 	target: 'popupHover',
+	// 	placement: 'right'
+	// };
+
   const toggleFullscreen = () => {
     if (!isFullscreen) {
       enterFullscreen();
@@ -287,43 +296,94 @@ void RenderGraphMain()
   }
 
 
-  import { Icon, ArrowUp, ViewColumns, CodeBracket, AdjustmentsHorizontal, ArrowsPointingOut, Photo, LockOpen, LockClosed} from "svelte-hero-icons";
+  import { 
+  	Icon, 
+  	ArrowUp, 
+  	ViewColumns, 
+  	CodeBracket, 
+  	AdjustmentsHorizontal, 
+  	ArrowsPointingOut, 
+  	Photo, 
+  	LockOpen, 
+  	LockClosed,
+  	ExclamationTriangle
+  } from "svelte-hero-icons";
+
 
 	// import { LightSwitch } from '@skeletonlabs/skeleton';
 
-</script>		
+</script>
 		<div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
 			<AppRail class="w-8">
 				<!-- <svelte:fragment slot="lead">
 					<AppRailAnchor href="#" ><Icon src="{ArrowUp}" size="16" style="margin:auto;"/></AppRailAnchor>
 				</svelte:fragment> -->
 				<!-- --- -->
-				<AppRailTile on:click={() => {setActivePane('split'); returnContentToPanes(); } } bind:group={currentTile} name="tile-1" value={0} title="tile-1">
+				<AppRailTile 
+					title="View split-pane"
+					on:click={() => {setActivePane('split'); returnContentToPanes(); } } 
+					bind:group={currentTile} 
+					name="tile-1" 
+					value={0}>
 					<svelte:fragment slot="lead">
 						<Icon src="{ViewColumns}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
-				<AppRailTile on:click={() => {setActivePane('pane1'); movePaneContent('ct1', 'cr_full1') } } bind:group={currentTile} name="tile-1" value={1} title="tile-1">
+				<AppRailTile 
+					title="View shader code"
+					on:click={() => {setActivePane('pane1'); movePaneContent('ct1', 'cr_full1') } } 
+					bind:group={currentTile} 
+					name="tile-1" 
+					value={1}>
 					<svelte:fragment slot="lead">
 						<Icon src="{CodeBracket}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
-				<AppRailTile on:click={() => {setActivePane('pane2'); movePaneContent('ct2', 'cr_full2') } } bind:group={currentTile} name="tile-2" value={2} title="tile-2">
+				<AppRailTile 
+					title="View controls"
+					on:click={() => {setActivePane('pane2'); movePaneContent('ct2', 'cr_full2') } } 
+					bind:group={currentTile} 
+					name="tile-2" 
+					value={2}>
 					<svelte:fragment slot="lead">
 						<Icon src="{AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
-				<AppRailTile on:click={() => {setActivePane('pane3'); movePaneContent('ct3', 'cr_full3') } } bind:group={currentTile} name="tile-2" value={3} title="tile-2">
+				<AppRailTile 
+					title="View canvas" 
+					on:click={() => {setActivePane('pane3'); movePaneContent('ct3', 'cr_full3') } } 
+					bind:group={currentTile} 
+					name="tile-3" 
+					value={3}>
 					<svelte:fragment slot="lead">
 						<Icon src="{Photo}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
 
-				<AppRailAnchor href="#" title="Fullscreen" on:click={toggleFullscreen} class={isFullscreen ? 'bg-secondary-500' : ''} style="display:block;" name="tile-3">
+				<AppRailAnchor 
+					href="#" 
+					title="Toggle fullscreen" 
+					on:click={toggleFullscreen} 
+					class={isFullscreen ? 'bg-secondary-500' : ''} 
+					style="display:block;">
 					<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
 				</AppRailAnchor>
-				<AppRailAnchor href="#" title="Readonly" on:click={toggleEditing} class={readonly ? 'bg-secondary-500' : ''} style="display:block;" name="tile-3">
+				<AppRailAnchor 
+					href="#" 
+					title="Toggle read-only" 
+					on:click={toggleEditing} 
+					class={readonly ? 'bg-secondary-500' : ''} 
+					style="display:block;">
 					<Icon src="{readonly ? LockClosed : LockOpen}" size="16" style="margin: 4px auto;" solid/>
+				</AppRailAnchor>
+				<AppRailAnchor 
+					href="#" 
+					title="ExclamationTriangle" 
+					class={true ? 'bg-error-500' : ''} 
+					style="display:block;">
+					<div class="foooo" use:popup={{ event: 'click', target: 'foobar', placement: 'right' }}>
+						<Icon src="{ExclamationTriangle}" size="16" style="margin: 4px auto;" solid/>
+					</div>
 				</AppRailAnchor>
 				<!-- <AppRailTile bind:group={currentTile} on:click={toggleFullscreen} class={isFullscreen ? 'bg-primary-hover-token' : 'fullscreen-inacive'} name="tile-3" value={4} title="tile-3">
 					<svelte:fragment slot="lead">
@@ -332,7 +392,7 @@ void RenderGraphMain()
 				</AppRailTile>  -->
 				<!-- --- -->
 				<svelte:fragment slot="trail">
-					<AppRailAnchor href="#" title="Account">
+					<AppRailAnchor href="#" title="Toggle light or dark mode.">
 						<LightSwitch />
 					</AppRailAnchor>
 				</svelte:fragment>
@@ -353,8 +413,6 @@ void RenderGraphMain()
 				      <Pane minSize={15}>
 				      	<div id="cr_pane2">
 					      	<div id="ct2">
-						        2
-						        <br />
 						        <em class="specs">I have a min height of 15%</em>
 						      </div>
 						     </div>
@@ -362,7 +420,7 @@ void RenderGraphMain()
 				      <Pane>
 				      	<div id="cr_pane3">
 					      	<div id="ct3">
-					      		3 <span class="badge variant-soft">Tile Value: {currentTile}</span>
+					      		3 <span class="badge variant-soft">Tile Value: asdfsadfsdf </span>
 					      	</div>
 					      </div>
 				      </Pane>
@@ -372,6 +430,16 @@ void RenderGraphMain()
 				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
 			</div>
+		<div class="card p-2 w-auto shadow-m" data-popup="foobar">
+    <aside class="alert variant-ghost-error">
+        <!-- Icon -->
+        <div><Icon src="{ExclamationTriangle}" size="32" solid/></div>
+        <!-- Message -->
+        <div class="alert-message">
+            <p>This is an error about something really important. Here's some more words!</p>
+        </div>
+    </aside>
+		</div>
 			<div id="cr_full1" class="cr_dynamic" style="width:100%; height: 100%;"/>
 		  <div id="cr_full2" class="cr_dynamic" style="width:100%; height: 100%;" />
 			<div id="cr_full3" class="cr_dynamic" style="width:100%; height: 100%;" />

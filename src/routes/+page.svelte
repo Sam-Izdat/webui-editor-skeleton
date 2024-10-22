@@ -52,13 +52,6 @@
 		}
 	};
 
-	const resizeEditor = () => {
-		document.querySelector('body').style.setProperty('height', `${window.visualViewport.height}px`);
-		document.body.style.position = 'fixed';
-    let { width, height } = editorContainer.getBoundingClientRect();
-    codeEditor.layout({ width, height })
-  };
-
   // Fullescreen
   let isFullscreen = false;
 
@@ -169,8 +162,7 @@
 	onMount(async () => {
 		returnContentToPanes()
 		checkKeyboardStatus();
-		// DELETEME
-		// window.addEventListener('resize', checkKeyboardStatus);
+
 
 
 		// function checkKeyboardStatus() {
@@ -208,12 +200,9 @@
 	      enabled: false,
 	    },
 	    tabSize: 2,
-	    automaticLayout: false,
+	    automaticLayout: true,
 	    theme: isDarkMode() ? 'vs-dark' : 'vs-light',
 	  });
-
-		// FIXME: main is to blame 
-		window.addEventListener('resize', resizeEditor);
 
 		const model = monaco.editor.createModel(`void ColorPass(
   in float r,
@@ -558,8 +547,8 @@ void RenderGraphMain()
 		overflow:hidden;
 	}
 	#editor-wrap {
-		height:100%; 
-/*    height: 100dvh !important;*/
+/*		height:100%; */
+    height: 100dvh !important;
 /*		height: 100dvh;*/
 /*		overflow: hidden;*/
 /*    max-height: 100dvh;*/

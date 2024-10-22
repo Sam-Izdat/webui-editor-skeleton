@@ -96,30 +96,27 @@
     }
   };
 
-	// Mobile soft keyboard
-	let isKeyboardOpen = false;
-
-	const checkKeyboardStatus = () => {
-	  const vh = window.innerHeight * 0.01;
-	  const viewportHeight = window.visualViewport.height;
-
-	  if (viewportHeight < window.innerHeight - 100) {
-	    // Soft keyboard is likely open
-	    if (!isKeyboardOpen) {
-	      isKeyboardOpen = true;
-	      // Use --vh (calculated based on current visible height)
-	      document.documentElement.style.setProperty('--vh', `${vh}px`);
-	      document.body.classList.add('keyboard-open');
-	    }
-	  } else {
-	    // Soft keyboard is closed
-	    if (isKeyboardOpen) {
-	      isKeyboardOpen = false;
-	      // Revert to 100vh
-	      document.body.classList.remove('keyboard-open');
-	    }
-	  } 
+  // Modal
+	import { getModalStore } from '@skeletonlabs/skeleton';
+	const modalStore = getModalStore();
+	const modal: ModalSettings = {
+		type: 'component',
+		component: 'modalAbout',
+		title: 'Webui Editor Skeleton',
+		body: 'Parturient per lobortis mus luctus nunc cubilia a. Ultricies varius eleifend in; dolor leo cras. Venenatis ipsum eget auctor ridiculus magnis aptent venenatis mollis. Habitant aenean vestibulum per, parturient dapibus mattis senectus. Porttitor erat potenti gravida aenean pharetra et imperdiet quam. Interdum tellus class facilisis aptent dignissim. '
 	};
+
+	// modalStore.trigger(modal);
+
+	// const cButton = 'fixed top-4 right-4 z-50 font-bold shadow-xl';
+	// const cImage = 'max-w-[90%] max-h-[90%] rounded-container-token overflow-hidden shadow-xl';
+
+	// const modal: ModalSettings = {
+	// 	type: 'component',
+	// 	component: 'AboutModal',
+	// 	image: './icons/icon-128.png'
+	// };
+	// modalStore.trigger(modal);
 
 	// Popups
 	import { popup } from '@skeletonlabs/skeleton';
@@ -151,33 +148,7 @@
 
 
 	onMount(async () => {
-		returnContentToPanes()
-		checkKeyboardStatus();
-
-
-
-		// function checkKeyboardStatus() {
-		//   const vh = window.innerHeight * 0.01;
-		//   const viewportHeight = window.visualViewport.height;
-
-		//   if (viewportHeight < window.innerHeight - 100) {
-		//     // Soft keyboard is likely open
-		//     if (!isKeyboardOpen) {
-		//       isKeyboardOpen = true;
-		//       // Use --vh (calculated based on current visible height)
-		//       document.documentElement.style.setProperty('--vh', `${vh}px`);
-		//       document.body.classList.add('keyboard-open');
-		//     }
-		//   } else {
-		//     // Soft keyboard is closed
-		//     if (isKeyboardOpen) {
-		//       isKeyboardOpen = false;
-		//       // Revert to 100vh
-		//       document.body.classList.remove('keyboard-open');
-		//     }
-		//   }
-		// }
-
+		returnContentToPanes();
 
 		// Import our 'monaco.ts' file here
 		// (onMount() will only be executed in the browser, which is what we want)
@@ -365,13 +336,15 @@ void RenderGraphMain()
   	LockOpen, 
   	LockClosed,
   	ExclamationTriangle,
-  	ExclamationCircle
+  	ExclamationCircle,
+  	QuestionMarkCircle
   } from "svelte-hero-icons";
 
 
 	// import { LightSwitch } from '@skeletonlabs/skeleton';
 
 </script>
+
 		<div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
 			<AppRail class="w-8">
 				<!-- <svelte:fragment slot="lead">
@@ -440,7 +413,7 @@ void RenderGraphMain()
 					title="Errors and warnings" 
 					class={true ? 'bg-error-500' : ''} 
 					style="display:block;">
-					<div class="foooo" use:popup={{ event: 'click', target: 'error-popup', placement: 'right' }}>
+					<div use:popup={{ event: 'click', target: 'error-popup', placement: 'right' }}>
 						<Icon src="{ExclamationTriangle}" size="16" style="margin: 4px auto;" solid/>
 					</div>
 				</AppRailAnchor>
@@ -451,6 +424,13 @@ void RenderGraphMain()
 				</AppRailTile>  -->
 				<!-- --- -->
 				<svelte:fragment slot="trail">
+					<AppRailAnchor 
+						href="#" 
+						title="About" 
+						on:click={() => modalStore.trigger(modal)}
+						style="display:block;">
+						<Icon src="{QuestionMarkCircle}" size="16" style="margin: 4px auto;" solid/>
+					</AppRailAnchor>
 					<AppRailAnchor href="#" title="Toggle light or dark mode.">
 						<LightSwitch />
 					</AppRailAnchor>

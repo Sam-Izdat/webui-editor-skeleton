@@ -9,13 +9,20 @@
 
 	import { autoModeWatcher } from '@skeletonlabs/skeleton';
 
-	//DELETEME
 	import { browser } from '$app/environment';
-	// if (browser) document.documentElement.classList.add('dark')
 
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
+
+	// Modals
+	import { initializeStores, Modal } from '@skeletonlabs/skeleton';
+	initializeStores();
+	import  { AboutModal }  from '$lib/components';
+	const modalRegistry: Record<string, ModalComponent> = {
+		modalAbout: { ref: AboutModal },
+	};
+								
 </script>
 
 <!-- App Shell -->
@@ -26,6 +33,7 @@
 	<meta name="theme-color" content="#000000">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 </svelte:head>
+<Modal components={modalRegistry} />
 <AppShell slotSidebarLeft="bg-surface-500/5 w-56 h-[100%] p-4">
 <!-- 	<svelte:fragment slot="sidebarLeft">
 		<nav class="list-nav">

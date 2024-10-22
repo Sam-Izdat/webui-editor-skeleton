@@ -19,8 +19,16 @@
 
 {#if $modalStore[0]}
 	<div class="{cBase}">
-		<header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
-		{#if $modalStore[0].logo}<img src={$modalStore[0].logo} class={cImage} alt="logo" />{/if}
+		<h2 class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</h2>
+		{#if $modalStore[0].logo}
+			<img src={$modalStore[0].logo} class={cImage} alt="logo" />
+		{/if}
+		{#if $modalStore[0].package}
+			<span class="text-xs md:text-xs">{$modalStore[0].package ?? '(package missing)'}</span>
+		{/if}
+		{#if $modalStore[0].version}
+			<span class="text-xs md:text-xs">Version {$modalStore[0].version ?? '(version missing)'}</span>
+		{/if}
 		<article>{$modalStore[0].body ?? '(body missing)'}</article>
 		<footer class="modal-footer {parent.regionFooter}">
         <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>

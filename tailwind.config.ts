@@ -18,6 +18,18 @@ export default {
 						name: 'vintage',
 						enhancements: true,
 					},
+					{
+						name: 'modern',
+						enhancements: true,
+					},
+					{
+						name: 'rocket',
+						enhancements: true,
+					},
+					{
+						name: 'hamlindigo',
+						enhancements: true,
+					},
 				],
 			},
 		}),

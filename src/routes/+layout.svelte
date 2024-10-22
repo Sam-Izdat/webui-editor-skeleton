@@ -84,7 +84,7 @@
 /*	overflow-y: auto;*/
 /*	height: 100dvh;*/
 	background: #333 !important;
-	overflow-y: hidden;
+/*	overflow-y: hidden;*/
 }
 
 /*Important*/

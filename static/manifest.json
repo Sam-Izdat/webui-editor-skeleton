@@ -1,8 +1,8 @@
 {
   "name": "webui-editor-skeleton",
-  "scope": "https://sam-izdat.github.io/webui-editor-skeleton/*",
+  "scope": "https://sam-izdat.github.io/webui-editor-skeleton/",
   "short_name": "WES",
-  "start_url": ".",
+  "start_url": "https://sam-izdat.github.io/webui-editor-skeleton/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#73420d",

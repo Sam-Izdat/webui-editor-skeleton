@@ -133,7 +133,7 @@
 
 
 	// SPA Navigation
-	const movePaneContent = (id_content, id_container) => {
+	const movePaneContent = (id_content, id_container, fullPage = true) => {
     var containers = document.getElementsByClassName("cr_dynamic");
     for(var i = 0; i < containers.length; i++){
         containers[i].style.display = "none";
@@ -142,6 +142,13 @@
 		const dest = document.querySelector('#'+id_container);
 		dest.appendChild(source);
 		dest.style.display = "block";
+		if (fullPage) {
+			document.querySelector('#cr_full').style.display = "block";
+			document.querySelector('#cr_panes').style.display = "none";
+		} else {			
+			document.querySelector('#cr_full').style.display = "none";
+			document.querySelector('#cr_panes').style.display = "block";
+		}
 	};
 
 	const returnContentToPanes = () => {
@@ -150,10 +157,11 @@
     for(var i = 0; i < containers.length; i++){
         containers[i].style.display = "none";
     }
-		movePaneContent('ct1', 'cr_pane1');
-		movePaneContent('ct2', 'cr_pane2');
-		movePaneContent('ct3', 'cr_pane3');
-		document.querySelector('#cr_panes').style.display = "block";
+		movePaneContent('ct1', 'cr_pane1', false);
+		movePaneContent('ct2', 'cr_pane2', false);
+		movePaneContent('ct3', 'cr_pane3', false);
+    document.querySelector('#cr_full').style.display = "none";
+		// document.querySelector('#cr_panes').style.display = "block";
 	};
 
 
@@ -401,7 +409,7 @@ void RenderGraphMain()
 				</AppRailTile>
 				<AppRailTile 
 					title="View script"
-					on:click={() => {setActivePane('pane1'); movePaneContent('ct1', 'cr_full1') } } 
+					on:click={() => {setActivePane('pane1'); movePaneContent('ct1', 'cr_full1', true) } } 
 					bind:group={currentTile} 
 					name="tile-1" 
 					value={1}>
@@ -411,7 +419,7 @@ void RenderGraphMain()
 				</AppRailTile>
 				<AppRailTile 
 					title="View controls"
-					on:click={() => {setActivePane('pane2'); movePaneContent('ct2', 'cr_full2') } } 
+					on:click={() => {setActivePane('pane2'); movePaneContent('ct2', 'cr_full2', true) } } 
 					bind:group={currentTile} 
 					name="tile-2" 
 					value={2}>
@@ -421,7 +429,7 @@ void RenderGraphMain()
 				</AppRailTile>
 				<AppRailTile 
 					title="View canvas" 
-					on:click={() => {setActivePane('pane3'); movePaneContent('ct3', 'cr_full3') } } 
+					on:click={() => {setActivePane('pane3'); movePaneContent('ct3', 'cr_full3', true) } } 
 					bind:group={currentTile} 
 					name="tile-3" 
 					value={3}>
@@ -501,9 +509,11 @@ void RenderGraphMain()
 				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
 			</div>
-			<div id="cr_full1" class="cr_dynamic" style="width:100%; height: 100%;"/>
-		  <div id="cr_full2" class="cr_dynamic" style="width:100%; height: 100%;" />
-			<div id="cr_full3" class="cr_dynamic" style="width:100%; height: 100%;" />
+			<div id="cr_full">
+				<div id="cr_full1" class="cr_dynamic" style="width:100%; height: 100%;"/>
+			  <div id="cr_full2" class="cr_dynamic" style="width:100%; height: 100%;" />
+				<div id="cr_full3" class="cr_dynamic" style="width:100%; height: 100%;" />
+			</div>
 		</div>
 		<div 
 			class="card place-content-stretch p-1 max-w-72 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" 
@@ -535,7 +545,7 @@ void RenderGraphMain()
     margin: 0 !impoortant;
     padding: 0 !important;
 	}
-	:global(#cr_panes) {
+	:global(#cr_panes, #cr_full) {
 		display: block;
 		max-height: 100%;
 		overflow: hidden;

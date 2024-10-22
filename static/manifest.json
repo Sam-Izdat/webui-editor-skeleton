@@ -4,6 +4,14 @@
   "short_name": "WES",
   "start_url": "https://sam-izdat.github.io/webui-editor-skeleton/index.html",
   "display": "standalone",
+  "file_handlers": [
+    {
+      "action": "/open-file",
+      "accept": {
+        "application/x-my-custom-script": [".myscript"]
+      }
+    }
+  ],
   "background_color": "#ffffff",
   "theme_color": "#73420d",
   "icons": [

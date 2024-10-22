@@ -58,6 +58,26 @@
 		}
 	};
 
+	// Pane defaults
+
+  let sizeLandscapePaneLeft;
+  let sizeLandscapePaneRight;
+  let sizeLandscapePaneTopRight;
+  let sizeLandscapePaneBottomRight;
+  let sizePortraitPaneTop;
+  let sizePortraitPaneMid;
+  let sizePortraitPaneBot;
+
+	const resetPaneSizes = () => {
+	  sizeLandscapePaneLeft = 65;
+	  sizeLandscapePaneRight = 35;
+	  sizeLandscapePaneTopRight = 40;
+	  sizeLandscapePaneBottomRight = 60;
+	  sizePortraitPaneTop = 65;
+	  sizePortraitPaneMid = 35;
+	  sizePortraitPaneBot = 0;
+	};
+
   // Fullescreen
   let isFullscreen = false;
 
@@ -165,7 +185,6 @@
 	};
 
 	const moveContentToStaging = () => {
-		console.log('MOVING TO STAGING');//FIXME
 		movePaneContent('ct1', 'cr-staging');
 		movePaneContent('ct2', 'cr-staging');
 		movePaneContent('ct3', 'cr-staging');
@@ -180,6 +199,7 @@
 	};
 
 	onMount(async () => {
+		resetPaneSizes();
 		returnContentToPanes();
 
 		// Import our 'monaco.ts' file here
@@ -232,13 +252,6 @@
 
   import { Pane, Splitpanes } from 'svelte-splitpanes';
   let currentView: number = 0;
-  let activePane = 'split'; // Possible values: 'split', 'pane1', 'pane2', 'pane3'
-
-
-  // DELETME
-  const setActivePane = (pane) => {
-    activePane = pane;
-  }
 
   // Icons
 
@@ -255,7 +268,8 @@
   	ExclamationTriangle,
   	ExclamationCircle,
   	QuestionMarkCircle,
-  	DocumentArrowUp
+  	DocumentArrowUp,
+  	ArrowPathRoundedSquare
   } from "svelte-hero-icons";
 
 </script>
@@ -268,7 +282,7 @@
 				<!-- --- -->
 				<AppRailTile 
 					title="View split-pane"
-					on:click={() => {setActivePane('split'); returnContentToPanes(); }} 
+					on:click={() => {returnContentToPanes(); }} 
 					bind:group={currentView} 
 					name="tile-1" 
 					value={0}>
@@ -278,7 +292,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View script"
-					on:click={() => {setActivePane('pane1'); returnContentToPanes(); movePaneContent('ct1', 'cr-full'); }} 
+					on:click={() => {returnContentToPanes(); movePaneContent('ct1', 'cr-full'); }} 
 					bind:group={currentView} 
 					name="tile-1" 
 					value={1}>
@@ -288,7 +302,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View canvas"
-					on:click={() => {setActivePane('pane2'); returnContentToPanes(); movePaneContent('ct2', 'cr-full'); }} 
+					on:click={() => {returnContentToPanes(); movePaneContent('ct2', 'cr-full'); }} 
 					bind:group={currentView} 
 					name="tile-2" 
 					value={2}>
@@ -298,7 +312,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View controls" 
-					on:click={() => {setActivePane('pane3'); returnContentToPanes(); movePaneContent('ct3', 'cr-full'); }} 
+					on:click={() => {returnContentToPanes(); movePaneContent('ct3', 'cr-full'); }} 
 					bind:group={currentView} 
 					name="tile-3" 
 					value={3}>
@@ -335,6 +349,13 @@
 				<svelte:fragment slot="trail">
 					<AppRailAnchor 
 						href="#" 
+						title="Reset panes" 
+						on:click={resetPaneSizes}
+						style="display:block;">
+						<Icon src="{ArrowPathRoundedSquare}" size="16" style="margin: 4px auto;" solid/>
+					</AppRailAnchor>
+					<AppRailAnchor 
+						href="#" 
 						title="Export" 
 						on:click={() => modalStore.trigger(modalExport)}
 						style="display:block;">
@@ -355,34 +376,31 @@
 			<div id="cr-panes" class="grid cr-dynamic">
 				{#if orientationLandscape}
 				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;">
-				  <Pane minSize={20} size={65}>
+				  <Pane minSize={20} bind:size={sizeLandscapePaneLeft}>
 				  	<div id="cr-pane1"/>
 				  </Pane>
-				  <Pane minSize={20}>
+				  <Pane minSize={20} bind:size={sizeLandscapePaneRight}>
 				    <Splitpanes horizontal={true}>
-				      <Pane minSize={15}>
+				      <Pane minSize={15} bind:size={sizeLandscapePaneTopRight}>
 				      	<div id="cr-pane2" />
 				      </Pane>
-				      <Pane>
+				      <Pane bind:size={sizeLandscapePaneBottomRight}>
 				      	<div id="cr-pane3" />
 				      </Pane>
-				      <!-- <Pane>4</Pane> -->
 				    </Splitpanes>
 				  </Pane>
-				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
 				{:else}
 				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;" horizontal={true}>
-				  <Pane minSize={20}>
+				  <Pane minSize={20} bind:size={sizePortraitPaneTop}>
 				  	<div id="cr-pane1" />
 				  </Pane>
-		      <Pane minSize={5} size={35}>
+		      <Pane minSize={5} bind:size={sizePortraitPaneMid}>
 		      	<div id="cr-pane2" />
 		      </Pane>
-		      <Pane minSize={0} size={0}>
+		      <Pane minSize={0} bind:size={sizePortraitPaneBot}>
 		      	<div id="cr-pane3"/>
 		      </Pane>
-				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
 				{/if}
 			</div>

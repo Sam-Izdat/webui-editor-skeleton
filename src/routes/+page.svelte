@@ -104,19 +104,19 @@
   let orientationLandscape = true;
 
 	const handleOrientationChange = async () => {
-	  if (window.matchMedia("(orientation: portrait)").matches) {
+		if (orientationLandscape && screen.orientation.type.startsWith('portrait')) {
+			document.querySelector('#ct2').innerHTML = 'portrait';
 	    moveContentToStaging();
-	    orientationLandscape = false;
-	  } else {
+	    orientationLandscape = false;		  
+		  await tick(); // Wait for DOM to be updated
+	  	returnContentToPanes();
+	  } else  {
+	  	document.querySelector('#ct2').innerHTML = 'landscape';
 	    moveContentToStaging();
 	    orientationLandscape = true;
+		  await tick();
+	  	returnContentToPanes();
 	  }
-
-	  // Wait for DOM to be updated
-	  await tick();
-	  
-	  // Now run returnContentToPanes after the DOM update
-	  returnContentToPanes();
 	};
 
   // Modal
@@ -198,7 +198,8 @@
 		observeThemeChange();
 
 		// Listen for orientation changes
-		window.addEventListener("resize", handleOrientationChange);
+		window.screen.orientation.onchange = handleOrientationChange;
+		// window.addEventListener("resize", handleOrientationChange);
 
 		// Initial check
 		handleOrientationChange();
@@ -425,8 +426,8 @@
 }
 :global(#cr-panes, #cr-full) {
 	display: block;
-	max-height: 100%;
-	overflow: hidden;
+	height: 100dvh;
+	overflow-y: hidden;
 }
 :global(#cr-pane1, #cr-pane2, #cr-pane3, #ct1, #ct2, #ct3) {
 	display: block;

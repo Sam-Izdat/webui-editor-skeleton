@@ -107,17 +107,21 @@
 
 	const handleOrientationChange = async () => {
 		if (orientationLandscape && screen.orientation.type.startsWith('portrait')) {
-			document.querySelector('#ct2').innerHTML = 'portrait';
 	    moveContentToStaging();
 	    orientationLandscape = false;		  
 		  await tick(); // Wait for DOM to be updated
-	  	returnContentToPanes();
+	  	if (currentView == 0) returnContentToPanes();
+	  	else if (currentView == 1) movePaneContent('ct1', 'cr-full');
+	  	else if (currentView == 2) movePaneContent('ct2', 'cr-full');
+	  	else if (currentView == 2) movePaneContent('ct3', 'cr-full');
 	  } else  {
-	  	document.querySelector('#ct2').innerHTML = 'landscape';
 	    moveContentToStaging();
 	    orientationLandscape = true;
 		  await tick();
-	  	returnContentToPanes();
+	  	if (currentView == 0) returnContentToPanes();
+	  	else if (currentView == 1) movePaneContent('ct1', 'cr-full');
+	  	else if (currentView == 2) movePaneContent('ct2', 'cr-full');
+	  	else if (currentView == 2) movePaneContent('ct3', 'cr-full');
 	  }
 	};
 
@@ -146,31 +150,31 @@
 
 
 	// SPA Navigation
-	const movePaneContent = (idContent, idContainer, fullPage = true) => {
+	const movePaneContent = (idContent, idContainer) => {
 		const source = document.querySelector('#'+idContent);
 		const dest = document.querySelector('#'+idContainer);
 		dest.appendChild(source);
 		dest.style.display = "block";
-		if (fullPage) {
-			document.querySelector('#cr-full').style.display = "block";
-			document.querySelector('#cr-panes').style.display = "none";
-		} else {			
+		if (currentView == 0) { // split pane
 			document.querySelector('#cr-full').style.display = "none";
 			document.querySelector('#cr-panes').style.display = "block";
+		} else {			
+			document.querySelector('#cr-full').style.display = "block";
+			document.querySelector('#cr-panes').style.display = "none";
 		}
 	};
 
 	const moveContentToStaging = () => {
 		console.log('MOVING TO STAGING');//FIXME
-		movePaneContent('ct1', 'cr-staging', null);
-		movePaneContent('ct2', 'cr-staging', null);
-		movePaneContent('ct3', 'cr-staging', null);
+		movePaneContent('ct1', 'cr-staging');
+		movePaneContent('ct2', 'cr-staging');
+		movePaneContent('ct3', 'cr-staging');
 	};
 
 	const returnContentToPanes = () => {
-		movePaneContent('ct1', 'cr-pane1', false);
-		movePaneContent('ct2', 'cr-pane2', false);
-		movePaneContent('ct3', 'cr-pane3', false);
+		movePaneContent('ct1', 'cr-pane1');
+		movePaneContent('ct2', 'cr-pane2');
+		movePaneContent('ct3', 'cr-pane3');
     document.querySelector('#cr-full').style.display = "none";
 		// document.querySelector('#cr-panes').style.display = "block";
 	};
@@ -267,7 +271,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View script"
-					on:click={() => {setActivePane('pane1'); returnContentToPanes(); movePaneContent('ct1', 'cr-full', true) }} 
+					on:click={() => {setActivePane('pane1'); returnContentToPanes(); movePaneContent('ct1', 'cr-full'); }} 
 					bind:group={currentView} 
 					name="tile-1" 
 					value={1}>
@@ -277,7 +281,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View controls"
-					on:click={() => {setActivePane('pane2'); returnContentToPanes(); movePaneContent('ct2', 'cr-full', true) }} 
+					on:click={() => {setActivePane('pane2'); returnContentToPanes(); movePaneContent('ct2', 'cr-full'); }} 
 					bind:group={currentView} 
 					name="tile-2" 
 					value={2}>
@@ -287,7 +291,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View canvas" 
-					on:click={() => {setActivePane('pane3'); returnContentToPanes(); movePaneContent('ct3', 'cr-full', true) }} 
+					on:click={() => {setActivePane('pane3'); returnContentToPanes(); movePaneContent('ct3', 'cr-full'); }} 
 					bind:group={currentView} 
 					name="tile-3" 
 					value={3}>
@@ -388,12 +392,12 @@
       	<div id="ct2">
       		<!-- Replace this with actual canvas -->
       		<div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-[100%] w-[100%]">
+      			<span class="badge variant-soft">This is where the controls would be.</span>
       			<span class="badge variant-soft">Current view: {currentView}</span>
       		</div>
       		<!-- / Replace this with actual canvas -->
 	      </div>	      
       	<div id="ct3">
-      		<span class="badge variant-soft">This is where the controls would be.</span>
       		<span class="badge variant-soft">Current view: {currentView}</span>
       	</div>
 			</div>

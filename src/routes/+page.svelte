@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount, tick } from 'svelte';
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 	import { strInitialEditorContents } from '$lib';
 	import { strAboutText } from '$lib'
@@ -38,11 +38,13 @@
 
 	const disableEditing = () => {
 		codeEditor.updateOptions({ readOnly: true });
+		document.querySelector('#editor-wrap').style.pointerEvents = 'none';
 		readonly = true;
 	};
 
 	const enableEditing = () => {
 		codeEditor.updateOptions({ readOnly: false });
+		document.querySelector('#editor-wrap').style.pointerEvents = 'auto';
 		readonly = false;
 	};
 
@@ -98,6 +100,25 @@
     }
   };
 
+  // Mobile orientation
+  let orientationLandscape = true;
+
+	const handleOrientationChange = async () => {
+	  if (window.matchMedia("(orientation: portrait)").matches) {
+	    moveContentToStaging();
+	    orientationLandscape = false;
+	  } else {
+	    moveContentToStaging();
+	    orientationLandscape = true;
+	  }
+
+	  // Wait for DOM to be updated
+	  await tick();
+	  
+	  // Now run returnContentToPanes after the DOM update
+	  returnContentToPanes();
+	};
+
   // Modal
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	const modalStore = getModalStore();
@@ -123,26 +144,33 @@
 
 
 	// SPA Navigation
-	const movePaneContent = (id_content, id_container, fullPage = true) => {
-		const source = document.querySelector('#'+id_content);
-		const dest = document.querySelector('#'+id_container);
+	const movePaneContent = (idContent, idContainer, fullPage = true) => {
+		const source = document.querySelector('#'+idContent);
+		const dest = document.querySelector('#'+idContainer);
 		dest.appendChild(source);
 		dest.style.display = "block";
 		if (fullPage) {
-			document.querySelector('#cr_full').style.display = "block";
-			document.querySelector('#cr_panes').style.display = "none";
+			document.querySelector('#cr-full').style.display = "block";
+			document.querySelector('#cr-panes').style.display = "none";
 		} else {			
-			document.querySelector('#cr_full').style.display = "none";
-			document.querySelector('#cr_panes').style.display = "block";
+			document.querySelector('#cr-full').style.display = "none";
+			document.querySelector('#cr-panes').style.display = "block";
 		}
 	};
 
+	const moveContentToStaging = () => {
+		console.log('MOVING TO STAGING');//FIXME
+		movePaneContent('ct1', 'cr-staging', null);
+		movePaneContent('ct2', 'cr-staging', null);
+		movePaneContent('ct3', 'cr-staging', null);
+	};
+
 	const returnContentToPanes = () => {
-		movePaneContent('ct1', 'cr_pane1', false);
-		movePaneContent('ct2', 'cr_pane2', false);
-		movePaneContent('ct3', 'cr_pane3', false);
-    document.querySelector('#cr_full').style.display = "none";
-		// document.querySelector('#cr_panes').style.display = "block";
+		movePaneContent('ct1', 'cr-pane1', false);
+		movePaneContent('ct2', 'cr-pane2', false);
+		movePaneContent('ct3', 'cr-pane3', false);
+    document.querySelector('#cr-full').style.display = "none";
+		// document.querySelector('#cr-panes').style.display = "block";
 	};
 
 	onMount(async () => {
@@ -168,6 +196,12 @@
 		codeEditor.setModel(model);
 		
 		observeThemeChange();
+
+		// Listen for orientation changes
+		window.addEventListener("resize", handleOrientationChange);
+
+		// Initial check
+		handleOrientationChange();
 	});
 
 	onDestroy(() => {
@@ -230,7 +264,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View script"
-					on:click={() => {setActivePane('pane1'); returnContentToPanes(); movePaneContent('ct1', 'cr_full', true) }} 
+					on:click={() => {setActivePane('pane1'); returnContentToPanes(); movePaneContent('ct1', 'cr-full', true) }} 
 					bind:group={currentView} 
 					name="tile-1" 
 					value={1}>
@@ -240,7 +274,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View controls"
-					on:click={() => {setActivePane('pane2'); returnContentToPanes(); movePaneContent('ct2', 'cr_full', true) }} 
+					on:click={() => {setActivePane('pane2'); returnContentToPanes(); movePaneContent('ct2', 'cr-full', true) }} 
 					bind:group={currentView} 
 					name="tile-2" 
 					value={2}>
@@ -250,7 +284,7 @@
 				</AppRailTile>
 				<AppRailTile 
 					title="View canvas" 
-					on:click={() => {setActivePane('pane3'); returnContentToPanes(); movePaneContent('ct3', 'cr_full', true) }} 
+					on:click={() => {setActivePane('pane3'); returnContentToPanes(); movePaneContent('ct3', 'cr-full', true) }} 
 					bind:group={currentView} 
 					name="tile-3" 
 					value={3}>
@@ -304,44 +338,62 @@
 					</AppRailAnchor>
 				</svelte:fragment>
 			</AppRail>
-			<div id="cr_panes" class="grid cr_dynamic">
+			<div id="cr-panes" class="grid cr-dynamic">
+				{#if orientationLandscape}
 				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;">
-				  <Pane minSize={20}>
-				  	<div id="cr_pane1">
-							<div id="ct1">
-						 		<div id="editor-wrap" bind:this={editorContainer} /><!-- <textarea>fff</textarea> </div> --> 
-						 		
-							</div>
-						</div>
+				  <Pane minSize={20} size={65}>
+				  	<div id="cr-pane1"/>
 				  </Pane>
 				  <Pane minSize={20}>
 				    <Splitpanes horizontal={true}>
 				      <Pane minSize={15}>
-				      	<div id="cr_pane2">
-					      	<div id="ct2">
-					      		<!-- Replace this with actual canvas -->
-					      		<div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-[100%] w-[100%]">
-					      			<span class="badge variant-soft">Current view: {currentView}</span>
-					      		</div>
-					      		<!-- / Replace this with actual canvas -->
-						      </div>
-						     </div>
+				      	<div id="cr-pane2" />
 				      </Pane>
 				      <Pane>
-				      	<div id="cr_pane3">
-					      	<div id="ct3">
-					      		<span class="badge variant-soft">This is where the controls would be.</span>
-					      		<span class="badge variant-soft">Current view: {currentView}</span>
-					      	</div>
-					      </div>
+				      	<div id="cr-pane3" />
 				      </Pane>
 				      <!-- <Pane>4</Pane> -->
 				    </Splitpanes>
 				  </Pane>
 				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
+				{:else}
+				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;" horizontal={true}>
+				  <Pane minSize={5} size={10}>
+				    <Splitpanes>
+				      <Pane minSize={15} size={85}>
+				      	<div id="cr-pane2" />
+				      </Pane>
+				      <Pane minSize={5}>
+				      	<div id="cr-pane3"/>
+				      </Pane>
+				      <!-- <Pane>4</Pane> -->
+				    </Splitpanes>
+				  </Pane>
+				  <Pane minSize={20}>
+				  	<div id="cr-pane1" />
+				  </Pane>
+				  <!-- <Pane>5</Pane> -->
+				</Splitpanes>
+				{/if}
 			</div>
-			<div id="cr_full" class="cr_dynamic" />
+			<div id="cr-full" class="cr-dynamic" />
+			<div id="cr-staging">
+				<div id="ct1">
+			 		<div id="editor-wrap" bind:this={editorContainer} />						 		
+				</div>
+      	<div id="ct2">
+      		<!-- Replace this with actual canvas -->
+      		<div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-[100%] w-[100%]">
+      			<span class="badge variant-soft">Current view: {currentView}</span>
+      		</div>
+      		<!-- / Replace this with actual canvas -->
+	      </div>	      
+      	<div id="ct3">
+      		<span class="badge variant-soft">This is where the controls would be.</span>
+      		<span class="badge variant-soft">Current view: {currentView}</span>
+      	</div>
+			</div>
 		</div>
 		<div 
 			class="card place-content-stretch p-1 max-w-72 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" 
@@ -371,12 +423,12 @@
   margin: 0 !impoortant;
   padding: 0 !important;
 }
-:global(#cr_panes, #cr_full) {
+:global(#cr-panes, #cr-full) {
 	display: block;
 	max-height: 100%;
 	overflow: hidden;
 }
-:global(#cr_pane1, #cr_pane2, #cr_pane3, #ct1, #ct2, #ct3) {
+:global(#cr-pane1, #cr-pane2, #cr-pane3, #ct1, #ct2, #ct3) {
 	display: block;
 	height: 100%;
 	width: 100%;

@@ -6,7 +6,7 @@
   "display": "standalone",
   "file_handlers": [
     {
-      "action": "/open-file",
+      "action": "https://sam-izdat.github.io/webui-editor-skeleton/open-file",
       "accept": {
         "application/x-my-custom-script": [".myscript"]
       }

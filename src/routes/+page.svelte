@@ -110,18 +110,18 @@
 	    moveContentToStaging();
 	    orientationLandscape = false;		  
 		  await tick(); // Wait for DOM to be updated
-	  	if (currentView == 0) returnContentToPanes();
-	  	else if (currentView == 1) movePaneContent('ct1', 'cr-full');
+	  	returnContentToPanes();
+	  	if (currentView == 1) movePaneContent('ct1', 'cr-full');
 	  	else if (currentView == 2) movePaneContent('ct2', 'cr-full');
-	  	else if (currentView == 2) movePaneContent('ct3', 'cr-full');
+	  	else if (currentView == 3) movePaneContent('ct3', 'cr-full');
 	  } else  {
 	    moveContentToStaging();
 	    orientationLandscape = true;
 		  await tick();
-	  	if (currentView == 0) returnContentToPanes();
-	  	else if (currentView == 1) movePaneContent('ct1', 'cr-full');
+	  	returnContentToPanes();
+	  	if (currentView == 1) movePaneContent('ct1', 'cr-full');
 	  	else if (currentView == 2) movePaneContent('ct2', 'cr-full');
-	  	else if (currentView == 2) movePaneContent('ct3', 'cr-full');
+	  	else if (currentView == 3) movePaneContent('ct3', 'cr-full');
 	  }
 	};
 
@@ -369,17 +369,12 @@
 				  <Pane minSize={20}>
 				  	<div id="cr-pane1" />
 				  </Pane>
-				  <Pane minSize={0} size={10}>
-				    <Splitpanes>
-				      <Pane minSize={15} size={85}>
-				      	<div id="cr-pane2" />
-				      </Pane>
-				      <Pane minSize={5}>
-				      	<div id="cr-pane3"/>
-				      </Pane>
-				      <!-- <Pane>4</Pane> -->
-				    </Splitpanes>
-				  </Pane>
+		      <Pane minSize={3} size={10}>
+		      	<div id="cr-pane2" />
+		      </Pane>
+		      <Pane minSize={0} size={5}>
+		      	<div id="cr-pane3"/>
+		      </Pane>
 				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
 				{/if}
@@ -487,13 +482,13 @@
 
 :global(.skeleton-theme.splitpanes--vertical > .splitpanes__splitter,
 .skeleton-theme .splitpanes--vertical > .splitpanes__splitter) {
-  width: 4px;
+  width: 6px;
   background-color: rgba(210, 210, 210, 1) !important;
   cursor: col-resize;
 }
 :global(.dark .skeleton-theme.splitpanes--vertical > .splitpanes__splitter,
 .dark .skeleton-theme .splitpanes--vertical > .splitpanes__splitter) {
-  width: 4px;
+  width: 6px;
   background-color: rgba(60, 60, 60, 1) !important;
   cursor: col-resize;
 }
@@ -516,13 +511,13 @@
 }
 :global(.skeleton-theme.splitpanes--horizontal > .splitpanes__splitter,
 .skeleton-theme .splitpanes--horizontal > .splitpanes__splitter) {
-  height: 4px;
+  height: 6px;
   border-top: rgba(210, 210, 210, 1) !important;
   cursor: row-resize;
 }
 :global(.dark .skeleton-theme.splitpanes--horizontal > .splitpanes__splitter,
 .dark .skeleton-theme .splitpanes--horizontal > .splitpanes__splitter) {
-  height: 4px;
+  height: 6px;
   border-top: rgba(255, 0, 0, 1) !important;
   cursor: row-resize;
 }

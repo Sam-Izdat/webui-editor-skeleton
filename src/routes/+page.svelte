@@ -53,7 +53,8 @@
 	};
 
 	const resizeEditor = () => {
-		document.querySelector('body').style.setProperty('max-height', `${window.visualViewport.height}px`);
+		document.querySelector('body').style.setProperty('height', `${window.visualViewport.height}px`);
+		document.body.style.position = 'fixed';
     let { width, height } = editorContainer.getBoundingClientRect();
     codeEditor.layout({ width, height })
   };
@@ -492,7 +493,7 @@ void RenderGraphMain()
 				      <Pane minSize={15}>
 				      	<div id="cr_pane2">
 					      	<div id="ct2">
-						        <em class="specs">I have a min height of 15%</em>
+						        <em class="specs">I have a min height of 15% .... .... </em>
 						      </div>
 						     </div>
 				      </Pane>

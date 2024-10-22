@@ -24,6 +24,7 @@
 
 	<link rel="manifest" href="/manifest.json">
 	<meta name="theme-color" content="#000000">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 </svelte:head>
 <AppShell slotSidebarLeft="bg-surface-500/5 w-56 h-[100%] p-4">
 <!-- 	<svelte:fragment slot="sidebarLeft">
@@ -75,6 +76,7 @@
 /*	overflow-y: auto;*/
 /*	height: 100dvh;*/
 	background: #333 !important;
+	overflow-y: hidden;
 }
 
 /*Important*/

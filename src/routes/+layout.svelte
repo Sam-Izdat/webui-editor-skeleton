@@ -25,7 +25,7 @@
 	<link rel="manifest" href="/manifest.json">
 	<meta name="theme-color" content="#000000">
 </svelte:head>
-<AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
+<AppShell slotSidebarLeft="bg-surface-500/5 w-56 h-[100%] p-4">
 <!-- 	<svelte:fragment slot="sidebarLeft">
 		<nav class="list-nav">
 			<ul>
@@ -71,8 +71,20 @@
 <style>
 :global(body) {
 /*Some problems with this on mobile, and doesn't accomplish goal of hiding addressbar with PWA manifest:*/
-/*	min-height: 100vh;*/
+/*	min-height: 100dvh !important;*/
 /*	overflow-y: auto;*/
+/*	height: 100dvh;*/
 	background: #333 !important;
 }
+
+/*Important*/
+:global(#page-content) {
+	max-height: 100%;
+	overflow-y: hidden;
+}
+
+/* When the soft keyboard is open, use --vh */
+/*:global(body.keyboard-open) {
+  height: calc(var(--vh, 1vh) * 100);
+}*/
 </style>

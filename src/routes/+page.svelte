@@ -8,6 +8,8 @@
 
 	import  { LightSwitch }  from '$lib/components';
 
+
+	// Dark-vs-Light mode
   const isDarkMode = () => {
     return document.documentElement.classList.contains('dark');
   };
@@ -28,16 +30,36 @@
     });
   };
 
+  // Code editor control
+	let codeEditor = null;
+	let readonly = false;
+
+	const disableEditing = () => {
+		codeEditor.updateOptions({ readOnly: true });
+		readonly = true;
+	};
+
+	const enableEditing = () => {
+		codeEditor.updateOptions({ readOnly: false });
+		readonly = false;
+	};
+
+	const toggleEditing = () => {
+		if (readonly) {
+			enableEditing();
+		} else {
+			disableEditing();
+		}
+	};
+
+	const resizeEditor = () => {
+		document.querySelector('body').style.setProperty('max-height', `${window.visualViewport.height}px`);
+    let { width, height } = editorContainer.getBoundingClientRect();
+    codeEditor.layout({ width, height })
+  };
+
+  // Fullescreen
   let isFullscreen = false;
-
-
-	import { popup } from '@skeletonlabs/skeleton';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	// const popupHover: PopupSettings = {
-	// 	event: 'hover',
-	// 	target: 'popupHover',
-	// 	placement: 'right'
-	// };
 
   const toggleFullscreen = () => {
     if (!isFullscreen) {
@@ -60,7 +82,6 @@
       docEl.msRequestFullscreen();
     }
 
-
 	  // Request landscape orientation
 	  if (screen.orientation && screen.orientation.lock) {
 	    screen.orientation.lock('landscape').catch((error) => {
@@ -81,6 +102,37 @@
     }
   };
 
+	// Mobile soft keyboard
+	let isKeyboardOpen = false;
+
+	const checkKeyboardStatus = () => {
+	  const vh = window.innerHeight * 0.01;
+	  const viewportHeight = window.visualViewport.height;
+
+	  if (viewportHeight < window.innerHeight - 100) {
+	    // Soft keyboard is likely open
+	    if (!isKeyboardOpen) {
+	      isKeyboardOpen = true;
+	      // Use --vh (calculated based on current visible height)
+	      document.documentElement.style.setProperty('--vh', `${vh}px`);
+	      document.body.classList.add('keyboard-open');
+	    }
+	  } else {
+	    // Soft keyboard is closed
+	    if (isKeyboardOpen) {
+	      isKeyboardOpen = false;
+	      // Revert to 100vh
+	      document.body.classList.remove('keyboard-open');
+	    }
+	  } 
+	};
+
+	// Popups
+	import { popup } from '@skeletonlabs/skeleton';
+	import type { PopupSettings } from '@skeletonlabs/skeleton';
+
+
+	// SPA Navigation
 	const movePaneContent = (id_content, id_container) => {
     var containers = document.getElementsByClassName("cr_dynamic");
     for(var i = 0; i < containers.length; i++){
@@ -93,34 +145,46 @@
 	};
 
 	const returnContentToPanes = () => {
+
+    var containers = document.getElementsByClassName("cr_dynamic");
+    for(var i = 0; i < containers.length; i++){
+        containers[i].style.display = "none";
+    }
 		movePaneContent('ct1', 'cr_pane1');
 		movePaneContent('ct2', 'cr_pane2');
 		movePaneContent('ct3', 'cr_pane3');
 		document.querySelector('#cr_panes').style.display = "block";
 	};
 
-	let codeEditor = null;
-	let readonly = false;
-
-	const disableEditing = () => {
-		codeEditor.updateOptions({ readOnly: true });
-		readonly = true;
-	};
-
-	const enableEditing = () => {
-		codeEditor.updateOptions({ readOnly: false });
-		readonly = false;
-	}
-
-	const toggleEditing = () => {
-		if (readonly) {
-			enableEditing();
-		} else {
-			disableEditing();
-		}
-	}
 
 	onMount(async () => {
+		returnContentToPanes()
+		checkKeyboardStatus();
+		// DELETEME
+		// window.addEventListener('resize', checkKeyboardStatus);
+
+
+		// function checkKeyboardStatus() {
+		//   const vh = window.innerHeight * 0.01;
+		//   const viewportHeight = window.visualViewport.height;
+
+		//   if (viewportHeight < window.innerHeight - 100) {
+		//     // Soft keyboard is likely open
+		//     if (!isKeyboardOpen) {
+		//       isKeyboardOpen = true;
+		//       // Use --vh (calculated based on current visible height)
+		//       document.documentElement.style.setProperty('--vh', `${vh}px`);
+		//       document.body.classList.add('keyboard-open');
+		//     }
+		//   } else {
+		//     // Soft keyboard is closed
+		//     if (isKeyboardOpen) {
+		//       isKeyboardOpen = false;
+		//       // Revert to 100vh
+		//       document.body.classList.remove('keyboard-open');
+		//     }
+		//   }
+		// }
 
 
 		// Import our 'monaco.ts' file here
@@ -135,9 +199,13 @@
 	      enabled: false,
 	    },
 	    tabSize: 2,
-	    automaticLayout: true,
+	    automaticLayout: false,
 	    theme: isDarkMode() ? 'vs-dark' : 'vs-light',
 	  });
+
+		// FIXME: main is to blame 
+		window.addEventListener('resize', resizeEditor);
+
 		const model = monaco.editor.createModel(`void ColorPass(
   in float r,
   in float g,
@@ -295,6 +363,7 @@ void RenderGraphMain()
     activePane = pane;
   }
 
+  // Icons
 
   import { 
   	Icon, 
@@ -405,7 +474,8 @@ void RenderGraphMain()
 				  <Pane minSize={20}>
 				  	<div id="cr_pane1">
 							<div id="ct1">
-						 		<div id="editor-wrap" bind:this={editorContainer} style="height: 100dvh; overflow: hidden;" />
+						 		<div id="editor-wrap" bind:this={editorContainer} /><!-- <textarea>fff</textarea> </div> --> 
+						 		
 							</div>
 						</div>
 				  </Pane>
@@ -465,12 +535,30 @@ void RenderGraphMain()
     margin: 0 !impoortant;
     padding: 0 !important;
 	}
-
+	:global(#cr_panes) {
+		display: block;
+		max-height: 100%;
+		overflow: hidden;
+	}
+	:global(#cr_pane1, #cr_pane2, #cr_pane3, #ct1, #ct2, #ct3) {
+		display: block;
+		height: 100%;
+		width: 100%;
+		overflow:hidden;
+	}
 	#editor-wrap {
-    height: 100vh;
-    height: 100dvh !important;
+		height:100%; 
+/*    height: 100dvh !important;*/
+/*		height: 100dvh;*/
+/*		overflow: hidden;*/
+/*    max-height: 100dvh;*/
+/*    max-height: 100dvh !important;*/
     overflow: hidden;
 	}
+	/*:global(#editor-wrap.keyboard-open) {
+		height: calc(var(--vh, 1vh) * 100);	
+	}
+  */
 
 :global(.splitpanes.skeleton-theme .splitpanes__pane) {
   background-color: rgba(210, 210, 210, 0.2) !important;

@@ -38,13 +38,15 @@
 
 	const disableEditing = () => {
 		codeEditor.updateOptions({ readOnly: true });
-		document.querySelector('#editor-wrap').style.pointerEvents = 'none';
+		// document.querySelector('#editor-wrap').style.pointerEvents = 'none';
+		document.querySelector('.monaco-editor textarea').readOnly = true;
 		readonly = true;
 	};
 
 	const enableEditing = () => {
 		codeEditor.updateOptions({ readOnly: false });
-		document.querySelector('#editor-wrap').style.pointerEvents = 'auto';
+		// document.querySelector('#editor-wrap').style.pointerEvents = 'auto';
+		document.querySelector('.monaco-editor textarea').readOnly = false;
 		readonly = false;
 	};
 

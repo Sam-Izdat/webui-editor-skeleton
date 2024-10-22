@@ -99,24 +99,19 @@
   // Modal
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	const modalStore = getModalStore();
-	const modal: ModalSettings = {
+	const modalAbout: ModalSettings = {
 		type: 'component',
-		component: 'modalAbout',
+		component: 'modalInfo',
+		logo: './icons/icon-128.png',
 		title: 'Webui Editor Skeleton',
 		body: 'Parturient per lobortis mus luctus nunc cubilia a. Ultricies varius eleifend in; dolor leo cras. Venenatis ipsum eget auctor ridiculus magnis aptent venenatis mollis. Habitant aenean vestibulum per, parturient dapibus mattis senectus. Porttitor erat potenti gravida aenean pharetra et imperdiet quam. Interdum tellus class facilisis aptent dignissim. '
 	};
-
-	// modalStore.trigger(modal);
-
-	// const cButton = 'fixed top-4 right-4 z-50 font-bold shadow-xl';
-	// const cImage = 'max-w-[90%] max-h-[90%] rounded-container-token overflow-hidden shadow-xl';
-
-	// const modal: ModalSettings = {
-	// 	type: 'component',
-	// 	component: 'AboutModal',
-	// 	image: './icons/icon-128.png'
-	// };
-	// modalStore.trigger(modal);
+	const modalExport: ModalSettings = {
+		type: 'component',
+		component: 'modalInfo',
+		title: 'Export',
+		body: 'This is the export page.'
+	};
 
 	// Popups
 	import { popup } from '@skeletonlabs/skeleton';
@@ -337,7 +332,8 @@ void RenderGraphMain()
   	LockClosed,
   	ExclamationTriangle,
   	ExclamationCircle,
-  	QuestionMarkCircle
+  	QuestionMarkCircle,
+  	DocumentArrowUp
   } from "svelte-hero-icons";
 
 
@@ -417,17 +413,18 @@ void RenderGraphMain()
 						<Icon src="{ExclamationTriangle}" size="16" style="margin: 4px auto;" solid/>
 					</div>
 				</AppRailAnchor>
-				<!-- <AppRailTile bind:group={currentTile} on:click={toggleFullscreen} class={isFullscreen ? 'bg-primary-hover-token' : 'fullscreen-inacive'} name="tile-3" value={4} title="tile-3">
-					<svelte:fragment slot="lead">
-						<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
-					</svelte:fragment>
-				</AppRailTile>  -->
-				<!-- --- -->
 				<svelte:fragment slot="trail">
 					<AppRailAnchor 
 						href="#" 
+						title="Export" 
+						on:click={() => modalStore.trigger(modalExport)}
+						style="display:block;">
+						<Icon src="{DocumentArrowUp}" size="16" style="margin: 4px auto;" solid/>
+					</AppRailAnchor>
+					<AppRailAnchor 
+						href="#" 
 						title="About" 
-						on:click={() => modalStore.trigger(modal)}
+						on:click={() => modalStore.trigger(modalAbout)}
 						style="display:block;">
 						<Icon src="{QuestionMarkCircle}" size="16" style="margin: 4px auto;" solid/>
 					</AppRailAnchor>

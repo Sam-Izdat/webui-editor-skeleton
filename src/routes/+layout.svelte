@@ -18,9 +18,9 @@
 	// Modals
 	import { initializeStores, Modal } from '@skeletonlabs/skeleton';
 	initializeStores();
-	import  { AboutModal }  from '$lib/components';
+	import  { InfoModal }  from '$lib/components';
 	const modalRegistry: Record<string, ModalComponent> = {
-		modalAbout: { ref: AboutModal },
+		modalInfo: { ref: InfoModal },
 	};
 								
 </script>

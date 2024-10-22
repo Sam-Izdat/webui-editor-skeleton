@@ -20,7 +20,7 @@
 {#if $modalStore[0]}
 	<div class="{cBase}">
 		<header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
-		<img src='./icons/icon-128.png' class={cImage} alt="About" />
+		{#if $modalStore[0].logo}<img src={$modalStore[0].logo} class={cImage} alt="logo" />{/if}
 		<article>{$modalStore[0].body ?? '(body missing)'}</article>
 		<footer class="modal-footer {parent.regionFooter}">
         <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>

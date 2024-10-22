@@ -128,10 +128,6 @@
 
 	// SPA Navigation
 	const movePaneContent = (id_content, id_container, fullPage = true) => {
-    var containers = document.getElementsByClassName("cr_dynamic");
-    for(var i = 0; i < containers.length; i++){
-        containers[i].style.display = "none";
-    }
 		const source = document.querySelector('#'+id_content);
 		const dest = document.querySelector('#'+id_container);
 		dest.appendChild(source);
@@ -146,11 +142,6 @@
 	};
 
 	const returnContentToPanes = () => {
-
-    var containers = document.getElementsByClassName("cr_dynamic");
-    for(var i = 0; i < containers.length; i++){
-        containers[i].style.display = "none";
-    }
 		movePaneContent('ct1', 'cr_pane1', false);
 		movePaneContent('ct2', 'cr_pane2', false);
 		movePaneContent('ct3', 'cr_pane3', false);
@@ -399,7 +390,7 @@ void RenderGraphMain()
 				</AppRailTile>
 				<AppRailTile 
 					title="View script"
-					on:click={() => {setActivePane('pane1'); movePaneContent('ct1', 'cr_full1', true) } } 
+					on:click={() => {setActivePane('pane1'); returnContentToPanes(); movePaneContent('ct1', 'cr_full', true) } } 
 					bind:group={currentTile} 
 					name="tile-1" 
 					value={1}>
@@ -409,7 +400,7 @@ void RenderGraphMain()
 				</AppRailTile>
 				<AppRailTile 
 					title="View controls"
-					on:click={() => {setActivePane('pane2'); movePaneContent('ct2', 'cr_full2', true) } } 
+					on:click={() => {setActivePane('pane2'); returnContentToPanes(); movePaneContent('ct2', 'cr_full', true) } } 
 					bind:group={currentTile} 
 					name="tile-2" 
 					value={2}>
@@ -419,7 +410,7 @@ void RenderGraphMain()
 				</AppRailTile>
 				<AppRailTile 
 					title="View canvas" 
-					on:click={() => {setActivePane('pane3'); movePaneContent('ct3', 'cr_full3', true) } } 
+					on:click={() => {setActivePane('pane3'); returnContentToPanes(); movePaneContent('ct3', 'cr_full', true) } } 
 					bind:group={currentTile} 
 					name="tile-3" 
 					value={3}>
@@ -482,7 +473,7 @@ void RenderGraphMain()
 				      <Pane minSize={15}>
 				      	<div id="cr_pane2">
 					      	<div id="ct2">
-						        <em class="specs">I have a min height of 15% .... .... </em>
+						        <em class="specs">I have a min height of 15%</em>
 						      </div>
 						     </div>
 				      </Pane>
@@ -499,11 +490,7 @@ void RenderGraphMain()
 				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
 			</div>
-			<div id="cr_full">
-				<div id="cr_full1" class="cr_dynamic" style="width:100%; height: 100%;"/>
-			  <div id="cr_full2" class="cr_dynamic" style="width:100%; height: 100%;" />
-				<div id="cr_full3" class="cr_dynamic" style="width:100%; height: 100%;" />
-			</div>
+			<div id="cr_full" class="cr_dynamic" />
 		</div>
 		<div 
 			class="card place-content-stretch p-1 max-w-72 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" 

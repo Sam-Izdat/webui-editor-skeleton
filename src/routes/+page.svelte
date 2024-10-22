@@ -280,23 +280,23 @@
 					</svelte:fragment>
 				</AppRailTile>
 				<AppRailTile 
-					title="View controls"
+					title="View canvas"
 					on:click={() => {setActivePane('pane2'); returnContentToPanes(); movePaneContent('ct2', 'cr-full'); }} 
 					bind:group={currentView} 
 					name="tile-2" 
 					value={2}>
 					<svelte:fragment slot="lead">
-						<Icon src="{AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
+						<Icon src="{Photo}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
 				<AppRailTile 
-					title="View canvas" 
+					title="View controls" 
 					on:click={() => {setActivePane('pane3'); returnContentToPanes(); movePaneContent('ct3', 'cr-full'); }} 
 					bind:group={currentView} 
 					name="tile-3" 
 					value={3}>
 					<svelte:fragment slot="lead">
-						<Icon src="{Photo}" size="16" style="margin: 4px auto;" solid/>
+						<Icon src="{AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
 					</svelte:fragment>
 				</AppRailTile>
 
@@ -366,7 +366,10 @@
 				</Splitpanes>
 				{:else}
 				<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;" horizontal={true}>
-				  <Pane minSize={5} size={10}>
+				  <Pane minSize={20}>
+				  	<div id="cr-pane1" />
+				  </Pane>
+				  <Pane minSize={0} size={10}>
 				    <Splitpanes>
 				      <Pane minSize={15} size={85}>
 				      	<div id="cr-pane2" />
@@ -376,9 +379,6 @@
 				      </Pane>
 				      <!-- <Pane>4</Pane> -->
 				    </Splitpanes>
-				  </Pane>
-				  <Pane minSize={20}>
-				  	<div id="cr-pane1" />
 				  </Pane>
 				  <!-- <Pane>5</Pane> -->
 				</Splitpanes>
@@ -392,12 +392,13 @@
       	<div id="ct2">
       		<!-- Replace this with actual canvas -->
       		<div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-[100%] w-[100%]">
-      			<span class="badge variant-soft">This is where the controls would be.</span>
+      			<span class="badge variant-soft">This is where the canvas would be.</span>
       			<span class="badge variant-soft">Current view: {currentView}</span>
       		</div>
       		<!-- / Replace this with actual canvas -->
 	      </div>	      
       	<div id="ct3">
+      		<span class="badge variant-soft">This is where the controls would be.</span>
       		<span class="badge variant-soft">Current view: {currentView}</span>
       	</div>
 			</div>

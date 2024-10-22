@@ -198,9 +198,16 @@
 	    theme: isDarkMode() ? 'vs-dark' : 'vs-light',
 	  });
 
+
 		const model = monaco.editor.createModel(strInitialEditorContents,	'c');
 		codeEditor.setModel(model);
 		
+		const monacoTextarea = document.querySelector('.monaco-editor textarea');
+		monacoTextarea.setAttribute('autocomplete', 'off'); 
+		monacoTextarea.setAttribute('autocorrect', 'off'); 
+		monacoTextarea.setAttribute('autocapitalize', 'off');
+		monacoTextarea.setAttribute('spellcheck', false);
+
 		observeThemeChange();
 
 		// Listen for orientation changes
@@ -369,10 +376,10 @@
 				  <Pane minSize={20}>
 				  	<div id="cr-pane1" />
 				  </Pane>
-		      <Pane minSize={3} size={10}>
+		      <Pane minSize={5} size={35}>
 		      	<div id="cr-pane2" />
 		      </Pane>
-		      <Pane minSize={0} size={5}>
+		      <Pane minSize={0} size={0}>
 		      	<div id="cr-pane3"/>
 		      </Pane>
 				  <!-- <Pane>5</Pane> -->

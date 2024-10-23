@@ -8,8 +8,6 @@
     const params = new URLSearchParams(url.search);
     const gistUrl = params.get('raw_gist_url');
 
-    console.log('asdasdkl');
-
     if (gistUrl) {
       fetch(gistUrl)
         .then(response => {

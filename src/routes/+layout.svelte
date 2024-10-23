@@ -18,9 +18,11 @@
 	// Modals
 	import { initializeStores, Modal } from '@skeletonlabs/skeleton';
 	initializeStores();
-	import  { InfoModal }  from '$lib/components';
+	import  { ModalInfo, ModalSave, ModalLoad }  from '$lib/components';
 	const modalRegistry: Record<string, ModalComponent> = {
-		modalInfo: { ref: InfoModal },
+		modalInfo: { ref: ModalInfo },
+		modalSave: { ref: ModalSave },
+		modalLoad: { ref: ModalLoad },
 	};
 								
 </script>
@@ -28,7 +30,6 @@
 <!-- App Shell -->
 <svelte:head>
 	{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}
-
 	<link rel="manifest" href="./manifest.json">
 	<meta name="theme-color" content="#000000">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">

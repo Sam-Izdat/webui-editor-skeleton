@@ -12,6 +12,12 @@
       }
     }
   ],
+  "url_handlers": [
+    {
+      "url_pattern": "myscript://*"
+    }
+  ],
+  "orientation": "landscape",
   "background_color": "#ffffff",
   "theme_color": "#73420d",
   "icons": [

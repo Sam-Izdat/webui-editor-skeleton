@@ -14,9 +14,14 @@ const __dirname = path.dirname(__filename);
 // Load the manifest template
 const manifestTemplatePath = path.join(__dirname, '../src/lib/manifest-template.json');
 const manifestTemplate = JSON.parse(fs.readFileSync(manifestTemplatePath, 'utf-8'));
-// const pkg = JSON.parse(fs.readFileSync('../package.json', 'utf-8'));
-// const APP_NAME           = pkg.name;
-// const APP_VERSION        = pkg.version;
+
+// Resolve the path to package.json relative to this file
+const pkgPath = path.resolve(__dirname, '../package.json');
+
+// Load package.json dynamically
+const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+const APP_NAME = pkg.name;
+const APP_VERSION = pkg.version;
 
 // Modify the template with dynamic data from globals.js
 const dynamicManifest = {
@@ -26,7 +31,7 @@ const dynamicManifest = {
   description:      g.APP_DESCRIPTION,
   theme_color:      g.PWA_THEME_COLOR,
   background_color: g.PWA_BG_COLOR,
-  version:          '0.0.0',
+  version:          APP_VERSION,
   scope:            g.PWA_SCOPE,
   start_url:        g.PWA_START_URL,
   orientation:      g.PWA_ORIENTATION

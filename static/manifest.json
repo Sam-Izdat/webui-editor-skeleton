@@ -34,5 +34,6 @@
       "type": "image/png"
     }
   ],
-  "description": "A web UI template for code editors."
+  "description": "A web UI template for code editors.",
+  "version": "0.0.1"
 }

@@ -1,8 +1,9 @@
 // import adapter from '@sveltejs/adapter-auto';
 import adapter from '@sveltejs/adapter-static';
+import { APP_BASE_PATH } from './src/lib/globals.js';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
-/** @type {import('@sveltejs/kit').Config} */
+/* @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
 		adapter: adapter({
@@ -21,7 +22,7 @@ const config = {
 		adapter: adapter(),
 	},	
     paths: {
-      base: '/webui-editor-skeleton'
+      base: APP_BASE_PATH
     }
 };
 export default config;

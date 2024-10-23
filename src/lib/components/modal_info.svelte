@@ -19,7 +19,6 @@
 
 {#if $modalStore[0]}
 	<div class="{cBase}">
-		<h2 class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</h2>
 		{#if $modalStore[0].logo}
 			<img src={$modalStore[0].logo} class={cImage} alt="logo" />
 		{/if}
@@ -30,8 +29,13 @@
 			<span class="text-xs md:text-xs">Version {$modalStore[0].version ?? '(version missing)'}</span>
 		{/if}
 		<article>{$modalStore[0].body ?? '(body missing)'}</article>
-		<footer class="modal-footer {parent.regionFooter}">
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>
-    </footer>
+	    <footer class="flex justify-between items-center p-2 m-0 bg-surface-50-900-token shadow-inner">
+	      <div class="text-left font-semibold text-lg">
+	          {$modalStore[0].title ?? 'Load'}
+	      </div>
+	      <div class="flex justify-end">
+	          <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>
+	      </div>
+	    </footer>
 	</div>
 {/if}

@@ -1,12 +1,12 @@
 import { base } from '$app/paths';
-
-import { strAboutText } from '$lib'
+import { strAboutText } from '$lib';
+import * as g from '$lib/globals';
 
 export const modalAbout: ModalSettings = {
 	type: 'component',
 	component: 'modalInfo',
 	logo: `${base}/icons/icon-128.png`,
-	title: 'Webui Editor Skeleton',
+	title: g.APP_TITLE,
 	package: __APP_NAME__,
 	version: __APP_VERSION__,
 	body: strAboutText
@@ -14,12 +14,10 @@ export const modalAbout: ModalSettings = {
 export const modalSave: ModalSettings = {
 	type: 'component',
 	component: 'modalSave',
-	title: 'Save',
-	body: 'This is the export page.'
+	title: 'Save / Export / Share'
 };
 export const modalLoad: ModalSettings = {
 	type: 'component',
 	component: 'modalLoad',
-	title: 'Load',
-	body: 'This is the import page.'
+	title: 'Load / Import / Browse'
 };

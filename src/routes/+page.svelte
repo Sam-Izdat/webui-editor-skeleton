@@ -1,9 +1,16 @@
 <script lang="ts">
 	import { onDestroy, onMount, tick } from 'svelte';
-  import { base } from '$app/paths';
+  import { base } from '$app/paths';  
+  import * as g from '$lib/globals';
+  import { Log } from '$lib';
 
+  const dev_mode = import.meta.env.MODE === 'development';
+  new Log(
+  	Log.Level[dev_mode ? g.LOG_LEVEL_DEV : g.LOG_LEVEL_PROD], 
+  	Log.Level[dev_mode ? g.TRACE_LEVEL_DEV : g.TRACE_LEVEL_PROD]
+  	);
+  
   import Device from 'svelte-device-info';
-
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 	import { strInitialEditorContents } from '$lib';
 	import { strAboutText } from '$lib'
@@ -61,7 +68,8 @@
 	};
 
   // Fullescreen
-  import * as fullscreen from '$lib/fullscreen'
+  let isFullscreen = false;
+  import * as fullscreen from '$lib/fullscreen';
 
   // Modal
   import { getModalStore } from '@skeletonlabs/skeleton';
@@ -130,6 +138,9 @@
 		resetPaneSizes();
 		returnContentToPanes();
 
+		// Set theme
+		document.querySelector('body').setAttribute('data-theme', g.APP_THEME);
+
 		// Import monaco
 		monaco = (await import('./monaco')).default;
 
@@ -149,7 +160,7 @@
     let contentToLoad = strInitialEditorContents; // Default content
     if (fileData) {
       const file = JSON.parse(fileData);
-      console.log('@@@@@@ FILE DATA', file, file[0], file[0] || 'foo'); // FIXME
+      Log.debug('@@@@@@ FILE DATA', file, file[0], file[0] || 'foo'); // FIXME
       contentToLoad = file[0].content || strInitialEditorContents; // Load the file content if it exists      
     } 
 		
@@ -263,8 +274,8 @@
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle fullscreen" 
-			on:click={fullscreen.toggleFullscreen} 
-			class={fullscreen.isFullscreen ? 'bg-secondary-500' : ''} 
+			on:click={() => { isFullscreen = fullscreen.toggleFullscreen(); }} 
+			class={isFullscreen ? 'bg-secondary-500' : ''} 
 			style="display:block;">
 			<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
@@ -288,14 +299,14 @@
 		<svelte:fragment slot="trail">
 			<AppRailAnchor 
 				href="#" 
-				title="Save" 
+				title="Save / Export / Share" 
 				on:click={() => modalStore.trigger(modals.modalSave)}
 				style="display:block;">
 				<Icon src="{DocumentArrowUp}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
-				title="Load" 
+				title="Load / Import / Browse" 
 				on:click={() => modalStore.trigger(modals.modalLoad)}
 				style="display:block;">
 				<Icon src="{DocumentArrowDown}" size="16" style="margin: 4px auto;" solid/>

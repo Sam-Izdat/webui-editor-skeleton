@@ -1,3 +1,5 @@
+import { Log } from '$lib';
+
 export let isFullscreen = false;
 
 export const toggleFullscreen = () => {
@@ -6,7 +8,8 @@ export const toggleFullscreen = () => {
   } else {
     exitFullscreen();
   }
-  isFullscreen = !isFullscreen; // Toggle the state
+  isFullscreen = !isFullscreen; 
+  return isFullscreen;
 };
 
 export const enterFullscreen = () => {
@@ -24,7 +27,7 @@ export const enterFullscreen = () => {
   // Request landscape orientation
   if (screen.orientation && screen.orientation.lock) {
     screen.orientation.lock('landscape').catch((error) => {
-      console.error(`Failed to lock orientation: ${error}`);
+      Log.error(`Failed to lock orientation: ${error}`);
     });
   }
 };

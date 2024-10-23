@@ -1,14 +1,16 @@
 {
-  "name": "webui-editor-skeleton",
+  "name": "Webui Editor Skeleton",
   "scope": "https://sam-izdat.github.io/webui-editor-skeleton/",
   "short_name": "WES",
-  "start_url": "https://sam-izdat.github.io/webui-editor-skeleton/index.html",
+  "start_url": "https://sam-izdat.github.io/webui-editor-skeleton/",
   "display": "standalone",
   "file_handlers": [
     {
       "action": "https://sam-izdat.github.io/webui-editor-skeleton/open-file",
       "accept": {
-        "application/x-my-custom-script": [".myscript"]
+        "application/x-my-custom-script": [
+          ".myscript"
+        ]
       }
     }
   ],
@@ -31,5 +33,6 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "description": "A web UI template for code editors."
 }

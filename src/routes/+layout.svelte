@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
+	import * as g from '$lib/globals';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import { LightSwitch } from '@skeletonlabs/skeleton';
 
@@ -24,14 +25,12 @@
 		modalSave: { ref: ModalSave },
 		modalLoad: { ref: ModalLoad },
 	};
-								
 </script>
 
-<!-- App Shell -->
 <svelte:head>
 	{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}
 	<link rel="manifest" href="./manifest.json">
-	<meta name="theme-color" content="#000000">
+	<meta name="theme-color" content="{g.PWA_THEME_COLOR}">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 </svelte:head>
 <Modal components={modalRegistry} />

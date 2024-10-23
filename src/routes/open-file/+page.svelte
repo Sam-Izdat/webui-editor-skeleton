@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { base } from '$app/paths';
 
   onMount(() => {
     window.addEventListener('launch', (event) => {
@@ -21,7 +22,7 @@
         reader.readAsText(file);
       }
 
-      window.location.href = '../';
+      window.location.href = `${base}/`;
     });
   });
 </script>

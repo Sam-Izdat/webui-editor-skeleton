@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount, tick } from 'svelte';
+  import { base } from '$app/paths';
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 	import { strInitialEditorContents } from '$lib';
 	import { strAboutText } from '$lib'
@@ -151,7 +152,7 @@
 	const modalAbout: ModalSettings = {
 		type: 'component',
 		component: 'modalInfo',
-		logo: './icons/icon-128.png',
+		logo: `${base}/icons/icon-128.png`,
 		title: 'Webui Editor Skeleton',
 		package: __APP_NAME__,
 		version: __APP_VERSION__,

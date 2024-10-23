@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { base } from '$app/paths';
 
   onMount(() => {
     const currentUrl = window.location.href;
@@ -21,7 +22,7 @@
           // Store the Gist content in sessionStorage
           sessionStorage.setItem('activeFile', JSON.stringify([{ name: 'gist_content', content: data }]));
           console.log('Gist content loaded:', data); // Use the Gist content as needed
-          window.location.href = '../';
+          window.location.href = `${base}/`;
         })
         .catch(error => {
           console.error('Error fetching Gist:', error);

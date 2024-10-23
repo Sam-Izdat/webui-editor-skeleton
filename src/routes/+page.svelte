@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { onDestroy, onMount, tick } from 'svelte';
   import { base } from '$app/paths';
+
+  console.log('+++++', base);
+  
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 	import { strInitialEditorContents } from '$lib';
 	import { strAboutText } from '$lib'

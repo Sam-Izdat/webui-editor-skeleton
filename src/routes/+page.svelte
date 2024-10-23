@@ -219,8 +219,18 @@
 	  });
 
 
-		const model = monaco.editor.createModel(strInitialEditorContents,	'c');
+    // Check if an uploaded file exists in sessionStorage or localStorage
+    const fileData = sessionStorage.getItem('activeFile'); // Or localStorage if you prefer
+    let contentToLoad = strInitialEditorContents; // Default content
+    if (fileData) {
+      const file = JSON.parse(fileData);
+      console.log('@@@@@@ FILE DATA', file, file[0], file[0] || 'foo'); // FIXME
+      contentToLoad = file[0].content || strInitialEditorContents; // Load the file content if it exists      
+    } 
+		const model = monaco.editor.createModel('',	'c');
+    // Set the editor's content
 		codeEditor.setModel(model);
+    codeEditor.setValue(contentToLoad);
 		
 		const monacoTextarea = document.querySelector('.monaco-editor textarea');
 		monacoTextarea.setAttribute('autocomplete', 'off'); 

@@ -80,7 +80,7 @@
     class="card place-content-stretch text-left font-normal p-1 max-w-72 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" 
     data-popup="error-popup"
     style="z-index: 100;">
-    <div class="card p-1 variant-filled-surface">
+    <div class="card p-1 variant-filled-surface max-h-screen overflow-y-auto">
       {#each messages as { type, message } (message)}
         <aside class="alert p-1 m-1 {getClass(type)}">
           <div class="alert-message text-xs">

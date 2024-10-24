@@ -8,7 +8,8 @@
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 	import { strInitialEditorContents } from '$lib';
 	import { strAboutText } from '$lib';
-	import * as ds from '$lib/stores/doc_session';
+	import * as ds from '$lib/stores/doc_session';	
+  import { initKeyboardShortcuts } from '$lib/keybind';
 
 	// Monaco setup
 	let editor: Monaco.editor.IStandaloneCodeEditor;
@@ -81,6 +82,34 @@
 	  	panes.showView(currentView);
 	  }
 	};
+
+	// View changes
+	const switchView = (n: int) => {
+		switch (n) {
+			case 0:
+				panes.returnContentToSplit(); 
+				panes.showView(currentView);
+				break;
+			case 1:
+				panes.returnContentToSplit(); 
+				panes.moveContent('ct1', 'cr-full'); 
+				panes.showView(currentView);
+				break;
+			case 2:
+				panes.returnContentToSplit(); 
+				panes.moveContent('ct2', 'cr-full'); 
+				panes.showView(currentView);
+				break;
+			case 3:
+				panes.returnContentToSplit(); 
+				panes.moveContent('ct3', 'cr-full'); 
+				panes.showView(currentView);
+				break;
+			default:
+				Log.error('somehow tried to switch to nonexistent view...')
+		}
+	};
+
 	
   // Subscribe to documentSession store
   const unsubscribe = ds.documentSession.subscribe(session => {
@@ -94,6 +123,23 @@
 	    }
 	  }
 	});
+
+  // Event handlers
+  const handleSave = () => {
+  	if (!dsCurrentSession.unsavedChanges) return;
+  	try {  		
+	  	ds.saveSession();
+	    Log.toastSuccess('Script saved');	
+  	} catch(e) {
+  		Log.toastError('Save failed');
+  		Log.error(e);
+  	}
+  };
+
+  const handleViewSwitch = (event: CustomEvent) => {
+    currentView = event.detail.view;
+    switchView(currentView);
+  };
 
 	// When browser is ready...
 	onMount(async () => {
@@ -139,12 +185,11 @@
 		// Start the monaco engine
 		const model = monaco.editor.createModel('',	'c');
 		codeEditor.setModel(model);
-    codeEditor.setValue(dsCurrentSession.content);
+    codeEditor.setValue(strInitialEditorContents);
 
-    // if (codeEditor) {
-    //   codeEditor.setValue(session.content);  // Update Monaco with the session content
-    // }
-		
+    // Start new session after editor value set
+    ds.newSession();
+
 		// Turn off mobile typing help bullshit, if any of it is on
 		const monacoTextarea = document.querySelector('.monaco-editor textarea');
 		monacoTextarea.setAttribute('autocomplete', 'off'); 
@@ -160,13 +205,22 @@
 		// Turn off editing by default on mobile devices, because soft keys suck
 		if (Device.isMobile) disableEditing();
 
-    // Cleanup
-		onDestroy(() => {
-			monaco?.editor.getModels().forEach((model) => model.dispose());
-			codeEditor?.dispose();
-		});
+		// Custom events from keybind
 
-    return () => unsubscribe();  // Clean up subscription
+    initKeyboardShortcuts();
+    window.addEventListener('save-document', handleSave);
+    window.addEventListener('switch-view', handleViewSwitch);
+
+
+	});
+
+  // Cleanup
+	onDestroy(() => {
+    // window.removeEventListener('save-document', handleSave);
+    // window.removeEventListener('switch-view', handleViewSwitch);
+		monaco?.editor.getModels().forEach((model) => model.dispose());
+		codeEditor?.dispose();
+  	return () => unsubscribe();  // Clean up subscription
 	});
 
 	import type { ComponentType } from 'svelte';
@@ -197,16 +251,12 @@
   	Document,
   	DocumentArrowUp,
   	DocumentArrowDown,
-  	ArrowPathRoundedSquare
+  	ArrowPathRoundedSquare,
+  	ArrowDownOnSquare,
+  	ArrowDownOnSquareStack,
+  	ArrowUpTray
   } from "svelte-hero-icons";
 
-  const dsHandleSave = () => {
-    ds.saveSession();  // Mark the document as saved
-  };
-
-  const dsNewSession = () => {
-    ds.newSession('Untitled Script');  // Start a new session
-  };
 </script>
 
 <div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
@@ -217,9 +267,9 @@
 		<!-- --- -->
 		<AppRailTile 
 			title="View split-pane"
-			on:click={() => {panes.returnContentToSplit(); panes.showView(currentView); }} 
+			on:click={(e) => { e.stopPropagation(); switchView(0); }} 
 			bind:group={currentView} 
-			name="tile-1" 
+			name="tile-0" 
 			value={0}>
 			<svelte:fragment slot="lead">
 				<Icon src="{ViewColumns}" size="16" style="margin: 4px auto;" solid/>
@@ -227,7 +277,7 @@
 		</AppRailTile>
 		<AppRailTile 
 			title="View script"
-			on:click={() => {panes.returnContentToSplit(); panes.moveContent('ct1', 'cr-full'); panes.showView(currentView); }} 
+			on:click={(e) => { e.stopPropagation(); switchView(1); }} 
 			bind:group={currentView} 
 			name="tile-1" 
 			value={1}>
@@ -237,7 +287,7 @@
 		</AppRailTile>
 		<AppRailTile 
 			title="View canvas"
-			on:click={() => {panes.returnContentToSplit(); panes.moveContent('ct2', 'cr-full'); panes.showView(currentView); }} 
+			on:click={(e) => { e.stopPropagation(); switchView(2); }} 
 			bind:group={currentView} 
 			name="tile-2" 
 			value={2}>
@@ -247,7 +297,7 @@
 		</AppRailTile>
 		<AppRailTile 
 			title="View controls" 
-			on:click={() => {panes.returnContentToSplit(); panes.moveContent('ct3', 'cr-full'); panes.showView(currentView); }} 
+			on:click={(e) => { e.stopPropagation(); switchView(3); }} 
 			bind:group={currentView} 
 			name="tile-3" 
 			value={3}>
@@ -276,7 +326,7 @@
 			<AppRailAnchor 
 				href="#" 
 				title="New Script" 
-				on:click={dsNewSession}
+				on:click={() => ds.newSession() }
 				style="display:block;">
 				<Icon src="{Document}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
@@ -361,11 +411,15 @@
   		<div class="overflow-x-auto flex">
   			<DocTitleBadge sessionID={dsCurrentSession.id} sessionName={dsCurrentSession.name} />
 				<div class="ml-auto flex">
-					<button class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" on:click={dsHandleSave}>
-						Save
+					<button title="Save" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
+						on:click={dsCurrentSession.unsavedChanges ? handleSave : void(0)}>
+						<Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
 					</button> 
-					<button class="badge m-1 variant-ghost-primary">
-						Save Copy
+					<button title="Save Copy" class="badge m-1 variant-ghost-primary">
+						<Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
+					</button>
+					<button title="Export" class="badge m-1 variant-ghost-primary">
+						<Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
 					</button>
 				</div>
 			</div>

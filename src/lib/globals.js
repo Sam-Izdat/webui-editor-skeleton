@@ -21,6 +21,6 @@ export const PWA_FILE_EXT       = '.myscript';
 export const PWA_FILE_MIME_TYPE = 'application/x-my-custom-script';
 export const PWA_FILE_ACTION    = APP_HOST_PATH + 'open-file';
 export const PWA_URL_PATTERN    = 'myscript://*';
-export const PWA_THEME_COLOR    = '#73420d';
+export const PWA_THEME_COLOR    = '#3B4762';
 export const PWA_BG_COLOR       = '#ffffff';
 export const PWA_ORIENTATION    = 'landscape';

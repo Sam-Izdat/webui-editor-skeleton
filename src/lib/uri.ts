@@ -22,6 +22,23 @@
 // }
 
 
+  // const response = await fetch(`https://api.github.com/gists/${gistId}`);
+  // if (!response.ok) {
+  //   throw new Error(`Failed to fetch gist: ${response.statusText}`);
+  // }
+
+  // const gist = await response.json();
+  // const files = {};
+
+  // for (const [filename, fileData] of Object.entries(gist.files)) {
+  //   files[filename] = fileData;
+  // }
+
+  // if (!files['index.md']) {
+  //   throw new Error('No index.md file found in the gist');
+  // }
+
+  // return files;
 
 // <script lang="ts">
 //   import { onMount } from 'svelte';

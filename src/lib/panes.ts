@@ -1,13 +1,13 @@
 // Pane defaults
 export const resetPaneSizes = () => {
   return {
-    sizeLandscapePaneLeft: 65,
-    sizeLandscapePaneRight: 35,
-    sizeLandscapePaneTopRight: 40,
-    sizeLandscapePaneBottomRight: 60,
-    sizePortraitPaneTop: 65,
-    sizePortraitPaneMid: 35,
-    sizePortraitPaneBot: 0,
+    sizeLandscapePaneLeft:          65,
+    sizeLandscapePaneRight:         35,
+    sizeLandscapePaneTopRight:      40,
+    sizeLandscapePaneBottomRight:   60,
+    sizePortraitPaneTop:            65,
+    sizePortraitPaneMid:            27,
+    sizePortraitPaneBot:            8,
   }
 };
 

@@ -1,21 +1,19 @@
 import { writable } from 'svelte/store';
 import { v4 as uuidv4 } from 'uuid';
+import * as localStorageEngine from '$lib/storage/local';
+import * as remoteStorageEngine from '$lib/storage/remote';
+import type DocumentSession from '$lib/doc_types';
 
-export type DocumentSession = {
-  id: string;
-  name: string;
-  content: string;
-  unsavedChanges: boolean;
-};
+// TODO: This should handle remote storage when running a nonstatic build
 
 export const documentSession = writable<DocumentSession>({
   id: uuidv4(),
-  name: 'Untitled Session',
+  name: 'Untitled Script',
   content: '',
   unsavedChanges: false
 });
 
-export const newSession = (name = 'Untitled Session') => {
+export const newSession = (name: string = 'Untitled Script') => {
   documentSession.set({
     id: uuidv4(),
     name,
@@ -26,7 +24,7 @@ export const newSession = (name = 'Untitled Session') => {
 
 export const updateContent = (newContent: string) => {
   documentSession.update(session => {
-    pulseEditorBackground();
+    // pulseEditorBackground();
     return {
       ...session,
       content: newContent,
@@ -37,7 +35,7 @@ export const updateContent = (newContent: string) => {
 
 export const saveSession = () => {
     documentSession.update(session => {
-        saveToLocalStorage(session);  // Save the current session to localStorage
+        localStorageEngine.save(session);  // Save the current session to localStorage
         return {
             ...session,
             unsavedChanges: false
@@ -45,62 +43,17 @@ export const saveSession = () => {
     });
 };
 
-const loadSession = (uuid) => {
-    const key = `saved-doc-${uuid}`;
-    const session = localStorage.getItem(key);
-    return session ? JSON.parse(session) : null;
-};
+const loadSession = (uuid: string) => localStorageEngine.load(uuid);
 
-const deleteSession = (uuid) => {
-    const key = `saved-doc-${uuid}`;
-    localStorage.removeItem(key);
-};
+const deleteSession = (uuid: string) => localStorageEngine.remove(uuid);
 
-const renameSession = (uuid, newName) => {
-    const key = `saved-doc-${uuid}`;
-    const session = localStorage.getItem(key);
-    if (session) {
-        const parsed = JSON.parse(session);
-        parsed.name = newName;
-        localStorage.setItem(key, JSON.stringify(parsed));
-    }
-};
+const renameSession = (uuid: string, newName: string) => localStorageEngine.rename(uuid, newName);
 
-const searchSessions = (substring) => {
-    const searchLower = substring.toLowerCase();
-    return Object.keys(localStorage)
-        .filter(key => key.startsWith('saved-doc'))
-        .map(key => {
-            const doc = JSON.parse(localStorage.getItem(key));
-            return { id: key.replace('saved-doc-', ''), ...doc };
-        })
-        .filter(doc => doc.name.toLowerCase().includes(searchLower));
-};
+const searchSessions = (substring: string) => localStorageEngine.search(substring);
 
-export const saveToLocalStorage = (session: DocumentSession) => {
-    const key = `saved-doc-${session.id}`;
-    localStorage.setItem(key, JSON.stringify({
-        name: session.name,
-        content: session.content,
-        dateSaved: new Date().toISOString()  // Add a timestamp
-    }));
-};
+export const listSessions = (descending: boolean = true) => localStorageEngine.list(descending);
 
-export const getSavedDocuments = (descending = true) => {
-    return Object.keys(localStorage)
-        .filter(key => key.startsWith('saved-doc'))
-        .map(key => {
-            const doc = JSON.parse(localStorage.getItem(key));
-            return { id: key.replace('saved-doc-', ''), ...doc };
-        })
-        .sort((a, b) => {
-            const dateA = new Date(a.dateSaved).getTime();
-            const dateB = new Date(b.dateSaved).getTime();
-            return descending ? dateB - dateA : dateA - dateB;  // Sort by dateSaved based on descending flag
-        });
-};
-
-const pulseEditorBackground = (color = '#00ff00', duration = 100) => {
+const pulseEditorBackground = (color: string = '#00ff00', duration: number = 100) => {
   const bg = document.querySelector('.monaco-editor-background');
   if (bg.style.transition != '') return;
   bg.style.transition = 'background 1s';

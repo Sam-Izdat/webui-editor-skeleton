@@ -57,7 +57,6 @@
       statusClass = 'bg-error-500';
       activeIcon = ExclamationCircle;
     }
-    console.log('++++', status, status & Log.ScriptStatus.ERROR, statusClass);
   });
 
   // Cleanup subscription when component is destroyed

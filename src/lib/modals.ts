@@ -11,11 +11,13 @@ export const modalAbout: ModalSettings = {
 	version: __APP_VERSION__,
 	body: strAboutText
 };
+
 export const modalSave: ModalSettings = {
 	type: 'component',
 	component: 'modalSave',
 	title: 'Save / Export / Share'
 };
+
 export const modalLoad: ModalSettings = {
 	type: 'component',
 	component: 'modalLoad',

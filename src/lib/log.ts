@@ -1,6 +1,7 @@
 import * as g from '$lib/globals';
 import { postScriptMessage, clearScriptMessages } from '$lib/stores';
 import { writable } from 'svelte/store';
+import { getToastStore } from '@skeletonlabs/skeleton';
 
 // Singleton, because it's convenient here
 export class Log {
@@ -38,14 +39,14 @@ export class Log {
   static clearScriptLog = ()        => Log.getInstance().clearScriptLog();
 
   constructor(options = {}) {
+    if (Log.#instance) return Log.#instance;
+    Log.#instance = this;
+    
     const {
       baseLogLevel    = Log.Level.ERROR,
       baseTraceLevel  = Log.Level.ERROR,
-      toastStore      = null
+      toastStore      = getToastStore()
     } = options;
-
-    if (Log.#instance) return Log.#instance;
-    Log.#instance = this;
     
     this.level            = baseLogLevel;
     this.baseTraceLevel   = baseTraceLevel;

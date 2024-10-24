@@ -39,6 +39,8 @@
     "monaco-editor": "^0.52.0",
     "svelte-device-info": "^1.0.6",
     "svelte-splitpanes": "^8.0.8",
-    "svelte-writable-derived": "^3.1.1"
+    "svelte-writable-derived": "^3.1.1",
+    "uniqolor": "^1.1.1",
+    "uuid": "^10.0.0"
   }
 }

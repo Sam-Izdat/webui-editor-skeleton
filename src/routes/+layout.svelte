@@ -27,18 +27,13 @@
 		modalLoad: { ref: ModalLoad },
 	};
 
-	import { getToastStore } from '@skeletonlabs/skeleton';
-	const toastStore = getToastStore();
-
   import { Log } from '$lib';
 
   const dev_mode = import.meta.env.MODE === 'development';
   new Log({
   	baseLogLevel: 		Log.Level[dev_mode ? g.LOG_LEVEL_DEV : g.LOG_LEVEL_PROD], 
   	baseTraceLevel: 	Log.Level[dev_mode ? g.TRACE_LEVEL_DEV : g.TRACE_LEVEL_PROD],
-  	toastStore: 			toastStore
   });
-  // Log.debug('This is a message ', 123,' aaa ', {a: 321, b: {foo: 'bar'}});
 </script>
 
 <svelte:head>

@@ -7,7 +7,7 @@ export const modalAbout: ModalSettings = {
 	component: 'modalInfo',
 	logo: `${base}/icons/icon-128.png`,
 	title: g.APP_TITLE,
-	package: __APP_NAME__,
+	package: `${__APP_NAME__} ${__BUILD_TYPE__}`,
 	version: __APP_VERSION__,
 	body: strAboutText
 };

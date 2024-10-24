@@ -16,15 +16,29 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
-	// Modals
-	import { initializeStores, Modal } from '@skeletonlabs/skeleton';
+	// Modals, Toasts/Growls
+	import { initializeStores, Modal, Toast } from '@skeletonlabs/skeleton';
 	initializeStores();
+
 	import  { ModalInfo, ModalSave, ModalLoad }  from '$lib/components';
 	const modalRegistry: Record<string, ModalComponent> = {
 		modalInfo: { ref: ModalInfo },
 		modalSave: { ref: ModalSave },
 		modalLoad: { ref: ModalLoad },
 	};
+
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	const toastStore = getToastStore();
+
+  import { Log } from '$lib';
+
+  const dev_mode = import.meta.env.MODE === 'development';
+  new Log({
+  	baseLogLevel: 		Log.Level[dev_mode ? g.LOG_LEVEL_DEV : g.LOG_LEVEL_PROD], 
+  	baseTraceLevel: 	Log.Level[dev_mode ? g.TRACE_LEVEL_DEV : g.TRACE_LEVEL_PROD],
+  	toastStore: 			toastStore
+  });
+  // Log.debug('This is a message ', 123,' aaa ', {a: 321, b: {foo: 'bar'}});
 </script>
 
 <svelte:head>
@@ -34,6 +48,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 </svelte:head>
 <Modal components={modalRegistry} />
+<Toast />
 <AppShell slotSidebarLeft="bg-surface-500/5 w-56 h-[100%] p-4">
 <!-- 	<svelte:fragment slot="sidebarLeft">
 		<nav class="list-nav">

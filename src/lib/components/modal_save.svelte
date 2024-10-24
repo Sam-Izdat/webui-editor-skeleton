@@ -23,9 +23,10 @@
   const cBase = 'card p-4 w-modal shadow-xl space-y-4';
   // const cHeader = 'text-2xl font-bold';
 
-  const isPWA = true;
-  const isStaticServer = true;
-  let tabSet: number = isPWA ? 1 : 0;
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+  const isStaticServer = __BUILD_TYPE__ == 'static';
+  const isStatic = isPWA || isStaticServer;
+  let tabSet: number = isStatic ? 1 : 0;
 
   // SAVE
   // If PWA:
@@ -106,7 +107,8 @@
             <div class="p-4 space-y-4">
               <h4 class="h4" data-toc-ignore>{strSaveLocally}</h4>
               <article>
-                .....
+                <p>PWA? {isPWA}</p>
+                <p>StaticServer? {isStaticServer}
               </article>
             </div>
           </div>

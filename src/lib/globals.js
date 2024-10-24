@@ -1,4 +1,4 @@
-// __APP_NAME__ and __APP_VERSION__ are provided by vite config
+// __APP_NAME__, __APP_VERSION__ and __BUILD_TYPE__ are provided by vite config
 
 // GENERAL
 export const APP_TITLE          = 'Webui Editor Skeleton';

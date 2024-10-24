@@ -3,17 +3,18 @@
   import { base } from '$app/paths';  
   import * as g from '$lib/globals';
   import { Log } from '$lib';
-
-  const dev_mode = import.meta.env.MODE === 'development';
-  new Log(
-  	Log.Level[dev_mode ? g.LOG_LEVEL_DEV : g.LOG_LEVEL_PROD], 
-  	Log.Level[dev_mode ? g.TRACE_LEVEL_DEV : g.TRACE_LEVEL_PROD]
-  	);
-  
   import Device from 'svelte-device-info';
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 	import { strInitialEditorContents } from '$lib';
 	import { strAboutText } from '$lib'
+
+  setTimeout(() => Log.debug('This is a message', 123.21324, (2+2)));
+  setTimeout(() => Log.debug('This is a different message'), 1000);
+  setTimeout(() => Log.debug('This is a third longer message with a bunch of works to see what happens if the content is pretty long actually'), 2000);
+  setTimeout(() => Log.toastInfo('This is an info toast'), 500);
+  setTimeout(() => Log.toastSuccess('This is a success toast'), 1500);
+  setTimeout(() => Log.toastWarning('This is a warning toast'), 2500);
+  setTimeout(() => Log.toastError('This is an error toast'), 3500);
 
 	// Monaco setup
 	let editor: Monaco.editor.IStandaloneCodeEditor;
@@ -21,7 +22,7 @@
 	let editorContainer: HTMLElement;
 
 	// Dark mode
-	import  { LightSwitch }  from '$lib/components';
+	import  { LightSwitch, ScriptStatusIndicator }  from '$lib/components';
 	import * as darkmode from '$lib/darkmode';
 
   // Code editor control
@@ -76,9 +77,6 @@
 	export const modalStore = getModalStore();
   import * as modals from '$lib/modals';
 
-	// Popups
-	import { popup } from '@skeletonlabs/skeleton';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
 
 	// SPA Navigation
@@ -134,6 +132,7 @@
 	
 	// When browser is ready...
 	onMount(async () => {
+		window.Log = Log;
 		// Reset and populate paness
 		resetPaneSizes();
 		returnContentToPanes();
@@ -222,6 +221,13 @@
   	ArrowPathRoundedSquare
   } from "svelte-hero-icons";
 
+	// Log.scriptError('Aaaa new error occurred!');
+	Log.clearScriptLog();
+	// Log.scriptError('Aaaa new error occurred!');
+	// Log.scriptWarning('This is a warning message.');
+	// Log.scriptInfo('Just an informational update.');
+	// Log.scriptSuccess('Action completed successfully!');
+
 </script>
 
 <div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
@@ -270,7 +276,6 @@
 				<Icon src="{AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
 			</svelte:fragment>
 		</AppRailTile>
-
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle fullscreen" 
@@ -287,15 +292,7 @@
 			style="display:block;">
 			<Icon src="{readonly ? LockClosed : LockOpen}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
-		<AppRailAnchor 
-			href="#" 
-			title="Errors and warnings" 
-			class={true ? 'bg-error-500' : ''} 
-			style="display:block;">
-			<div use:popup={{ event: 'click', target: 'error-popup', placement: 'right' }}>
-				<Icon src="{ExclamationTriangle}" size="16" style="margin: 4px auto;" solid/>
-			</div>
-		</AppRailAnchor>
+		<ScriptStatusIndicator />
 		<svelte:fragment slot="trail">
 			<AppRailAnchor 
 				href="#" 
@@ -378,29 +375,6 @@
   		<span class="badge variant-soft">This is where the controls would be.</span>
   		<span class="badge variant-soft">Current view: {currentView}</span>
   	</div>
-	</div>
-</div>
-<div 
-	class="card place-content-stretch p-1 max-w-72 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" 
-	data-popup="error-popup"
-	style="z-index: 100;">
-	<div class="card p-1 variant-filled-surface">
-		<aside class="alert variant-filled-error p-1 m-1">
-			<div class="alert-message  text-xs">
-				Error error womp womp!
-			</div>
-		</aside>
-		<aside class="alert variant-filled-warning p-1 m-1">
-			<div class="alert-message  text-xs">
-				Also another thing!
-			</div>
-		</aside>
-		<aside class="alert variant-filled-warning p-1 m-1">
-			<div class="alert-message  text-xs">
-				This is a longer and more verbose warning message about something or other.
-			</div>
-		</aside>
-		<div class="arrow bg-gradient-to-br  variant-gradient-error-warning" />
 	</div>
 </div>
 <style>

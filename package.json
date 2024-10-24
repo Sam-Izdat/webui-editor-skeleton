@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "vite dev",
+    "dev": "cross-env BUILD_TYPE=static vite dev",
+    "dev:server": "cross-env BUILD_TYPE=server vite dev",
     "prebuild": "node scripts/generate-manifest.js",
     "build": "cross-env BUILD_TYPE=static vite build",
     "build:server": "cross-env BUILD_TYPE=server vite build",

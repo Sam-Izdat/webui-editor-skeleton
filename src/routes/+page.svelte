@@ -17,7 +17,7 @@
 	let editorContainer: HTMLElement;
 
 	// Dark mode
-	import { LightSwitch, ScriptStatusIndicator, DocTitleBadge }  from '$lib/components';
+	import { AnchorLightSwitch, AnchorScriptStatus, DocTitleBadge }  from '$lib/components';
 	import { darkModeStore, observeThemeChange } from '$lib/stores/dark_mode';
 
   // Code editor control
@@ -266,18 +266,17 @@
 		</svelte:fragment> -->
 		<!-- --- -->
 		<AppRailTile 
-			title="View split-pane"
+			title="Split-Pane"
 			on:click={(e) => { e.stopPropagation(); switchView(0); }} 
 			bind:group={currentView} 
 			name="tile-0" 
 			value={0}>
 			<svelte:fragment slot="lead">
 				<Icon src="{ViewColumns}" size="16" style="margin: 4px auto;" solid/>
-				<span class="hidden lg:inline ml-2">View split-pane</span>
 			</svelte:fragment>
 		</AppRailTile>
 		<AppRailTile 
-			title="View script"
+			title="View Script"
 			on:click={(e) => { e.stopPropagation(); switchView(1); }} 
 			bind:group={currentView} 
 			name="tile-1" 
@@ -287,7 +286,7 @@
 			</svelte:fragment>
 		</AppRailTile>
 		<AppRailTile 
-			title="View canvas"
+			title="View Canvas"
 			on:click={(e) => { e.stopPropagation(); switchView(2); }} 
 			bind:group={currentView} 
 			name="tile-2" 
@@ -297,7 +296,7 @@
 			</svelte:fragment>
 		</AppRailTile>
 		<AppRailTile 
-			title="View controls" 
+			title="View Controls" 
 			on:click={(e) => { e.stopPropagation(); switchView(3); }} 
 			bind:group={currentView} 
 			name="tile-3" 
@@ -308,7 +307,7 @@
 		</AppRailTile>
 		<AppRailAnchor 
 			href="#" 
-			title="Toggle fullscreen" 
+			title="Toggle Fullscreen" 
 			on:click={() => { isFullscreen = fs.toggleFullscreen(); }} 
 			class={isFullscreen ? 'bg-secondary-500' : ''} 
 			style="display:block;">
@@ -316,18 +315,18 @@
 		</AppRailAnchor>
 		<AppRailAnchor 
 			href="#" 
-			title="Toggle read-only" 
+			title="Toggle Read-Only" 
 			on:click={toggleEditing} 
 			class={readonly ? 'bg-secondary-500' : ''} 
 			style="display:block;">
 			<Icon src="{readonly ? LockClosed : LockOpen}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
-		<ScriptStatusIndicator />
+		<AnchorScriptStatus />
 		<svelte:fragment slot="trail">
 			<AppRailAnchor 
 				href="#" 
 				title="New Script" 
-				on:click={() => ds.newSession() }
+				on:click={() => {modalStore.trigger(modals.modalConfirm); ds.newSession()}}
 				style="display:block;">
 				<Icon src="{Document}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
@@ -347,14 +346,12 @@
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
-				title="Reset panes" 
+				title="Reset Panes" 
 				on:click={() => {paneSizes = {...panes.resetPaneSizes()};}}
 				style="display:block;">
 				<Icon src="{ArrowPathRoundedSquare}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
-			<AppRailAnchor href="#" title="Toggle light or dark mode.">
-				<LightSwitch />
-			</AppRailAnchor>
+			<AnchorLightSwitch />
 			<AppRailAnchor 
 				href="#" 
 				title="About" 

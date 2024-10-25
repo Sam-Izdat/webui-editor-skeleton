@@ -20,11 +20,12 @@
 	import { initializeStores, Modal, Toast } from '@skeletonlabs/skeleton';
 	initializeStores();
 
-	import  { ModalInfo, ModalSave, ModalLoad }  from '$lib/components';
+	import  { ModalInfo, ModalSave, ModalLoad, ModalConfirm }  from '$lib/components';
 	const modalRegistry: Record<string, ModalComponent> = {
-		modalInfo: { ref: ModalInfo },
-		modalSave: { ref: ModalSave },
-		modalLoad: { ref: ModalLoad },
+		modalInfo: 		{ ref: ModalInfo },
+		modalSave: 		{ ref: ModalSave },
+		modalLoad: 		{ ref: ModalLoad },
+		modalConfirm: { ref: ModalConfirm },
 	};
 
   import { Log } from '$lib';

@@ -23,3 +23,11 @@ export const modalLoad: ModalSettings = {
 	component: 'modalLoad',
 	title: 'Load / Import / Browse'
 };
+
+export const modalConfirm: ModalSettings = {
+	type: 'component',
+	component: 'modalConfirm',
+	message: 'Are you sure?',
+	txtConfirm: 'Confirm',
+	txtCancel: 'Cancel'
+};

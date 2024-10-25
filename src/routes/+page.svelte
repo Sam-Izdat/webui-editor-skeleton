@@ -409,19 +409,22 @@
     </div>	      
   	<div id="ct3">
   		<div class="overflow-x-auto flex">
-  			<DocTitleBadge sessionID={dsCurrentSession.id} sessionName={dsCurrentSession.name} />
-				<div class="ml-auto flex">
-					<button title="Save" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
-						on:click={dsCurrentSession.unsavedChanges ? handleSave : void(0)}>
-						<Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
-					</button> 
-					<button title="Save Copy" class="badge m-1 variant-ghost-primary">
-						<Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
-					</button>
-					<button title="Export" class="badge m-1 variant-ghost-primary">
-						<Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
-					</button>
-				</div>
+			  <DocTitleBadge sessionID={dsCurrentSession.id} sessionName={dsCurrentSession.name} />
+			  <div class="ml-auto flex">
+			    <button title="Save" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
+			      on:click={dsCurrentSession.unsavedChanges ? handleSave : void(0)}>
+			      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
+			      <span class="hidden lg:inline ml-2">Save</span>
+			    </button> 
+			    <button title="Save Copy" class="badge m-1 variant-ghost-primary">
+			      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
+			      <span class="hidden lg:inline ml-2">Save Copy</span>
+			    </button>
+			    <button title="Export" class="badge m-1 variant-ghost-primary">
+			      <Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
+			      <span class="hidden lg:inline ml-2">Export</span>
+			    </button>
+			  </div>
 			</div>
 			<hr class="hr m-1" />
   		<span class="badge variant-soft">This is where the controls would be.</span>

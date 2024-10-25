@@ -72,19 +72,19 @@
     <TabGroup>
       <Tab bind:group={tabSet} name="tab1" value={0}>
         <svelte:fragment slot="lead"><Icon src="{CloudArrowUp}" size="20" style="margin: 4px auto;" alt={strSaveRemotely} solid/></svelte:fragment>
-        
+        <span class="hidden lg:inline ml-2">Save to Web</span>
       </Tab>
       <Tab bind:group={tabSet} name="tab2" value={1}>
         <svelte:fragment slot="lead"><Icon src="{Folder}" size="20" style="margin: 4px auto;" alt={strSaveLocally} solid/></svelte:fragment>
-        <!-- <span>Save Locally</span>       -->
+        <span class="hidden lg:inline ml-2">Save Locally</span>
       </Tab>
       <Tab bind:group={tabSet} name="tab3" value={2}>
         <svelte:fragment slot="lead"><Icon src="{ArrowUpTray}" size="20" style="margin: 4px auto;" alt={strExportFile} solid/></svelte:fragment>
-        <!-- <span>Export File</span> -->
+        <span class="hidden lg:inline ml-2">Export File</span>
       </Tab>
       <Tab bind:group={tabSet} name="tab3" value={3}>
         <svelte:fragment slot="lead"><Icon src="{Link}" size="20" style="margin: 4px auto;" alt={strShareRaw} solid/></svelte:fragment>
-        <!-- <span>Share RAW URL</span> -->
+        <span class="hidden lg:inline ml-2">Share External</span>
       </Tab>
       <!-- Tab Panels --->
       <svelte:fragment slot="panel">

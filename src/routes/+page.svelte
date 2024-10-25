@@ -273,6 +273,7 @@
 			value={0}>
 			<svelte:fragment slot="lead">
 				<Icon src="{ViewColumns}" size="16" style="margin: 4px auto;" solid/>
+				<span class="hidden lg:inline ml-2">View split-pane</span>
 			</svelte:fragment>
 		</AppRailTile>
 		<AppRailTile 

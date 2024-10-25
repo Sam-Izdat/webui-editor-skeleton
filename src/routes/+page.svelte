@@ -45,6 +45,9 @@
 		}
 	};
 
+	// AutoBuild
+	let isAutoBuild = true;
+
   // Fullescreen
   let isFullscreen = false;
   import * as fs from '$lib/fullscreen';
@@ -125,15 +128,22 @@
 	});
 
   // Event handlers
-  const handleSave = () => {
+  const handleSaveDoc = () => {
   	if (!dsCurrentSession.unsavedChanges) return;
   	try {  		
 	  	ds.saveSession();
-	    Log.toastSuccess('Script saved');	
+	    Log.toastSuccess('script saved');	
   	} catch(e) {
-  		Log.toastError('Save failed');
+  		Log.toastError('save failed');
   		Log.error(e);
   	}
+  };
+
+  const handleSaveDocNewVersion = () => { };
+
+  const handleNewDoc = (content = null) => {
+		codeEditor.setValue(content ?? strInitialEditorContents);
+  	ds.newSession();
   };
 
   const handleViewSwitch = (event: CustomEvent) => {
@@ -167,25 +177,25 @@
 	  });
 
     // Check if an uploaded file exists in sessionStorage or localStorage
-    const fileData = sessionStorage.getItem('activeFile'); // Or localStorage if you prefer
-    let contentToLoad = strInitialEditorContents; // Default content
+    const fileData = sessionStorage.getItem('activeFile'); 
+    let contentToLoad; 
     if (fileData) {
       const file = JSON.parse(fileData);
       Log.debug('@@@@@@ FILE DATA', file, file[0], file[0] || 'foo'); // FIXME
-      contentToLoad = file[0].content || strInitialEditorContents; // Load the file content if it exists      
+      contentToLoad = file[0].content || null; 
     } 
 
 
     // Listen for changes in Monaco editor and update the store
     codeEditor.onDidChangeModelContent(() => {
       const content = codeEditor.getValue();
-      ds.updateContent(content);
+      ds.updateActiveContent(content);
     });
 
 		// Start the monaco engine
 		const model = monaco.editor.createModel('',	'c');
 		codeEditor.setModel(model);
-    codeEditor.setValue(strInitialEditorContents);
+    handleNewDoc(contentToLoad);
 
     // Start new session after editor value set
     ds.newSession();
@@ -240,7 +250,8 @@
   	ArrowUp, 
   	ViewColumns, 
   	CodeBracket, 
-  	AdjustmentsHorizontal, 
+  	AdjustmentsHorizontal,
+  	PlayCircle,
   	ArrowsPointingOut, 
   	Photo, 
   	LockOpen, 
@@ -251,7 +262,7 @@
   	Document,
   	DocumentArrowUp,
   	DocumentArrowDown,
-  	ArrowPathRoundedSquare,
+  	ArrowPath,
   	ArrowDownOnSquare,
   	ArrowDownOnSquareStack,
   	ArrowUpTray
@@ -305,11 +316,22 @@
 				<Icon src="{AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
 			</svelte:fragment>
 		</AppRailTile>
+		<hr classs="hr m-1"/>
+		<AnchorScriptStatus />
+		<hr classs="hr m-1"/>
+		<AppRailAnchor 
+			href="#" 
+			title="Toggle Auto-Build" 
+			on:click={() => { isAutoBuild = !isAutoBuild; }} 
+			class={isAutoBuild ? 'bg-tertiary-500' : ''} 
+			style="display:block;">
+			<Icon src="{PlayCircle}" size="16" style="margin: 4px auto;" solid/>
+		</AppRailAnchor>
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle Fullscreen" 
 			on:click={() => { isFullscreen = fs.toggleFullscreen(); }} 
-			class={isFullscreen ? 'bg-secondary-500' : ''} 
+			class={isFullscreen ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
 			<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
@@ -317,16 +339,26 @@
 			href="#" 
 			title="Toggle Read-Only" 
 			on:click={toggleEditing} 
-			class={readonly ? 'bg-secondary-500' : ''} 
+			class={readonly ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
 			<Icon src="{readonly ? LockClosed : LockOpen}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
-		<AnchorScriptStatus />
 		<svelte:fragment slot="trail">
 			<AppRailAnchor 
 				href="#" 
 				title="New Script" 
-				on:click={() => {modalStore.trigger(modals.modalConfirm); ds.newSession()}}
+				on:click={() => {
+					if (dsCurrentSession.unsavedChanges){
+						modalStore.trigger({
+							...modals.modalConfirm, 
+							message: "Unsaved changes will be discarded. Create a new script anyway?",
+							txtConfirm: "New Script",
+							onConfirm: handleNewDoc
+						});
+					} else {
+						handleNewDoc();
+					}
+				}}
 				style="display:block;">
 				<Icon src="{Document}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
@@ -349,7 +381,7 @@
 				title="Reset Panes" 
 				on:click={() => {paneSizes = {...panes.resetPaneSizes()};}}
 				style="display:block;">
-				<Icon src="{ArrowPathRoundedSquare}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{ArrowPath}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AnchorLightSwitch />
 			<AppRailAnchor 
@@ -407,16 +439,34 @@
     </div>	      
   	<div id="ct3">
   		<div class="overflow-x-auto flex">
-			  <DocTitleBadge sessionID={dsCurrentSession.id} sessionName={dsCurrentSession.name} />
+			  <DocTitleBadge session={dsCurrentSession} />
 			  <div class="ml-auto flex">
 			    <button title="Save" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
-			      on:click={dsCurrentSession.unsavedChanges ? handleSave : void(0)}>
+			      on:click={() => {
+			      		if (dsCurrentSession.unsavedChanges) {
+									if (dsCurrentSession.versionCurrent != dsCurrentSession.versionCount) {
+										modalStore.trigger({
+											...modals.modalConfirm, 
+											message: `You are saving over an old version. Overwrite it?`,
+											txtConfirm: `Overwrite v${dsCurrentSession.versionCurrent}`,
+											txtCancel: `Save as v${dsCurrentSession.versionCount}`,
+											onConfirm: handleSaveDoc,
+											onCancel: handleSaveDocNewVersion,
+										});
+			      			} else { handleSaveDoc(); }
+			      		} else { Log.toastInfo('no changes to save') }			      		
+			      	}}>
 			      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
 			      <span class="hidden lg:inline ml-2">Save</span>
 			    </button> 
-			    <button title="Save Copy" class="badge m-1 variant-ghost-primary">
+			    <button title="Save New" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
+			      on:click={() => {
+			      		if (dsCurrentSession.unsavedChanges) {
+									handleSaveDocNewVersion();
+			      		} else { Log.toastInfo('no changes to save') }			      		
+			      	}}>
 			      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
-			      <span class="hidden lg:inline ml-2">Save Copy</span>
+			      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionCurrent}</span>
 			    </button>
 			    <button title="Export" class="badge m-1 variant-ghost-primary">
 			      <Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>

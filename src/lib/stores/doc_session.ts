@@ -3,13 +3,18 @@ import { v4 as uuidv4 } from 'uuid';
 import * as localStorageEngine from '$lib/storage/local';
 import * as remoteStorageEngine from '$lib/storage/remote';
 import type DocumentSession from '$lib/doc_types';
+import { Log } from '$lib';
 
 // TODO: This should handle remote storage when running a nonstatic build
+// Make activeContent to avoid slicing constantly
+// Active-Session operations
 
 export const documentSession = writable<DocumentSession>({
   id: uuidv4(),
   name: 'Untitled Script',
-  content: '',
+  versionCurrent: 0,    
+  versionCount: 1,
+  content: [''],
   unsavedChanges: false
 });
 
@@ -17,41 +22,75 @@ export const newSession = (name: string = 'Untitled Script') => {
   documentSession.set({
     id: uuidv4(),
     name,
-    content: '',
+    versionCurrent: 0,
+    versionCount: 1,
+    content: [''],
     unsavedChanges: false
   });
 };
 
-export const updateContent = (newContent: string) => {
+export const updateActiveContent = (newContent: string) => {
   documentSession.update(session => {
     // pulseEditorBackground();
+    session.content[session.versionCurrent] = newContent;
+    session.unsavedChanges = true;
+    return session;
+  });
+};
+
+export const updateVersionContent = (newContent: string, version: int) => {
+  documentSession.update(session => {
     return {
       ...session,
-      content: newContent,
+      content: [
+        ...session.content.slice(0, version),
+        newContent,
+        ...session.content.slice(version + 1)
+      ],
       unsavedChanges: true
     };
   });
 };
 
+export const updateAny = (sessionParams) => {
+  documentSession.update(session => {
+    return {
+      ...session,
+      ...sessionParams
+    };
+  });
+};
+
+export const updateName = (newContent: string) => { };
+
+export const getLastVersionContent = (version: int) => documentSession.content[documentSession.versionCount - 1];
+
+export const getVersionContent = (version: int) => documentSession.content[version];
+
+// Active-Session/Storage operations (active session is automatically updated)
+
 export const saveSession = () => {
     documentSession.update(session => {
-        localStorageEngine.save(session);  // Save the current session to localStorage
-        return {
-            ...session,
-            unsavedChanges: false
-        };
+      localStorageEngine.save(session);  
+      return {
+          ...session,
+          unsavedChanges: false
+      }; 
     });
 };
 
-const loadSession = (uuid: string) => localStorageEngine.load(uuid);
+// TODO: Update active
+export const loadSession = (uuid: string) => localStorageEngine.load(uuid);
 
-const deleteSession = (uuid: string) => localStorageEngine.remove(uuid);
+// Storage only operations (active session is not automatically updated)
 
-const renameSession = (uuid: string, newName: string) => localStorageEngine.rename(uuid, newName);
+export const deleteStoredSession = (uuid: string) => localStorageEngine.remove(uuid);
 
-const searchSessions = (substring: string) => localStorageEngine.search(substring);
+export const renameStoredSession = (uuid: string, newName: string) => localStorageEngine.rename(uuid, newName);
 
-export const listSessions = (descending: boolean = true) => localStorageEngine.list(descending);
+export const searchStoredSessions = (substring: string) => localStorageEngine.search(substring);
+
+export const listStoredSessions = (descending: boolean = true) => localStorageEngine.list(descending);
 
 const pulseEditorBackground = (color: string = '#00ff00', duration: number = 100) => {
   const bg = document.querySelector('.monaco-editor-background');

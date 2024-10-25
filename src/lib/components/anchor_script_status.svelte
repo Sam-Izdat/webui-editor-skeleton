@@ -2,7 +2,7 @@
   import { Log } from '$lib';
   import { onDestroy } from 'svelte';
   import { popup } from '@skeletonlabs/skeleton';
-  import { Icon, EllipsisHorizontalCircle, CheckCircle, ExclamationTriangle, ExclamationCircle } from "svelte-hero-icons";
+  import { Icon, Play, CheckCircle, ExclamationTriangle, ExclamationCircle } from "svelte-hero-icons";
   import { errorLog } from '$lib/stores'; // Store for message queue
   import { AppRailAnchor } from '@skeletonlabs/skeleton';
 
@@ -38,13 +38,13 @@
 
   // Reactive variable to hold the class based on script status
   let statusClass = '';
-  let activeIcon = EllipsisHorizontalCircle;
+  let activeIcon = Play;
 
   console.log(Log.getInstance().scriptStatus);
   // Subscribe to the scriptStatus store
   const unsubscribe = Log.getInstance().scriptStatus.subscribe(status => {
     statusClass = '';
-    activeIcon = EllipsisHorizontalCircle;
+    activeIcon = Play;
     if (status & Log.ScriptStatus.SUCCESS) {
       statusClass = 'bg-success-500';
       activeIcon = CheckCircle;
@@ -69,7 +69,7 @@
 <div class="m-0 p-0" use:popup={{ event: 'click', target: 'error-popup', placement: 'right' }}>
 <AppRailAnchor 
   href="#" 
-  title="Errors and warnings" 
+  title="Build" 
   class={statusClass} 
   style="display:block;">
   <Icon src="{activeIcon}" size="16" style="margin: 4px auto;" solid />

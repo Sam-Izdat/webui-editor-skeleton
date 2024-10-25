@@ -29,5 +29,7 @@ export const modalConfirm: ModalSettings = {
 	component: 'modalConfirm',
 	message: 'Are you sure?',
 	txtConfirm: 'Confirm',
-	txtCancel: 'Cancel'
+	txtCancel: 'Cancel',
+	onConfirm: () => {},
+	onCancel: () => {},
 };

@@ -8,7 +8,6 @@
     Check,
     XMark,
   } from "svelte-hero-icons";
-  // export let message: string = "Are you sure?";
 
   const cBase = 'card p-4 w-modal shadow-xl space-y-4 w-min';
 
@@ -18,12 +17,10 @@
   };
 
   const actionConfirm = () => {
-    console.log($modalStore[0].onConfirm);
     $modalStore[0].onConfirm();
     parent.onClose();
   }
 </script>
-
 
 {#if $modalStore[0]}
   <div class="{cBase}">
@@ -33,7 +30,7 @@
         <Icon src="{Check}" size="16" style="margin: 2px auto;" solid/>
         <span>{$modalStore[0].txtConfirm ?? 'Confirm'}</span>
       </button>
-      <button class="btn variant-soft-primary m-1" on:click={actionCancel}>
+      <button class="btn variant-ghost-primary m-1" on:click={actionCancel}>
         <Icon src="{XMark}" size="16" style="margin: 2px auto;" solid/>
         <span>{$modalStore[0].txtCancel ?? 'Cancel'}</span>
     </button>

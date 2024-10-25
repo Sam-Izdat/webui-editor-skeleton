@@ -7,14 +7,14 @@ interface Message {
 }
 
 // Initialize writable store for message queue
-export const errorLog = writable<Message[]>([]);
+export const scriptErrorLog = writable<Message[]>([]);
 
 // Add message to queue
 export function postScriptMessage(type: Message['type'], message: string) {
-  errorLog.update((log) => [...log, { type, message }]);
+  scriptErrorLog.update((log) => [...log, { type, message }]);
 }
 
 // Clear queue if needed
 export function clearScriptMessages() {
-  errorLog.set([]);
+  scriptErrorLog.set([]);
 }

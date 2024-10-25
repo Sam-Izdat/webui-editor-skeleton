@@ -6,6 +6,12 @@ import { getToastStore } from '@skeletonlabs/skeleton';
 // Singleton, because it's convenient here
 export class Log {
   static #instance = null;
+  #toast_params = {
+    classes: '!m-2 !p-2 shadow-lg opacity-65',
+    timeout: 1200,
+    hideDismiss: true,
+    hoverable: true,
+  }
 
   static Level = class {
     static DEBUG    = 1<<0;
@@ -104,9 +110,9 @@ export class Log {
   toastInfo = (...msg) => {
     if (this.toastStore){
       const t: ToastSettings = {
+        ...this.#toast_params,
         message: msg,
         background: 'variant-filled-primary',
-        classes: 'p-2'
       };
       this.toastStore.trigger(t); 
     }
@@ -115,9 +121,9 @@ export class Log {
   toastSuccess = (...msg) => {
     if (this.toastStore){
       const t: ToastSettings = {
+        ...this.#toast_params,
         message: msg,
         background: 'variant-filled-success',
-        classes: 'm-2'
       };
       this.toastStore.trigger(t); 
     }
@@ -126,9 +132,10 @@ export class Log {
   toastWarning = (...msg) => {
     if (this.toastStore){
       const t: ToastSettings = {
+        ...this.#toast_params,
         message: msg,
         background: 'variant-filled-warning',
-        classes: 'm-2'
+        timeout: 2000,
       };
       this.toastStore.trigger(t); 
     }
@@ -137,9 +144,10 @@ export class Log {
   toastError = (...msg) => {
     if (this.toastStore){
       const t: ToastSettings = {
+        ...this.#toast_params,
         message: msg,
         background: 'variant-filled-error',
-        classes: 'm-2'
+        timeout: 3000,
       };
       this.toastStore.trigger(t); 
     }

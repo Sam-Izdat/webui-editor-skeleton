@@ -1,124 +1,69 @@
 <script lang="ts">
 	import { onDestroy, onMount, tick } from 'svelte';
+	import type { ComponentType } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
+	import { propertyStore } from 'svelte-writable-derived'; 
 	import { beforeNavigate } from "$app/navigation";
+	import { browser } from '$app/environment';
   import { base } from '$app/paths';  
   import * as g from '$lib/globals';
   import { Log } from '$lib';
   import Device from 'svelte-device-info';
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
-	import { strInitialEditorContents } from '$lib';
 	import { strAboutText } from '$lib';
 	import * as ds from '$lib/stores/doc_session';	
-  import { initKeyboardShortcuts } from '$lib/keybind';
+
+	// Global editor state
+	import { 
+		currentView,
+		paneSizes,
+		isAutoBuild,
+		isFullscreen,
+		orientationLandscape,
+		isReadOnly,
+		isDark,
+	} from '$lib/stores';
+
+	// Sessions
+  let dsCurrentSession;
+	const unsubscribeSession = ds.documentSession.subscribe(session => {
+    dsCurrentSession = session;
+  });
+
+	// Handlers
+  import { 
+  	DocHandler, 
+  	NavHandler,
+  	ScreenHandler,
+  	MobileHandler
+  } from '$lib';
+
+  let docHandler;			// Document actions (e.g. update, save, new, rename, make read-only)
+  let navHandler; 		// SPA "navigation"
+  let screenHandler; 	// Fullscreen
+  let mobileHandler; 	// Mobile-specific UI handling
+
+  // Observers  
+  import { observeKeyboard } from '$lib/keybind';
+	import { observeThemeChange } from '$lib/stores/dark_mode';
 
 	// Monaco setup
 	let editor: Monaco.editor.IStandaloneCodeEditor;
 	let monaco: typeof Monaco;
 	let editorContainer: HTMLElement;
-
-	// Dark mode
-	import { AnchorLightSwitch, AnchorScriptStatus, DocTitleBadge }  from '$lib/components';
-	import { darkModeStore, observeThemeChange } from '$lib/stores/dark_mode';
-
-  // Code editor control
 	let codeEditor;
-	let readonly;	
-  let dsCurrentSession;
 
-	const disableEditing = () => {
-		codeEditor.updateOptions({ readOnly: true });
-		document.querySelector('.monaco-editor textarea').readOnly = true;
-		readonly = true;
-	};
+	// Core UI components
+	import { AnchorLightSwitch, AnchorScriptStatus, DocTitleBadge }  from '$lib/components';
+	import * as panes from '$lib/panes';
 
-	const enableEditing = () => {
-		codeEditor.updateOptions({ readOnly: false });
-		document.querySelector('.monaco-editor textarea').readOnly = false;
-		readonly = false;
-	};
-
-	const toggleEditing = () => {
-		if (readonly) {
-			enableEditing();
-		} else {
-			disableEditing();
-		}
-	};
-
-	// AutoBuild
-	let isAutoBuild = true;
-
-  // Fullescreen
-  let isFullscreen = false;
-  import * as fs from '$lib/fullscreen';
-
-  // Modal
+  // Modals
   import { getModalStore } from '@skeletonlabs/skeleton';
 	export const modalStore = getModalStore();
   import * as modals from '$lib/modals';
-
-	// SPA Navigation
-	import * as panes from '$lib';
-	let paneSizes = {...panes.resetPaneSizes()};
 	
-  // Mobile orientation
-  let orientationLandscape = true;
-
-	const handleOrientationChange = async () => {
-		if (orientationLandscape && screen.orientation.type.startsWith('portrait')) {
-	    panes.moveContentToStaging();
-	    orientationLandscape = false;		  
-		  await tick(); // Wait for DOM to be updated
-	  	panes.returnContentToSplit();
-	  	if (currentView == 1) panes.moveContent('ct1', 'cr-full');
-	  	else if (currentView == 2) panes.moveContent('ct2', 'cr-full');
-	  	else if (currentView == 3) panes.moveContent('ct3', 'cr-full');
-	  	panes.showView(currentView);
-	  } else  {
-	    panes.moveContentToStaging();
-	    orientationLandscape = true;
-		  await tick();
-	  	panes.returnContentToSplit();
-	  	if (currentView == 1) panes.moveContent('ct1', 'cr-full');
-	  	else if (currentView == 2) panes.moveContent('ct2', 'cr-full');
-	  	else if (currentView == 3) panes.moveContent('ct3', 'cr-full');
-	  	panes.showView(currentView);
-	  }
-	};
-
-	// View changes
-	const switchView = (n: int) => {
-		switch (n) {
-			case 0:
-				panes.returnContentToSplit(); 
-				panes.showView(currentView);
-				break;
-			case 1:
-				panes.returnContentToSplit(); 
-				panes.moveContent('ct1', 'cr-full'); 
-				panes.showView(currentView);
-				break;
-			case 2:
-				panes.returnContentToSplit(); 
-				panes.moveContent('ct2', 'cr-full'); 
-				panes.showView(currentView);
-				break;
-			case 3:
-				panes.returnContentToSplit(); 
-				panes.moveContent('ct3', 'cr-full'); 
-				panes.showView(currentView);
-				break;
-			default:
-				Log.error('somehow tried to switch to nonexistent view...')
-		}
-	};
-
-	
-  // Subscribe to documentSession store
-  const unsubscribe = ds.documentSession.subscribe(session => {
-    dsCurrentSession = session;
-  });
-
+	// Unsaved changes guardrails
   beforeNavigate(({ cancel }) => {
 	  if (dsCurrentSession.unsavedChanges) {
 	    if (!confirm('You are about to navigate away, but you have unsaved changes. Proceed?')) {
@@ -127,43 +72,41 @@
 	  }
 	});
 
-  // Event handlers
-  const handleSaveDoc = () => {
-  	if (!dsCurrentSession.unsavedChanges) return;
-  	try {  		
-	  	ds.saveSession();
-	    Log.toastSuccess('script saved');	
-  	} catch(e) {
-  		Log.toastError('save failed');
-  		Log.error(e);
-  	}
-  };
+  // Mobile orientation
+  // let orientationLandscape = true;
 
-  const handleSaveDocNewVersion = () => { };
 
-  const handleNewDoc = (content = null) => {
-		codeEditor.setValue(content ?? strInitialEditorContents);
-  	ds.newSession();
-  };
+  // const handleOrientationChange = async () => {
+  //   if (orientationLandscape && screen.orientation.type.startsWith('portrait')) {
+  //     panes.moveContentToStaging();
+  //     orientationLandscape = false;     
+  //     await tick(); // Wait for DOM to be updated
+  //     panes.returnContentToSplit();
+  //     if ($currentView == 1) panes.moveContent('ct1', 'cr-full');
+  //     else if ($currentView == 2) panes.moveContent('ct2', 'cr-full');
+  //     else if ($currentView == 3) panes.moveContent('ct3', 'cr-full');
+  //     panes.showView($currentView);
+  //   } else  {
+  //     panes.moveContentToStaging();
+  //     orientationLandscape = true;
+  //     await tick();
+  //     panes.returnContentToSplit();
+  //     if ($currentView == 1) panes.moveContent('ct1', 'cr-full');
+  //     else if ($currentView == 2) panes.moveContent('ct2', 'cr-full');
+  //     else if ($currentView == 3) panes.moveContent('ct3', 'cr-full');
+  //     panes.showView($currentView);
+  //   }
+  // };
 
-  const handleViewSwitch = (event: CustomEvent) => {
-    currentView = event.detail.view;
-    switchView(currentView);
-  };
 
 	// When browser is ready...
 	onMount(async () => {
-		// Populate paness
-		panes.returnContentToSplit(currentView);
+		// Populate panes
+		panes.returnContentToSplit();
 
-		// Set theme
-		document.querySelector('body').setAttribute('data-theme', g.APP_THEME);
 
 		// Import monaco
 		monaco = (await import('$lib/monaco')).default;
-		
-		// Watch for changes from light to dark mode
-		observeThemeChange(monaco.editor);
 
 		codeEditor = monaco.editor.create(editorContainer, {
 	    value: "",
@@ -173,32 +116,33 @@
 	    },
 	    tabSize: 2,
 	    automaticLayout: true,
-	    theme: $darkModeStore ? 'vs-dark' : 'vs-light',
+	    theme: $isDark ? 'vs-dark' : 'vs-light',
 	  });
+
+		// Set up handlers
+  	docHandler 		= new DocHandler(dsCurrentSession, codeEditor);
+  	navHandler 		= new NavHandler();
+  	screenHandler = new ScreenHandler(document, screen);
+  	mobileHandler = new MobileHandler(screen);
 
     // Check if an uploaded file exists in sessionStorage or localStorage
     const fileData = sessionStorage.getItem('activeFile'); 
     let contentToLoad; 
     if (fileData) {
       const file = JSON.parse(fileData);
-      Log.debug('@@@@@@ FILE DATA', file, file[0], file[0] || 'foo'); // FIXME
       contentToLoad = file[0].content || null; 
-    } 
-
+    }
 
     // Listen for changes in Monaco editor and update the store
     codeEditor.onDidChangeModelContent(() => {
       const content = codeEditor.getValue();
-      ds.updateActiveContent(content);
+      docHandler.updateDoc(content);
     });
 
-		// Start the monaco engine
+		// Start the monaco engine, start new doc session
 		const model = monaco.editor.createModel('',	'c');
 		codeEditor.setModel(model);
-    handleNewDoc(contentToLoad);
-
-    // Start new session after editor value set
-    ds.newSession();
+    docHandler.newDoc(contentToLoad);
 
 		// Turn off mobile typing help bullshit, if any of it is on
 		const monacoTextarea = document.querySelector('.monaco-editor textarea');
@@ -207,41 +151,43 @@
 		monacoTextarea.setAttribute('autocapitalize', 'off');
 		monacoTextarea.setAttribute('spellcheck', false);
 
-
 		// Listen for orientation changes and do initial check
-		window.screen.orientation.onchange = handleOrientationChange;
-		handleOrientationChange();
+		window.screen.orientation.onchange = mobileHandler.orientationChange;
+		mobileHandler.orientationChange();
 
 		// Turn off editing by default on mobile devices, because soft keys suck
-		if (Device.isMobile) disableEditing();
+		if (Device.isMobile) docHandler.disableEditing();
 
 		// Custom events from keybind
+    observeKeyboard();
+    window.addEventListener('save-document', docHandler.saveDoc);
+    window.addEventListener('switch-view', navHandler.switchViewEvent);
 
-    initKeyboardShortcuts();
-    window.addEventListener('save-document', handleSave);
-    window.addEventListener('switch-view', handleViewSwitch);
-
-
+		// Cosmetic
+		document.querySelector('body').setAttribute('data-theme', g.APP_THEME);
+		observeThemeChange(monaco.editor);
 	});
 
-  // Cleanup
 	onDestroy(() => {
-    // window.removeEventListener('save-document', handleSave);
-    // window.removeEventListener('switch-view', handleViewSwitch);
+		if ( browser ) {
+    	window.removeEventListener('save-document', docHandler.saveDoc);
+    	window.removeEventListener('switch-view', navHandler.switchViewEvent);	
+		}
+
 		monaco?.editor.getModels().forEach((model) => model.dispose());
 		codeEditor?.dispose();
-  	return () => unsubscribe();  // Clean up subscription
+  	docHandler?.dispose();
+  	navHandler?.dispose();
+  	screenHandler?.dispose();
+  	mobileHandler?.dispose();
+
+  	unsubscribeSession();
 	});
 
-	import type { ComponentType } from 'svelte';
-	import type { Writable } from 'svelte/store';
-	import { writable } from 'svelte/store';
-	import { propertyStore } from 'svelte-writable-derived';
- 
  	import { AppRail, AppRailTile, AppRailAnchor } from '@skeletonlabs/skeleton';
 
   import { Pane, Splitpanes } from 'svelte-splitpanes';
-  let currentView: number = 0;
+  // let currentView: number = 0;
 
   // Icons
 
@@ -267,7 +213,6 @@
   	ArrowDownOnSquareStack,
   	ArrowUpTray
   } from "svelte-hero-icons";
-
 </script>
 
 <div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
@@ -278,8 +223,7 @@
 		<!-- --- -->
 		<AppRailTile 
 			title="Split-Pane"
-			on:click={(e) => { e.stopPropagation(); switchView(0); }} 
-			bind:group={currentView} 
+			bind:group={$currentView} 
 			name="tile-0" 
 			value={0}>
 			<svelte:fragment slot="lead">
@@ -288,8 +232,7 @@
 		</AppRailTile>
 		<AppRailTile 
 			title="View Script"
-			on:click={(e) => { e.stopPropagation(); switchView(1); }} 
-			bind:group={currentView} 
+			bind:group={$currentView} 
 			name="tile-1" 
 			value={1}>
 			<svelte:fragment slot="lead">
@@ -298,8 +241,7 @@
 		</AppRailTile>
 		<AppRailTile 
 			title="View Canvas"
-			on:click={(e) => { e.stopPropagation(); switchView(2); }} 
-			bind:group={currentView} 
+			bind:group={$currentView} 
 			name="tile-2" 
 			value={2}>
 			<svelte:fragment slot="lead">
@@ -308,8 +250,7 @@
 		</AppRailTile>
 		<AppRailTile 
 			title="View Controls" 
-			on:click={(e) => { e.stopPropagation(); switchView(3); }} 
-			bind:group={currentView} 
+			bind:group={$currentView} 
 			name="tile-3" 
 			value={3}>
 			<svelte:fragment slot="lead">
@@ -322,26 +263,26 @@
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle Auto-Build" 
-			on:click={() => { isAutoBuild = !isAutoBuild; }} 
-			class={isAutoBuild ? 'bg-tertiary-500' : ''} 
+			on:click={() => { $isAutoBuild.set(!$isAutoBuild); }} 
+			class={$isAutoBuild ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
 			<Icon src="{PlayCircle}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle Fullscreen" 
-			on:click={() => { isFullscreen = fs.toggleFullscreen(); }} 
-			class={isFullscreen ? 'bg-tertiary-500' : ''} 
+			on:click={screenHandler.toggleFullscreen} 
+			class={$isFullscreen ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
 			<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle Read-Only" 
-			on:click={toggleEditing} 
-			class={readonly ? 'bg-tertiary-500' : ''} 
+			on:click={docHandler.toggleEditing} 
+			class={$isReadOnly ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
-			<Icon src="{readonly ? LockClosed : LockOpen}" size="16" style="margin: 4px auto;" solid/>
+			<Icon src="{$isReadOnly ? LockClosed : LockOpen}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
 		<svelte:fragment slot="trail">
 			<AppRailAnchor 
@@ -353,10 +294,10 @@
 							...modals.modalConfirm, 
 							message: "Unsaved changes will be discarded. Create a new script anyway?",
 							txtConfirm: "New Script",
-							onConfirm: handleNewDoc
+							onConfirm: docHandler.newDoc
 						});
 					} else {
-						handleNewDoc();
+						docHandler.newDoc();
 					}
 				}}
 				style="display:block;">
@@ -379,7 +320,7 @@
 			<AppRailAnchor 
 				href="#" 
 				title="Reset Panes" 
-				on:click={() => {paneSizes = {...panes.resetPaneSizes()};}}
+				on:click={() => {paneSizes.set({...panes.resetPaneSizes()});}}
 				style="display:block;">
 				<Icon src="{ArrowPath}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
@@ -394,17 +335,17 @@
 		</svelte:fragment>
 	</AppRail>
 	<div id="cr-panes" class="grid cr-dynamic">
-		{#if orientationLandscape}
+		{#if $orientationLandscape}
 		<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;">
-		  <Pane minSize={20} bind:size={paneSizes.sizeLandscapePaneLeft}>
+		  <Pane minSize={20} bind:size={$paneSizes.sizeLandscapePaneLeft}>
 		  	<div id="cr-pane1"/>
 		  </Pane>
-		  <Pane minSize={20} bind:size={paneSizes.sizeLandscapePaneRight}>
+		  <Pane minSize={20} bind:size={$paneSizes.sizeLandscapePaneRight}>
 		    <Splitpanes horizontal={true}>
-		      <Pane minSize={15} bind:size={paneSizes.sizeLandscapePaneTopRight}>
+		      <Pane minSize={15} bind:size={$paneSizes.sizeLandscapePaneTopRight}>
 		      	<div id="cr-pane2" />
 		      </Pane>
-		      <Pane bind:size={paneSizes.sizeLandscapePaneBottomRight}>
+		      <Pane bind:size={$paneSizes.sizeLandscapePaneBottomRight}>
 		      	<div id="cr-pane3" />
 		      </Pane>
 		    </Splitpanes>
@@ -412,13 +353,13 @@
 		</Splitpanes>
 		{:else}
 		<Splitpanes theme="skeleton-theme" style="width: 100%; height: 100%;" horizontal={true}>
-		  <Pane minSize={20} bind:size={paneSizes.sizePortraitPaneTop}>
+		  <Pane minSize={20} bind:size={$paneSizes.sizePortraitPaneTop}>
 		  	<div id="cr-pane1" />
 		  </Pane>
-      <Pane minSize={5} bind:size={paneSizes.sizePortraitPaneMid}>
+      <Pane minSize={5} bind:size={$paneSizes.sizePortraitPaneMid}>
       	<div id="cr-pane2" />
       </Pane>
-      <Pane minSize={0} bind:size={paneSizes.sizePortraitPaneBot}>
+      <Pane minSize={0} bind:size={$paneSizes.sizePortraitPaneBot}>
       	<div id="cr-pane3"/>
       </Pane>
 		</Splitpanes>
@@ -433,27 +374,27 @@
   		<!-- Replace this with actual canvas -->
   		<div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-[100%] w-[100%]">
   			<span class="badge variant-soft">This is where the canvas would be.</span>
-  			<span class="badge variant-soft">Current view: {currentView}</span>
+  			<span class="badge variant-soft">Current view: {$currentView}</span>
   		</div>
   		<!-- / Replace this with actual canvas -->
     </div>	      
   	<div id="ct3">
   		<div class="overflow-x-auto flex">
-			  <DocTitleBadge session={dsCurrentSession} />
+			  <DocTitleBadge session={dsCurrentSession}  />
 			  <div class="ml-auto flex">
 			    <button title="Save" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
 			      on:click={() => {
 			      		if (dsCurrentSession.unsavedChanges) {
-									if (dsCurrentSession.versionCurrent != dsCurrentSession.versionCount) {
+									if (dsCurrentSession.versionActive != dsCurrentSession.versionCount) {
 										modalStore.trigger({
 											...modals.modalConfirm, 
 											message: `You are saving over an old version. Overwrite it?`,
-											txtConfirm: `Overwrite v${dsCurrentSession.versionCurrent}`,
+											txtConfirm: `Overwrite v${dsCurrentSession.versionActive}`,
 											txtCancel: `Save as v${dsCurrentSession.versionCount}`,
-											onConfirm: handleSaveDoc,
-											onCancel: handleSaveDocNewVersion,
+											onConfirm: docHandler.saveDoc,
+											onCancel: docHandler.saveDocNewVersion,
 										});
-			      			} else { handleSaveDoc(); }
+			      			} else { docHandler.saveDoc(); }
 			      		} else { Log.toastInfo('no changes to save') }			      		
 			      	}}>
 			      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
@@ -462,11 +403,11 @@
 			    <button title="Save New" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
 			      on:click={() => {
 			      		if (dsCurrentSession.unsavedChanges) {
-									handleSaveDocNewVersion();
+									docHandler.saveDocNewVersion();
 			      		} else { Log.toastInfo('no changes to save') }			      		
 			      	}}>
 			      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
-			      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionCurrent}</span>
+			      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionActive}</span>
 			    </button>
 			    <button title="Export" class="badge m-1 variant-ghost-primary">
 			      <Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
@@ -476,7 +417,7 @@
 			</div>
 			<hr class="hr m-1" />
   		<span class="badge variant-soft">This is where the controls would be.</span>
-  		<span class="badge variant-soft">Current view: {currentView}</span>
+  		<span class="badge variant-soft">Current view: {$currentView}</span>
   	</div>
 	</div>
 </div>

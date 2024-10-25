@@ -3,9 +3,9 @@ import type DocumentSession from '$lib/doc_types';
 const prefix = 'saved-doc-';
 
 export const save = (session: DocumentSession) => {
-  const key = prefix + session.id;
+  const key = prefix + session.docID;
   localStorage.setItem(key, JSON.stringify({
-    name: session.name,
+    name: session.docName,
     content: session.content,
     dateSaved: new Date().toISOString()  // Add a timestamp
   }));
@@ -27,7 +27,7 @@ export const rename = (uuid: string, newName: string) => {
   const session = localStorage.getItem(key);
   if (session) {
     const parsed = JSON.parse(session);
-    parsed.name = newName;
+    parsed.docName = newName;
     localStorage.setItem(key, JSON.stringify(parsed));
     return true;
   } else {
@@ -43,7 +43,7 @@ export const search = (substring: string) => {
         const doc = JSON.parse(localStorage.getItem(key));
         return { id: key.replace('saved-doc-', ''), ...doc };
     })
-    .filter(doc => doc.name.toLowerCase().includes(searchLower));
+    .filter(doc => doc.docName.toLowerCase().includes(searchLower));
 };
 
 export const list = (descending = true) => {

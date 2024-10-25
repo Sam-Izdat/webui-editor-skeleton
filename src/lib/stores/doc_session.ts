@@ -10,54 +10,58 @@ import { Log } from '$lib';
 // Active-Session operations
 
 export const documentSession = writable<DocumentSession>({
-  id: uuidv4(),
-  name: 'Untitled Script',
-  versionCurrent: 0,    
+  docID: uuidv4(),
+  docName: 'Untitled Script',
+  versionActive: 0,    
   versionCount: 1,
   content: [''],
   unsavedChanges: false
 });
 
-export const newSession = (name: string = 'Untitled Script') => {
+export const newSession = (docName: string = 'Untitled Script') => {
   documentSession.set({
-    id: uuidv4(),
-    name,
-    versionCurrent: 0,
+    docID: uuidv4(),
+    docName: docName,
+    versionActive: 0,
     versionCount: 1,
     content: [''],
+    contentBuffer: '',
     unsavedChanges: false
   });
 };
 
-export const updateActiveContent = (newContent: string) => {
+export const updateContentBuffer = (newContent: string) => {
   documentSession.update(session => {
     // pulseEditorBackground();
-    session.content[session.versionCurrent] = newContent;
+    session.contentBuffer = newContent;
     session.unsavedChanges = true;
+    return session;
+  });
+}
+export const commitContentBufferToActiveVersion = () => {
+  documentSession.update(session => {
+    session.content[session.versionActive] = session.contentBuffer;
     return session;
   });
 };
 
-export const updateVersionContent = (newContent: string, version: int) => {
-  documentSession.update(session => {
-    return {
-      ...session,
-      content: [
-        ...session.content.slice(0, version),
-        newContent,
-        ...session.content.slice(version + 1)
-      ],
-      unsavedChanges: true
-    };
-  });
-};
+// export const commitContentBufferToVersion = (newContent: string, version: int) => {
+//   documentSession.update(session => {
+//     return {
+//       ...session,
+//       content: [
+//         ...session.content.slice(0, version),
+//         newContent,
+//         ...session.content.slice(version + 1)
+//       ],
+//       unsavedChanges: true
+//     };
+//   });
+// };
 
-export const updateAny = (sessionParams) => {
+export const updateSessionParams = (sessionParams) => {
   documentSession.update(session => {
-    return {
-      ...session,
-      ...sessionParams
-    };
+    return {...session, ...sessionParams, unsavedChanges: true};
   });
 };
 
@@ -71,11 +75,8 @@ export const getVersionContent = (version: int) => documentSession.content[versi
 
 export const saveSession = () => {
     documentSession.update(session => {
-      localStorageEngine.save(session);  
-      return {
-          ...session,
-          unsavedChanges: false
-      }; 
+      localStorageEngine.save({...session, contentBuffer: '', unsavedChanges: false});  
+      return {...session, unsavedChanges: false}; 
     });
 };
 

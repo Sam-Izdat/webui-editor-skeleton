@@ -1,4 +1,4 @@
-export const initKeyboardShortcuts = () => {
+export const observeKeyboard = () => {
   window.addEventListener('keydown', (event: KeyboardEvent) => {
     // CTRL + S for save
     if (event.ctrlKey && event.key === 's') {

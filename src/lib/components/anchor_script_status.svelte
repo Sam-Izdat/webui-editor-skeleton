@@ -3,7 +3,7 @@
   import { onDestroy } from 'svelte';
   import { popup } from '@skeletonlabs/skeleton';
   import { Icon, Play, CheckCircle, ExclamationTriangle, ExclamationCircle } from "svelte-hero-icons";
-  import { errorLog } from '$lib/stores'; // Store for message queue
+  import { scriptErrorLog } from '$lib/stores'; // Store for message queue
   import { AppRailAnchor } from '@skeletonlabs/skeleton';
 
   // Define the types for messages
@@ -17,7 +17,7 @@
   let messages: Message[] = [];
   
   // Subscribe to the store for message updates
-  errorLog.subscribe((log) => {
+  scriptErrorLog.subscribe((log) => {
     messages = log;
   });
   // Helper function to get the class based on the message type
@@ -39,8 +39,7 @@
   // Reactive variable to hold the class based on script status
   let statusClass = '';
   let activeIcon = Play;
-
-  console.log(Log.getInstance().scriptStatus);
+  
   // Subscribe to the scriptStatus store
   const unsubscribe = Log.getInstance().scriptStatus.subscribe(status => {
     statusClass = '';

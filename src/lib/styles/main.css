@@ -1,4 +1,8 @@
+:global(html) {
+  overflow: hidden;
+}
 :global(body) {
   height: 100dvh !important;
+  max-height: 100dvh !important;
   padding: 0 !important;
 }

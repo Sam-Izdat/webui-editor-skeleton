@@ -26,7 +26,7 @@ export const newSession = (docName: string = 'Untitled Script', content:string =
     versionActive: 0,
     versionCount: 1,
     content: [content],
-    contentBuffer: 'content',
+    contentBuffer: content,
     unsavedChanges: false
   });
 };

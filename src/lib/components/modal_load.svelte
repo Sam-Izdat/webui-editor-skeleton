@@ -120,7 +120,7 @@
             <tbody>
               {#each savedDocuments as doc}
                 <tr>
-                <td class="px-0 m-0 border-b border-error-800/30">
+                <td class="px-0 m-0 border-b border-primary-800/30">
                     <div class="flex items-center gap-3 px-2">
                       <div class="placeholder w-16 h-12 rounded" />
                       <div class="flex flex-col w-64">

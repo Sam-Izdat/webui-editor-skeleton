@@ -96,9 +96,9 @@
         <div class="h-56 overflow-auto text-sm border border-primary-900/30 rounded">
         {#if tabSet === 0}
           <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
-            <div class="flex justify-center">
+            <div class="flex justify-center p-1">
               <button disabled title="Publish" class="btn m-2 variant-soft-primary">
-                <Icon src="{XMark}" size="16" style="margin: 2px auto;" solid/>
+                <Icon src="{XMark}" size="20" style="margin: 2px auto;" solid/>
                 <span>Publish</span>
               </button>
             </div>
@@ -121,15 +121,15 @@
           </div>
         {:else if tabSet === 1}
           <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
-            <div class="flex justify-center">
+            <div class="flex justify-center p-1">
               <button title="Save" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
                 on:click={$modalStore[0].localSaveDocCallback}>
-                <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
+                <Icon src="{ArrowDownOnSquare}" size="20" style="margin: 2px auto;" solid/>
                 <span>Save</span>
               </button> 
               <button title="Save New" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
                 on:click={$modalStore[0].localSaveDocNewVersionCallback}>
-                <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
+                <Icon src="{ArrowDownOnSquareStack}" size="20" style="margin: 2px auto;" solid/>
                 <span>Save v{$modalStore[0].session.versionActive}</span>
               </button>
             </div>
@@ -141,7 +141,7 @@
                 <svelte:fragment slot="summary"><p class="font-semibold text-base">{strSaveLocally}</p></svelte:fragment>
                 <svelte:fragment slot="content">
                   <aside class="alert variant-soft-warning p-1">
-                    <div class="alert-message">Note: <code class="code">localStorate</code> is limited to ~5-to-10MB.</div>
+                    <div class="alert-message">Note: <code class="code">localStorate</code> is limited to ~5MB.</div>
                   </aside>
                   <p>Save the script to local storage.</p>
                 </svelte:fragment>
@@ -150,10 +150,10 @@
           </div>
         {:else if tabSet === 2}
           <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">      
-            <div class="flex justify-center">
+            <div class="flex justify-center p-1">
               <button title="Export" class="btn m-2 variant-ghost-primary" 
                 on:click={$modalStore[0].exportFileCallback}>
-                <Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
+                <Icon src="{ArrowUpTray}" size="20" style="margin: 2px auto;" solid/>
                 <span>Export</span>
               </button> 
             </div>
@@ -171,9 +171,9 @@
           </div>
         {:else if tabSet === 3}
           <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">      
-            <div class="flex justify-center">
+            <div class="flex justify-center p-1">
               <button disabled title="Publish" class="btn m-2 variant-soft-primary">
-                <Icon src="{XMark}" size="16" style="margin: 2px auto;" solid/>
+                <Icon src="{XMark}" size="20" style="margin: 2px auto;" solid/>
                 <span>Womp Womp</span>
               </button>
             </div>

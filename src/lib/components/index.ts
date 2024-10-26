@@ -6,3 +6,4 @@ export { default as ModalLoad }  from './modal_load.svelte';
 export { default as ModalConfirm }  from './modal_confirm.svelte';
 export { default as ModalInput }  from './modal_input.svelte';
 export { default as DocTitleBadge } from './badge_doc_title.svelte';
+export { default as MonacoEditor } from './monaco.svelte';

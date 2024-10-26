@@ -7,15 +7,15 @@
 	import { browser } from '$app/environment';
   import { base } from '$app/paths';  
   import Device from 'svelte-device-info';
-	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 	import { strAboutText } from '$lib';
-
+	import type { editor } from 'monaco-editor';
 
   import * as g from '$lib/globals';
   import { Log } from '$lib';
 	import * as ds from '$lib/stores/doc_session';	
+	import * as km from '$lib/keymap';
 
-	// Global editor state
+	// Global state
 	import { 
 		currentView,
 		paneSizes,
@@ -45,18 +45,11 @@
   let screenHandler; 	// Fullscreen
   let mobileHandler; 	// Mobile-specific UI handling
 
-  // Observers  
+  // I/O observers  
   import { observeKeyboard } from '$lib/keybind';
-	import { observeThemeChange } from '$lib/stores/dark_mode';
 
-	// Monaco setup
-	let editor: Monaco.editor.IStandaloneCodeEditor;
-	let monaco: typeof Monaco;
-	let editorContainer: HTMLElement;
-	let codeEditor;
-
-	// Core UI components
-	import { AnchorLightSwitch, AnchorScriptStatus, DocTitleBadge }  from '$lib/components';
+	// Core components
+	import { MonacoEditor, AnchorLightSwitch, AnchorScriptStatus, DocTitleBadge }  from '$lib/components';
 	import * as panes from '$lib/panes';
 
   // Modals
@@ -73,6 +66,20 @@
 	  }
 	});
 
+  // Create a promise to wait for the editor instance
+  const waitForEditorInstance = () => {
+    return new Promise((resolve) => {
+      // This callback is passed to the Monaco component
+      setEditorInstance = (instance) => {
+        monacoEditor = instance.detail;
+        resolve(monacoEditor);  // Resolve promise when editor is ready
+      };
+    });
+  };
+
+  let setEditorInstance;
+
+  // UI actions
   const requestSaveDoc = () => {
 		if (dsCurrentSession.unsavedChanges) {
 			if (dsCurrentSession.versionActive != dsCurrentSession.versionCount - 1) {
@@ -133,32 +140,23 @@
 		})
 	};
 
+	let monacoEditor: editor.IStandaloneCodeEditor;
+
 	// When browser stuff is available
 	onMount(async () => {
+		await waitForEditorInstance(); 
+
+    // Listen for changes in Monaco editor and update the store
+    monacoEditor.onDidChangeModelContent(() => {
+      const content = monacoEditor.getValue();
+      docHandler.updateDoc(content);
+    });
+
 		// Populate panes
 		panes.returnContentToSplit();
-
-		// Import monaco
-		monaco = (await import('$lib/monaco')).default;
-
-		// Cosmetic stuff has to be here
-		document.querySelector('body').setAttribute('data-theme', g.APP_THEME);
-		observeThemeChange(monaco.editor);
-
-		// Actual editor setup
-		codeEditor = monaco.editor.create(editorContainer, {
-	    value: "",
-	    language: "c",
-	    minimap: {
-	      enabled: false,
-	    },
-	    tabSize: 2,
-	    automaticLayout: true,
-	    theme: $isDark ? 'vs-dark' : 'vs-light',
-	  });
-
+		
 		// Set up handlers
-  	docHandler 		= new DocHandler(dsCurrentSession, codeEditor);
+  	docHandler 		= new DocHandler(dsCurrentSession, monacoEditor);
   	navHandler 		= new NavHandler();
   	screenHandler = new ScreenHandler(window);
   	mobileHandler = new MobileHandler(window);
@@ -171,23 +169,8 @@
       contentToLoad = file[0].content || null; 
     }
 
-    // Listen for changes in Monaco editor and update the store
-    codeEditor.onDidChangeModelContent(() => {
-      const content = codeEditor.getValue();
-      docHandler.updateDoc(content);
-    });
 
-		// Start the monaco engine, start new doc session
-		const model = monaco.editor.createModel('',	'c');
-		codeEditor.setModel(model);
     docHandler.newDoc(contentToLoad);
-
-		// Turn off mobile typing help bullshit, if any of it is on
-		const monacoTextarea = document.querySelector('.monaco-editor textarea');
-		monacoTextarea.setAttribute('autocomplete', 'off'); 
-		monacoTextarea.setAttribute('autocorrect', 'off'); 
-		monacoTextarea.setAttribute('autocapitalize', 'off');
-		monacoTextarea.setAttribute('spellcheck', false);
 
 		// Listen for orientation changes and do initial check
 		window.screen.orientation.onchange = () => {
@@ -212,15 +195,14 @@
 	// Not actually necessary in present state, but just to be thorough.
 	onDestroy(() => {
 		if ( browser ) {
-	    window.removeEventListener('save-document', requestSaveDoc);
-	    window.removeEventListener('save-document-new-version', requestSaveDocNewVersion);
-	    window.removeEventListener('switch-document-version', requestSwitchDocVersion);
-	    window.removeEventListener('new-document', requestNewDoc);
-	    window.removeEventListener('rename-document', requestRename);
-	    window.removeEventListener('switch-view', navHandler.switchViewEvent);
+	    // window.removeEventListener('save-document', requestSaveDoc);
+	    // window.removeEventListener('save-document-new-version', requestSaveDocNewVersion);
+	    // window.removeEventListener('switch-document-version', requestSwitchDocVersion);
+	    // window.removeEventListener('new-document', requestNewDoc);
+	    // window.removeEventListener('rename-document', requestRename);
+	    // window.removeEventListener('switch-view', navHandler.switchViewEvent);
 
-			monaco?.editor.getModels().forEach((model) => model.dispose());
-			codeEditor?.dispose();
+			monacoEditor?.dispose();
 	  	docHandler?.dispose();
 	  	navHandler?.dispose();
 	  	screenHandler?.dispose();
@@ -333,7 +315,7 @@
 		<svelte:fragment slot="trail">
 			<AppRailAnchor 
 				href="#" 
-				title="New Script" 
+				title="New Script (alt+{km.keyNewDoc})" 
 				on:click={requestNewDoc}
 				style="display:block;">
 				<Icon src="{Document}" size="16" style="margin: 4px auto;" solid/>
@@ -403,7 +385,7 @@
 	<div id="cr-full" class="cr-dynamic" />
 	<div id="cr-staging">
 		<div id="ct1">
-	 		<div id="editor-wrap" bind:this={editorContainer} />						 		
+	 		<MonacoEditor editorInstance={monacoEditor} on:init={setEditorInstance} />
 		</div>
   	<div id="ct2">
   		<!-- Replace this with actual canvas -->
@@ -417,13 +399,19 @@
   		<div class="overflow-x-auto flex">
 			  <DocTitleBadge session={dsCurrentSession} renameCallback={requestRename} switchVersionCallback={requestSwitchDocVersion} />
 			  <div class="ml-auto flex">
-			    <button title="Save" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
-			      on:click={requestSaveDoc}>
+			    <button 
+			    	title="Save (alt+{km.keySaveDoc} / ctrl+{km.keySaveDoc})" 
+			    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
+			      on:click={requestSaveDoc}
+			    >
 			      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
 			      <span class="hidden lg:inline ml-2">Save</span>
 			    </button> 
-			    <button title="Save New" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
-			      on:click={requestSaveDocNewVersion}>
+			    <button 
+			    	title="Save New (alt+{km.keySaveDocNewVersion})"
+			    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
+			      on:click={requestSaveDocNewVersion}
+			    >
 			      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
 			      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionActive}</span>
 			    </button>

@@ -38,7 +38,7 @@ export const modalConfirm: ModalSettings = {
 	txtConfirm: 'Confirm',
 	txtCancel: 'Cancel',
 	onConfirm: () => { Log.toastError(strNoCB); },
-	onCancel: () => { Log.toastError(strNoCB); },
+	onCancel: () => {}, // no need for toast - cancel should be omittable
 };
 
 export const modalInput: ModalSettings = {
@@ -51,5 +51,5 @@ export const modalInput: ModalSettings = {
 	txtConfirm: 'OK',
 	txtCancel: 'Cancel',
 	onConfirm: () => { Log.toastError(strNoCB); },
-	onCancel: () => { Log.toastError(strNoCB); },
+	onCancel: () => {},
 };

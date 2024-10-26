@@ -29,6 +29,7 @@ export class ScreenHandler {
       docEl.msRequestFullscreen();
     }
     isFullscreen.set(true);
+    Log.toastInfo('fullscreen on');
   }
 
   exitFullscreen() {
@@ -42,6 +43,7 @@ export class ScreenHandler {
       this.winRef.document.msExitFullscreen();
     }
     isFullscreen.set(false);
+    Log.toastInfo('fullscreen off');
   }
 
   toggleFullscreen = () => this.fs ? this.exitFullscreen() : this.enterFullscreen();

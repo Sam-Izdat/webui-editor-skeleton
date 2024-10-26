@@ -1,4 +1,11 @@
+:global(document) {
+  height: 100dvh !important;
+  max-height: 100dvh !important
+}
+
 :global(body) {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
   margin: 0 !impoortant;
   padding: 0 !important;
 }

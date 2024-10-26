@@ -19,14 +19,14 @@ export const documentSession = writable<DocumentSession>({
   unsavedChanges: false
 });
 
-export const newSession = (docName: string = 'Untitled Script') => {
+export const newSession = (docName: string = 'Untitled Script', content:string = '') => {
   documentSession.set({
     docID: uuidv4(),
     docName: docName,
     versionActive: 0,
     versionCount: 1,
-    content: [''],
-    contentBuffer: '',
+    content: [content],
+    contentBuffer: 'content',
     unsavedChanges: false
   });
 };

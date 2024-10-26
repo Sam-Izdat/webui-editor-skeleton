@@ -73,7 +73,7 @@ export class DocHandler {
 
   newDoc = (content:string = null) => {
     this.editor.setValue(content ?? strInitialEditorContents);
-    ds.newSession();
+    ds.newSession('Untitled Script', content ?? strInitialEditorContents);
     if (!content) {
       Log.toastInfo('new script')
     } else {

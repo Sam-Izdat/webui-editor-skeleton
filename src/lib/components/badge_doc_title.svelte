@@ -100,7 +100,7 @@
       bind:group={comboboxValue} 
       name="version" 
       value={$session.versionCount-1-i}
-      on:change={() => switchVersionCallback(comboboxValue) }
+      on:change={() => { switchVersionCallback(comboboxValue); comboboxValue = null; } }
     >
       v{$session.versionCount-1-i}
     </ListBoxItem>

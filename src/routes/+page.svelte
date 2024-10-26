@@ -102,7 +102,17 @@
 		} else { Log.toastInfo('no changes to save') }
 	};
 	const requestSwitchDocVersion = (v) => {
-		docHandler.loadVersion(v);
+		Log.toastWarning('hello');
+		if (dsCurrentSession.unsavedChanges){
+			modalStore.trigger({
+				...modals.modalConfirm, 
+				message: "Unsaved changes will be discarded. Load version anyway?",
+				txtConfirm: `Switch to v${v}`,
+				onConfirm: () => { docHandler.loadVersion(v); },
+			});
+		} else {
+			docHandler.loadVersion(v);
+		}
 		// Log.toastWarning('requestSwitchDocVersion');
 	};
 	const requestSwitchDocVersionMenu = () => {

@@ -33,3 +33,16 @@ export const modalConfirm: ModalSettings = {
 	onConfirm: () => {},
 	onCancel: () => {},
 };
+
+export const modalInput: ModalSettings = {
+	type: 'component',
+	component: 'modalInput',
+	message: '',
+	inputName: '',
+	inputValue: '',
+	placeholder: '',
+	txtConfirm: 'OK',
+	txtCancel: 'Cancel',
+	onConfirm: () => {},
+	onCancel: () => {},
+};

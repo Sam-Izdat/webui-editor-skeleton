@@ -35,15 +35,18 @@ export class DocHandler {
     ds.updateContentBuffer(content);
   };
 
-  renameDoc = (docName:string = 'Foo') => {
-    docName='FOOO';
+  renameDoc = (docName:string) => {
     ds.updateSessionParams({docName: docName});
   };
 
   newDoc = (content:string = null) => {
     this.editor.setValue(content ?? strInitialEditorContents);
     ds.newSession();
-    if (!content) Log.toastInfo('new script')
+    if (!content) {
+      Log.toastInfo('new script')
+    } else {
+      Log.toastInfo('imported script')
+    }
   }; 
 
   disableEditing = () => {

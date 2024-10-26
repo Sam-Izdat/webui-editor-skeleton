@@ -73,6 +73,57 @@
 	  }
 	});
 
+  const requestSaveDoc = () => {
+		if (dsCurrentSession.unsavedChanges) {
+			if (dsCurrentSession.versionActive != dsCurrentSession.versionCount - 1) {
+				modalStore.trigger({
+					...modals.modalConfirm, 
+					message: `You are saving over an old version. Overwrite it?`,
+					txtConfirm: `Overwrite v${dsCurrentSession.versionActive}`,
+					txtCancel: `Save as v${dsCurrentSession.versionCount}`,
+					onConfirm: docHandler.saveDoc,
+					onCancel: docHandler.saveDocNewVersion,
+				});
+			} else { docHandler.saveDoc(); }
+		} else { Log.toastInfo('no changes to save') }			      		
+	};
+
+	const requestSaveDocNewVersion = () => {
+		if (dsCurrentSession.unsavedChanges) {
+			docHandler.saveDocNewVersion();
+			Log.toastWarning('requestSaveDocNewVersion');
+		} else { Log.toastInfo('no changes to save') }
+	};
+	const requestSwitchDocVersion = () => {
+		Log.toastWarning('requestSwitchDocVersion')
+		// if (dsCurrentSession.unsavedChanges) {
+		// 	docHandler.saveDocNewVersion();
+		// 	Log.toastWarning('requestSaveDocNewVersion');
+		// } else { Log.toastInfo('no changes to save') }
+	};
+	const requestNewDoc = () => {
+		if (dsCurrentSession.unsavedChanges){
+			modalStore.trigger({
+				...modals.modalConfirm, 
+				message: "Unsaved changes will be discarded. Create a new script anyway?",
+				txtConfirm: "New Script",
+				onConfirm: docHandler.newDoc
+			});
+		} else {
+			docHandler.newDoc();
+		}
+	};
+
+	const requestRename = () => {
+		modalStore.trigger({
+			...modals.modalInput, 
+			message: 'What shall we call this?',
+			placeholder: 'Script Name',
+			inputValue: dsCurrentSession.docName,
+			onConfirm: (inputVal) => { docHandler.renameDoc(inputVal); }
+		})
+	};
+
 	// When browser stuff is available
 	onMount(async () => {
 		// Populate panes
@@ -133,7 +184,11 @@
 
 		// Custom events from keybind
     observeKeyboard();
-    window.addEventListener('save-document', docHandler.saveDoc);
+    window.addEventListener('save-document', requestSaveDoc);
+    window.addEventListener('save-document-new-version', requestSaveDocNewVersion);
+    window.addEventListener('switch-document-version', requestSwitchDocVersion);
+    window.addEventListener('new-document', requestNewDoc);
+    window.addEventListener('rename-document', requestRename);
     window.addEventListener('switch-view', navHandler.switchViewEvent);
 
 		// Cosmetic
@@ -261,18 +316,7 @@
 			<AppRailAnchor 
 				href="#" 
 				title="New Script" 
-				on:click={() => {
-					if (dsCurrentSession.unsavedChanges){
-						modalStore.trigger({
-							...modals.modalConfirm, 
-							message: "Unsaved changes will be discarded. Create a new script anyway?",
-							txtConfirm: "New Script",
-							onConfirm: docHandler.newDoc
-						});
-					} else {
-						docHandler.newDoc();
-					}
-				}}
+				on:click={requestNewDoc}
 				style="display:block;">
 				<Icon src="{Document}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
@@ -353,32 +397,15 @@
     </div>	      
   	<div id="ct3">
   		<div class="overflow-x-auto flex">
-			  <DocTitleBadge session={dsCurrentSession}  />
+			  <DocTitleBadge session={dsCurrentSession} renameCallback={requestRename} switchVersionCallback={requestSwitchDocVersion} />
 			  <div class="ml-auto flex">
 			    <button title="Save" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
-			      on:click={() => {
-			      		if (dsCurrentSession.unsavedChanges) {
-									if (dsCurrentSession.versionActive != dsCurrentSession.versionCount) {
-										modalStore.trigger({
-											...modals.modalConfirm, 
-											message: `You are saving over an old version. Overwrite it?`,
-											txtConfirm: `Overwrite v${dsCurrentSession.versionActive}`,
-											txtCancel: `Save as v${dsCurrentSession.versionCount}`,
-											onConfirm: docHandler.saveDoc,
-											onCancel: docHandler.saveDocNewVersion,
-										});
-			      			} else { docHandler.saveDoc(); }
-			      		} else { Log.toastInfo('no changes to save') }			      		
-			      	}}>
+			      on:click={requestSaveDoc}>
 			      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
 			      <span class="hidden lg:inline ml-2">Save</span>
 			    </button> 
 			    <button title="Save New" class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
-			      on:click={() => {
-			      		if (dsCurrentSession.unsavedChanges) {
-									docHandler.saveDocNewVersion();
-			      		} else { Log.toastInfo('no changes to save') }			      		
-			      	}}>
+			      on:click={requestSaveDocNewVersion}>
 			      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
 			      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionActive}</span>
 			    </button>

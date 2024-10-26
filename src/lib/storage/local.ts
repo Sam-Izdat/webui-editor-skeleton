@@ -5,8 +5,7 @@ const prefix = 'saved-doc-';
 export const save = (session: DocumentSession) => {
   const key = prefix + session.docID;
   localStorage.setItem(key, JSON.stringify({
-    name: session.docName,
-    content: session.content,
+    ...session,
     dateSaved: new Date().toISOString()  // Add a timestamp
   }));
 };

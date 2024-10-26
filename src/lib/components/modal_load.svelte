@@ -190,7 +190,7 @@
                 </svelte:fragment>
                 <svelte:fragment slot="summary"><p class="font-semibold text-base">{strLoadLocally}</p></svelte:fragment>
                 <svelte:fragment slot="content">
-                  <p>Load a script to local storage.</p>
+                  <p>Load a script from local storage.</p>
                 </svelte:fragment>
               </AccordionItem>
             </Accordion>

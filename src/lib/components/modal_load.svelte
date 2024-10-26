@@ -27,7 +27,7 @@
   const modalStore = getModalStore();
 
   const cButton: string           = 'fixed top-4 right-4 z-50 font-bold shadow-xl';
-  const cBase: string             = 'card p-4 w-modal shadow-xl space-y-4';  
+  const cBase: string             = 'card p-4 w-modal shadow-xl space-y-4';
 
   const isPWA: boolean            = window.matchMedia('(display-mode: standalone)').matches;
   const isStaticServer: boolean   = __BUILD_TYPE__ == 'static';
@@ -66,7 +66,7 @@
       <svelte:fragment slot="panel">
         <div class="h-full overflow-auto text-sm border border-primary-900/30 rounded">
         {#if tabSet === 0}
-          <div class="card bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">
+          <div class="card min-h-64 bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">
             <div class="flex justify-center p-1">
               <button disabled title="Publish" class="btn m-2 variant-soft-primary">
                 <Icon src="{XMark}" size="20" style="margin: 2px auto;" solid/>
@@ -92,7 +92,7 @@
             </Accordion>
           </div>
         {:else if tabSet === 1}
-          <div class="card bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">
+          <div class="card min-h-64 bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">
             <div class="flex justify-center p-1">
 
 
@@ -196,7 +196,7 @@
             </Accordion>
           </div>
         {:else if tabSet === 2}
-          <div class="card bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">      
+          <div class="card min-h-64 bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">      
             <div class="flex justify-center p-1">
               <button title="Import" class="btn m-2 variant-ghost-primary" 
                 on:click={$modalStore[0].importFileCallback}>
@@ -218,7 +218,7 @@
             </Accordion>
           </div>
         {:else if tabSet === 3}
-          <div class="card bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">      
+          <div class="card min-h-64 bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">      
             <div class="flex justify-center p-1">
               <button disabled title="Publish" class="btn m-2 variant-soft-primary">
                 <Icon src="{XMark}" size="20" style="margin: 2px auto;" solid/>

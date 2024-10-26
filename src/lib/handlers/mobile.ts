@@ -1,27 +1,47 @@
 import { tick } from 'svelte';
 import { get } from 'svelte/store';
-import { orientationLandscape, currentView } from '$lib/stores';
+import { orientationLandscape, currentView, isFullscreen } from '$lib/stores';
 import * as panes from '$lib/panes';
+import { Log } from '$lib';
 
 export class MobileHandler {
-  constructor(screenRef) {
-    this.screenRef = screenRef;
+  constructor(winRef, options = {}) {
+    const {
+      requestLandscapeOnFullscreen = true,
+    } = options;
+    this.requestLandscapeOnFullscreen = requestLandscapeOnFullscreen;
+
+    this.winRef = winRef;
     this.landscape = get(orientationLandscape);
     this.view = get(currentView);
+    this.fs = get(isFullscreen);
     this.unsubscribeAll = [
       orientationLandscape.subscribe(landscape => {
-        this.landscape = landscape;
+        this.landscape = landscape;        
       }),
       currentView.subscribe(view => {
         this.view = view;
+      }),
+      isFullscreen.subscribe(fs => {
+        this.fs = fs;
+        if (fs && this.requestLandscapeOnFullscreen) this.requestLandscape()
       }),
     ];
   }
 
   dispose() { this.unsubscribeAll.forEach(unsub => unsub()); }
 
+  requestLandscape() {
+    // Request landscape orientation
+    if (this.winRef.screen.orientation && this.winRef.screen.orientation.lock) {
+      this.winRef.screen.orientation.lock('landscape').catch((error) => {
+        Log.debug(`Failed to lock orientation: ${error}`); // not important
+      });
+    }
+  }
+
   async orientationChange() {
-    if (this.landscape && this.screenRef.orientation.type.startsWith('portrait')) {
+    if (this.landscape && this.winRef.screen.orientation.type.startsWith('portrait')) {
       panes.moveContentToStaging();
       orientationLandscape.set(false);     
       await tick(); // Wait for DOM to be updated
@@ -39,16 +59,7 @@ export class MobileHandler {
       else if (this.view == 2) panes.moveContent('ct2', 'cr-full');
       else if (this.view == 3) panes.moveContent('ct3', 'cr-full');
       panes.showView(this.view);
-    }
+    }    
   };
 }
 
-
-
-
-    // // Request landscape orientation
-    // if (this.screenRef.orientation && this.screenRef.orientation.lock) {
-    //   this.screenRef.orientation.lock('landscape').catch((error) => {
-    //     Log.debug(`Failed to lock orientation: ${error}`); // not important
-    //   });
-    // }

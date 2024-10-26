@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SvelteComponent } from 'svelte';
+  import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
   import { TabGroup, Tab, TabAnchor } from '@skeletonlabs/skeleton';
   import { 
     Icon, 
@@ -8,14 +9,19 @@
     ArrowUpTray,
     Link,
     ExclamationTriangle,
+    ArrowDownOnSquare,
+    ArrowDownOnSquareStack,
+    InformationCircle,
+    XMark,
   } from "svelte-hero-icons";
+  import type DocumentSession from '$lib/doc_types';
 
   // Stores
   import { getModalStore } from '@skeletonlabs/skeleton';
 
   // Props
   /** Exposes parent props to this component. */
-  export let parent: SvelteComponent;
+  export let parent:SvelteComponent;
 
   const modalStore = getModalStore();
 
@@ -86,47 +92,112 @@
         <svelte:fragment slot="lead"><Icon src="{Link}" size="20" style="margin: 4px auto;" alt={strShareRaw} solid/></svelte:fragment>
         <span class="hidden lg:inline ml-2">Share External</span>
       </Tab>
-      <!-- Tab Panels --->
       <svelte:fragment slot="panel">
         <div class="h-56 overflow-auto">
         {#if tabSet === 0}
-          <div class="card h-[100%] bg-surface-50-900-token shadow-inner">
-            <div class="p-4 space-y-4">
-              <h4 class="h4" data-toc-ignore>{strSaveRemotely}</h4>
-              <article>                      
-                {#if isStaticServer}
-                <aside class="alert variant-soft-warning p-1">
-                  <div class="alert-message">Server-side storage is not yet available.</div>
-                </aside>
-                {/if}
-              </article>
-            </div>
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
+
+
+            <Accordion>
+              <AccordionItem open>
+                <svelte:fragment slot="lead">
+                  <Icon src="{CloudArrowUp}" size="20" style="margin: 4px auto;" alt={strSaveRemotely} solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold">{strSaveRemotely}</p></svelte:fragment>
+                <svelte:fragment slot="content">
+                  <div class="flex justify-center">
+                    <button disabled title="Publish" class="btn m-2 variant-soft-primary">
+                      <Icon src="{XMark}" size="16" style="margin: 2px auto;" solid/>
+                      <span>Publish</span>
+                    </button>
+                  </div>
+                </svelte:fragment>
+              </AccordionItem>
+              <AccordionItem open>
+                <svelte:fragment slot="lead">
+                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt="About" solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold">About</p></svelte:fragment>
+                <svelte:fragment slot="content">               
+                  {#if isStaticServer}
+                  <aside class="alert variant-soft-warning p-1">
+                    <div class="alert-message">Server-side storage is currently available.</div>
+                  </aside>
+                  {/if}
+                  <p>Publish the script on the web.</p>   
+                </svelte:fragment>
+              </AccordionItem>
+            </Accordion>
           </div>
         {:else if tabSet === 1}
-          <div class="card h-[100%] bg-surface-50-900-token shadow-inner">
-            <div class="p-4 space-y-4">
-              <h4 class="h4" data-toc-ignore>{strSaveLocally}</h4>
-              <article>
-                <p>PWA? {isPWA}</p>
-                <p>StaticServer? {isStaticServer}
-              </article>
-            </div>
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
+            <Accordion>
+              <AccordionItem open>
+                <svelte:fragment slot="lead">
+                  <Icon src="{Folder}" size="20" style="margin: 4px auto;" alt={strSaveLocally} solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold">{strSaveLocally}</p></svelte:fragment>
+                <svelte:fragment slot="content">
+                  <div class="flex justify-center">
+                    <button title="Save" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
+                      on:click={$modalStore[0].localSaveDocCallback}>
+                      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
+                      <span>Save</span>
+                    </button> 
+                    <button title="Save New" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
+                      on:click={$modalStore[0].localSaveDocNewVersionCallback}>
+                      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
+                      <span>Save v{$modalStore[0].session.versionActive}</span>
+                    </button>
+                  </div>
+                </svelte:fragment>
+              </AccordionItem>
+              <AccordionItem open>
+                <svelte:fragment slot="lead">
+                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt="About" solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold">About</p></svelte:fragment>
+                <svelte:fragment slot="content">
+                  <p>Save the script to local storage.</p>
+                </svelte:fragment>
+              </AccordionItem>
+            </Accordion>
           </div>
         {:else if tabSet === 2}
-          <div class="card h-[100%] bg-surface-50-900-token shadow-inner">
-            <div class="p-4 space-y-4">
-              <h4 class="h4" data-toc-ignore>{strExportFile}</h4>
-              <article>
-                .....
-              </article>
-            </div>
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
+            <Accordion>
+              <AccordionItem open>
+                <svelte:fragment slot="lead">
+                  <Icon src="{ArrowUpTray}" size="20" style="margin: 4px auto;" alt={strExportFile} solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold">{strExportFile}</p></svelte:fragment>
+                <svelte:fragment slot="content">
+                  <div class="flex justify-center">
+                    <button title="Save" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
+                      on:click={$modalStore[0].localSaveDocCallback}>
+                      <Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
+                      <span>Export</span>
+                    </button> 
+                  </div>
+                </svelte:fragment>
+              </AccordionItem>
+              <AccordionItem open>
+                <svelte:fragment slot="lead">
+                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt="About" solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold">About</p></svelte:fragment>
+                <svelte:fragment slot="content">
+                  <p>Export the script as a plaintext file.</p>
+                </svelte:fragment>
+              </AccordionItem>
+            </Accordion>
           </div>
         {:else if tabSet === 3}
-          <div class="card h-[100%] bg-surface-50-900-token shadow-inner">
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
             <div class="p-4 space-y-4">
-              <h4 class="h4" data-toc-ignore>{strShareRaw}</h4>
-              <article>
-                Specify the address of a <em>raw</em> script file and share it through the editor.
+              <h5 class="h5" data-toc-ignore>{strShareRaw}</h5>
+              <article class="text-sm">
+                Provide the URL of an externally-hosted <em>raw</em> script file or a gist ID and get a link to share it through the editor.
               </article>
             </div>
           </div>

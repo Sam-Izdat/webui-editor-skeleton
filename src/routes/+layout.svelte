@@ -2,15 +2,15 @@
 	import '../app.postcss';
 	import * as g from '$lib/globals';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
-	import { LightSwitch } from '@skeletonlabs/skeleton';
+	// import { LightSwitch } from '@skeletonlabs/skeleton';
 
-	import { popup } from '@skeletonlabs/skeleton';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
-	import { assets, base, resolveRoute } from '$app/paths';
+	// import { popup } from '@skeletonlabs/skeleton';
+	// import type { PopupSettings } from '@skeletonlabs/skeleton';
+	// import { assets, base, resolveRoute } from '$app/paths';
 
 	import { autoModeWatcher } from '@skeletonlabs/skeleton';
 
-	import { browser } from '$app/environment';
+	// import { browser } from '$app/environment';
 
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';

@@ -15,7 +15,10 @@ export const modalAbout: ModalSettings = {
 export const modalSave: ModalSettings = {
 	type: 'component',
 	component: 'modalSave',
-	title: 'Save / Export / Share'
+	title: 'Save / Export / Share',
+	session: null,
+	localSaveDocCallback: () => {},
+	localSaveDocNewVersionCallback: () => {},
 };
 
 export const modalLoad: ModalSettings = {

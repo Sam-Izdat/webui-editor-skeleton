@@ -5,9 +5,8 @@ import { get } from 'svelte/store';
 import { isFullscreen } from '$lib/stores';
 
 export class ScreenHandler {
-  constructor(docRef, screenRef) {
-    this.docRef = docRef;
-    this.screenRef = screenRef;
+  constructor(winRef) {
+    this.winRef = winRef;
     this.fs = get(isFullscreen);
     this.unsubscribeAll = [
       isFullscreen.subscribe(fs => {
@@ -19,7 +18,7 @@ export class ScreenHandler {
   dispose() { this.unsubscribeAll.forEach(unsub => unsub()); }
 
   enterFullscreen() {
-    const docEl = this.docRef.documentElement;
+    const docEl = this.winRef.document.documentElement;
     if (docEl.requestFullscreen) {
       docEl.requestFullscreen();
     } else if (docEl.mozRequestFullScreen) {
@@ -33,14 +32,14 @@ export class ScreenHandler {
   }
 
   exitFullscreen() {
-    if (this.docRef.exitFullscreen) {
-      this.docRef.exitFullscreen();
-    } else if (this.docRef.mozCancelFullScreen) {
-      this.docRef.mozCancelFullScreen();
-    } else if (this.docRef.webkitExitFullscreen) {
-      this.docRef.webkitExitFullscreen();
-    } else if (this.docRef.msExitFullscreen) {
-      this.docRef.msExitFullscreen();
+    if (this.winRef.document.exitFullscreen) {
+      this.winRef.document.exitFullscreen();
+    } else if (this.winRef.document.mozCancelFullScreen) {
+      this.winRef.document.mozCancelFullScreen();
+    } else if (this.winRef.document.webkitExitFullscreen) {
+      this.winRef.document.webkitExitFullscreen();
+    } else if (this.winRef.document.msExitFullscreen) {
+      this.winRef.document.msExitFullscreen();
     }
     isFullscreen.set(false);
   }

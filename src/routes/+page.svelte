@@ -124,6 +124,15 @@
 		})
 	};
 
+	const requestSaveMenu = () => {
+		modalStore.trigger({
+			...modals.modalSave, 
+			session: dsCurrentSession,
+			localSaveDocCallback: requestSaveDoc,
+			localSaveDocNewVersionCallback: requestSaveDocNewVersion,
+		})
+	};
+
 	// When browser stuff is available
 	onMount(async () => {
 		// Populate panes
@@ -146,8 +155,8 @@
 		// Set up handlers
   	docHandler 		= new DocHandler(dsCurrentSession, codeEditor);
   	navHandler 		= new NavHandler();
-  	screenHandler = new ScreenHandler(document, screen);
-  	mobileHandler = new MobileHandler(screen);
+  	screenHandler = new ScreenHandler(window);
+  	mobileHandler = new MobileHandler(window);
 
     // Check if an uploaded file exists in sessionStorage or localStorage
     const fileData = sessionStorage.getItem('activeFile'); 
@@ -176,7 +185,10 @@
 		monacoTextarea.setAttribute('spellcheck', false);
 
 		// Listen for orientation changes and do initial check
-		window.screen.orientation.onchange = mobileHandler.orientationChange;
+		window.screen.orientation.onchange = () => {
+			// Don't shorten to just arrow - this has to be in curlies now... for some reason.
+			mobileHandler.orientationChange();
+		};
 		mobileHandler.orientationChange();
 
 		// Turn off editing by default on mobile devices, because soft keys suck
@@ -323,7 +335,7 @@
 			<AppRailAnchor 
 				href="#" 
 				title="Save / Export / Share" 
-				on:click={() => modalStore.trigger(modals.modalSave)}
+				on:click={requestSaveMenu}
 				style="display:block;">
 				<Icon src="{DocumentArrowUp}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>

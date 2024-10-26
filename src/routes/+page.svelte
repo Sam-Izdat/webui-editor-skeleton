@@ -102,7 +102,6 @@
 		} else { Log.toastInfo('no changes to save') }
 	};
 	const requestSwitchDocVersion = (v) => {
-		Log.toastWarning('hello');
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
 				...modals.modalConfirm, 
@@ -113,14 +112,6 @@
 		} else {
 			docHandler.loadVersion(v);
 		}
-		// Log.toastWarning('requestSwitchDocVersion');
-	};
-	const requestSwitchDocVersionMenu = () => {
-		Log.toastWarning('requestSwitchDocVersionMenu');
-		// if (dsCurrentSession.unsavedChanges) {
-		// 	docHandler.saveDocNewVersion();
-		// 	Log.toastWarning('requestSaveDocNewVersion');
-		// } else { Log.toastInfo('no changes to save') }
 	};
 	const requestNewDoc = () => {
 		if (dsCurrentSession.unsavedChanges){
@@ -432,7 +423,6 @@
 				  	renameCallback={requestRenameDoc} 
 				  	switchVersionCallback={requestSwitchDocVersion} 
 				  />
-				  	<!-- switchVersionMenuCallback={requestSwitchDocVersionMenu} -->
 			  </div>
 			</div>
 			<div class="flex p-1">

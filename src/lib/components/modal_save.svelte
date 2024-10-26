@@ -14,20 +14,17 @@
     InformationCircle,
     XMark,
   } from "svelte-hero-icons";
+
   import type DocumentSession from '$lib/doc_types';
 
-  // Stores
   import { getModalStore } from '@skeletonlabs/skeleton';
 
-  // Props
-  /** Exposes parent props to this component. */
   export let parent:SvelteComponent;
 
   const modalStore = getModalStore();
 
   const cButton: string           = 'fixed top-4 right-4 z-50 font-bold shadow-xl';
-  const cBase: string             = 'card p-4 w-modal shadow-xl space-y-4';
-  // const cHeader = 'text-2xl font-bold';
+  const cBase: string             = 'card p-4 w-modal shadow-xl space-y-4';  
 
   const isPWA: boolean            = window.matchMedia('(display-mode: standalone)').matches;
   const isStaticServer: boolean   = __BUILD_TYPE__ == 'static';
@@ -69,7 +66,7 @@
   const strSaveRemotely = "Save to Web";
   const strSaveLocally  = "Save Locally";
   const strExportFile   = "Export File";
-  const strShareRaw     = "Share External Resource";
+  const strShareRawURL  = "Share External Resource";
 </script>
 
 
@@ -89,7 +86,7 @@
         <span class="hidden lg:inline ml-2">Export File</span>
       </Tab>
       <Tab bind:group={tabSet} name="tab3" value={3}>
-        <svelte:fragment slot="lead"><Icon src="{Link}" size="20" style="margin: 4px auto;" alt={strShareRaw} solid/></svelte:fragment>
+        <svelte:fragment slot="lead"><Icon src="{Link}" size="20" style="margin: 4px auto;" alt={strShareRawURL} solid/></svelte:fragment>
         <span class="hidden lg:inline ml-2">Share External</span>
       </Tab>
       <svelte:fragment slot="panel">
@@ -184,9 +181,9 @@
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">
-                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt={strShareRaw} solid/>
+                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt={strShareRawURL} solid/>
                 </svelte:fragment>
-                <svelte:fragment slot="summary"><p class="font-semibold text-base">{strShareRaw}</p></svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold text-base">{strShareRawURL}</p></svelte:fragment>
                 <svelte:fragment slot="content">
                   <p>
                     Provide the URL of an externally-hosted <em>raw</em> script file or 

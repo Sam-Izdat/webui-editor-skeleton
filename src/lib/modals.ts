@@ -28,7 +28,9 @@ export const modalSave: ModalSettings = {
 export const modalLoad: ModalSettings = {
 	type: 'component',
 	component: 'modalLoad',
-	title: 'Load / Import / Browse'
+	title: 'Load / Import / Browse',
+	localLoadDocCallback: () => { Log.toastError(strNoCB); },
+	importFileCallback: () => { Log.toastError(strNoCB); },
 };
 
 export const modalConfirm: ModalSettings = {

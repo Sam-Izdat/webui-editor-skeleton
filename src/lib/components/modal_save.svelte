@@ -109,13 +109,13 @@
                   <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt={strSaveRemotely} solid/>
                 </svelte:fragment>
                 <svelte:fragment slot="summary"><p class="font-semibold text-base">{strSaveRemotely}</p></svelte:fragment>
-                <svelte:fragment slot="content">               
+                <svelte:fragment slot="content">
+                  <p>Publish the script on the web.</p>
                   {#if isStaticServer}
                   <aside class="alert variant-soft-error p-1">
-                    <div class="alert-message">Server-side storage is currently available.</div>
+                    <div class="alert-message">Server-side storage is not currently available.</div>
                   </aside>
                   {/if}
-                  <p>Publish the script on the web.</p>   
                 </svelte:fragment>
               </AccordionItem>
             </Accordion>
@@ -134,7 +134,7 @@
                 <span>Save v{$modalStore[0].session.versionActive}</span>
               </button>
             </div>
-            
+
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">
@@ -142,10 +142,10 @@
                 </svelte:fragment>
                 <svelte:fragment slot="summary"><p class="font-semibold text-base">{strSaveLocally}</p></svelte:fragment>
                 <svelte:fragment slot="content">
+                  <p>Save the script to local storage.</p>
                   <aside class="alert variant-soft-warning p-1">
                     <div class="alert-message">Note: <code class="code">localStorate</code> is limited to ~5MB.</div>
                   </aside>
-                  <p>Save the script to local storage.</p>
                 </svelte:fragment>
               </AccordionItem>
             </Accordion>

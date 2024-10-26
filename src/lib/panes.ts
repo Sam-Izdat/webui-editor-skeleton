@@ -16,8 +16,8 @@ export const resetPaneSizes = (): PaneSizes => {
     sizeLandscapePaneTopRight:      40,
     sizeLandscapePaneBottomRight:   60,
     sizePortraitPaneTop:            65,
-    sizePortraitPaneMid:            27,
-    sizePortraitPaneBot:            8,
+    sizePortraitPaneMid:            25,
+    sizePortraitPaneBot:            10,
   }
 };
 

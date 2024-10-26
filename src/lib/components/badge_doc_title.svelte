@@ -18,6 +18,10 @@
   import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
   let comboboxValue: string;
 
+  $: primColorDark    = uuidToPrimaryColorDark(session.docID);
+  $: compColorDark    = uuidToComplimentaryColorDark(session.docID);
+  $: primColorLight   = uuidToPrimaryColorLight(session.docID);
+  $: compColorLight   = uuidToComplimentaryColorLight(session.docID);
   const popupCombobox: PopupSettings = {
     event: 'click',
     target: 'popupCombobox',
@@ -27,29 +31,39 @@
 </script>
 
 {#if $isDark}
-<button 
-  title="Rename (alt+{km.keyRenameDoc})" 
-  class="badge m-1 p-2 relative inline-block border-2 border-primary-900/30" on:click={renameCallback} 
-  style="
-    background-color: {uuidToPrimaryColorDark(session.docID)}; 
-    box-shadow: inset 3px 2px 18px {uuidToComplimentaryColorDark(session.docID)}; 
-  ">
-  <span class="drop-shadow-[0_0_2px_rgba(0,0,0,1.0)]">
-    {session.docName}{#if session.unsavedChanges}&nbsp;*{/if}
-  </span>
-</button> 
+<div class="shadow-[0_2px_6px_rgba(1,0,0,0.4)] p-0 m-1 inline-block" style="">
+  <button 
+    title="Rename (alt+{km.keyRenameDoc})" 
+    class="badge m-0 p-2 relative inline-block" on:click={renameCallback} 
+    style="
+      background-color: {primColorDark}; 
+      box-shadow: inset 3px 2px 22px {compColorDark}; 
+      border-image-slice: 1;
+      border-width: 2px;
+      border-image-source: linear-gradient(to left, {primColorDark}, {compColorDark});
+    ">
+    <span class="drop-shadow-[0_0_2px_rgba(0,0,0,1.0)]">
+      {session.docName}{#if session.unsavedChanges}&nbsp;*{/if}
+    </span>
+  </button> 
+</div>
 {:else}
-<button 
-  title="Rename (alt+{km.keyRenameDoc})" 
-  class="badge m-1 p-2 relative inline-block border-2 border-primary-500/30" 
-  on:click={renameCallback} style="
-    background-color: {uuidToPrimaryColorLight(session.docID)}; 
-    box-shadow: inset 3px 2px 18px {uuidToComplimentaryColorLight(session.docID)}; 
-  ">
-  <span>
-    {session.docName}{#if session.unsavedChanges}&nbsp;*{/if}
-  </span>
-</button> 
+<div class="shadow-[0_2px_6px_rgba(1,0,0,0.4)] p-0 m-1 inline-block" style="">
+  <button 
+    title="Rename (alt+{km.keyRenameDoc})" 
+    class="badge m-0 p-2 relative inline-block" 
+    on:click={renameCallback} style="
+      background-color: {primColorLight}; 
+      box-shadow: inset 3px 2px 22px {compColorLight}; 
+      border-image-slice: 1;
+      border-width: 2px;
+      border-image-source: linear-gradient(to left, {primColorLight}, {compColorLight});
+    ">
+    <span>
+      {session.docName}{#if session.unsavedChanges}&nbsp;*{/if}
+    </span>
+  </button> 
+</div>
 {/if}
 <!-- <button 
   title="Previous version" 

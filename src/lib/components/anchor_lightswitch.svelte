@@ -2,7 +2,7 @@
   // NOTE: This can be drastically simplified, but I just copied the skeleton lightswitch to save time
 
   import { onMount } from 'svelte';
-  import { modeCurrent, setModeUserPrefers, setModeCurrent, setInitialClassState, getModeOsPrefers } from './anchor_lightswitch.js';
+  import { modeCurrent, setModeUserPrefers, setModeCurrent, setInitialClassState, getModeOsPrefers } from './anchor_lightswitch.ts';
 
   import { AppRailAnchor } from '@skeletonlabs/skeleton';
   // Types

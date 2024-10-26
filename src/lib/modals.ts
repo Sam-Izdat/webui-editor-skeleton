@@ -1,5 +1,5 @@
 import { base } from '$app/paths';
-import { strAboutText } from '$lib';
+import { strAboutText } from '$lib/strings';
 import * as g from '$lib/globals';
 import { Log } from '$lib';
 

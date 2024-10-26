@@ -102,7 +102,10 @@
 		} else { Log.toastInfo('no changes to save') }
 	};
 	const requestSwitchDocVersion = () => {
-		Log.toastWarning('requestSwitchDocVersion')
+		Log.toastWarning('requestSwitchDocVersion');
+	};
+	const requestSwitchDocVersionMenu = () => {
+		Log.toastWarning('requestSwitchDocVersionMenu');
 		// if (dsCurrentSession.unsavedChanges) {
 		// 	docHandler.saveDocNewVersion();
 		// 	Log.toastWarning('requestSaveDocNewVersion');
@@ -239,7 +242,6 @@
   	ArrowPath,
   	ArrowDownOnSquare,
   	ArrowDownOnSquareStack,
-  	ArrowUpTray
   } from "svelte-hero-icons";
 </script>
 
@@ -395,35 +397,37 @@
   		</div>
   		<!-- / Replace this with actual canvas -->
     </div>	      
-  	<div id="ct3">
-  		<div class="overflow-x-auto flex">
-			  <DocTitleBadge session={dsCurrentSession} renameCallback={requestRename} switchVersionCallback={requestSwitchDocVersion} />
+  	<div id="ct3" class="divide-y divide-surface-400/10">
+  		<div class="overflow-x-auto flex p-1">
+		    <button 
+		    	title="Save (alt+{km.keySaveDoc} / ctrl+{km.keySaveDoc})" 
+		    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
+		      on:click={requestSaveDoc}
+		    >
+		      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
+		      <span class="hidden lg:inline ml-2">Save</span>
+		    </button> 
+		    <button 
+		    	title="Save v{dsCurrentSession.versionCount} (alt+{km.keySaveDocNewVersion})"
+		    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
+		      on:click={requestSaveDocNewVersion}
+		    >
+		      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
+		      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionCount}</span>
+		    </button>
 			  <div class="ml-auto flex">
-			    <button 
-			    	title="Save (alt+{km.keySaveDoc} / ctrl+{km.keySaveDoc})" 
-			    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
-			      on:click={requestSaveDoc}
-			    >
-			      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
-			      <span class="hidden lg:inline ml-2">Save</span>
-			    </button> 
-			    <button 
-			    	title="Save New (alt+{km.keySaveDocNewVersion})"
-			    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
-			      on:click={requestSaveDocNewVersion}
-			    >
-			      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
-			      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionActive}</span>
-			    </button>
-			    <button title="Export" class="badge m-1 variant-ghost-primary">
-			      <Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
-			      <span class="hidden lg:inline ml-2">Export</span>
-			    </button>
+				  <DocTitleBadge 
+				  	session={dsCurrentSession} 
+				  	renameCallback={requestRename} 
+				  	switchVersionCallback={requestSwitchDocVersion} 
+				  	switchVersionMenuCallback={requestSwitchDocVersionMenu}
+				  />
 			  </div>
 			</div>
-			<hr class="hr m-1" />
-  		<span class="badge variant-soft">This is where the controls would be.</span>
-  		<span class="badge variant-soft">Current view: {$currentView}</span>
+			<div class="flex p-1">
+	  		<span class="badge variant-soft">This is where the controls would be.</span>
+	  		<span class="badge variant-soft">Current view: {$currentView}</span>
+	  	</div>
   	</div>
 	</div>
 </div>

@@ -17,7 +17,7 @@
 
   onMount(async () => {
     // Import monaco
-    monaco = (await import('$lib/monaco')).default;
+    monaco = (await import('./monaco.ts')).default;
 
     // Cosmetic stuff has to be here
     document.querySelector('body').setAttribute('data-theme', g.APP_THEME);

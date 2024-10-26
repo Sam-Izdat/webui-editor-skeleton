@@ -95,13 +95,14 @@
       <svelte:fragment slot="panel">
         <div class="h-56 overflow-auto text-sm border border-primary-900/30 rounded">
         {#if tabSet === 0}
-          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">
             <div class="flex justify-center p-1">
               <button disabled title="Publish" class="btn m-2 variant-soft-primary">
                 <Icon src="{XMark}" size="20" style="margin: 2px auto;" solid/>
                 <span>Publish</span>
               </button>
             </div>
+
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">
@@ -120,7 +121,7 @@
             </Accordion>
           </div>
         {:else if tabSet === 1}
-          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">
             <div class="flex justify-center p-1">
               <button title="Save" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
                 on:click={$modalStore[0].localSaveDocCallback}>
@@ -133,6 +134,7 @@
                 <span>Save v{$modalStore[0].session.versionActive}</span>
               </button>
             </div>
+            
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">
@@ -149,7 +151,7 @@
             </Accordion>
           </div>
         {:else if tabSet === 2}
-          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">      
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">      
             <div class="flex justify-center p-1">
               <button title="Export" class="btn m-2 variant-ghost-primary" 
                 on:click={$modalStore[0].exportFileCallback}>
@@ -157,6 +159,7 @@
                 <span>Export</span>
               </button> 
             </div>
+
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">
@@ -170,13 +173,14 @@
             </Accordion>
           </div>
         {:else if tabSet === 3}
-          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">      
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">      
             <div class="flex justify-center p-1">
               <button disabled title="Publish" class="btn m-2 variant-soft-primary">
                 <Icon src="{XMark}" size="20" style="margin: 2px auto;" solid/>
                 <span>Womp Womp</span>
               </button>
             </div>
+            
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">

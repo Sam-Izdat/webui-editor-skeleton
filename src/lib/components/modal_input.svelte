@@ -44,7 +44,7 @@
           />
         </label>
       </div>
-      <div class="flex justify-end">
+      <div class="flex justify-center">
         <button type="submit" class="btn variant-ghost-primary m-1">
           <Icon src="{Check}" size="16" style="margin: 2px auto;" solid/>
           <span>{$modalStore[0].txtConfirm ?? 'OK'}</span>

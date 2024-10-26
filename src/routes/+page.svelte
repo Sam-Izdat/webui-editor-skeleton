@@ -124,12 +124,13 @@
 		}
 	};
 
-	const requestRename = () => {
+	const requestRenameDoc = () => {
 		modalStore.trigger({
 			...modals.modalInput, 
 			message: 'What shall we call this?',
 			placeholder: 'Script Name',
 			inputValue: dsCurrentSession.docName,
+			txtConfirm: 'Rename',
 			onConfirm: (inputVal) => { docHandler.renameDoc(inputVal); }
 		})
 	};
@@ -191,19 +192,19 @@
     window.addEventListener('save-document-new-version', requestSaveDocNewVersion);
     window.addEventListener('switch-document-version', requestSwitchDocVersion);
     window.addEventListener('new-document', requestNewDoc);
-    window.addEventListener('rename-document', requestRename);
+    window.addEventListener('rename-document', requestRenameDoc);
     window.addEventListener('switch-view', navHandler.switchViewEvent);
 	});
 
 	// Not actually necessary in present state, but just to be thorough.
 	onDestroy(() => {
 		if ( browser ) {
-	    // window.removeEventListener('save-document', requestSaveDoc);
-	    // window.removeEventListener('save-document-new-version', requestSaveDocNewVersion);
-	    // window.removeEventListener('switch-document-version', requestSwitchDocVersion);
-	    // window.removeEventListener('new-document', requestNewDoc);
-	    // window.removeEventListener('rename-document', requestRename);
-	    // window.removeEventListener('switch-view', navHandler.switchViewEvent);
+	    window.removeEventListener('save-document', requestSaveDoc);
+	    window.removeEventListener('save-document-new-version', requestSaveDocNewVersion);
+	    window.removeEventListener('switch-document-version', requestSwitchDocVersion);
+	    window.removeEventListener('new-document', requestNewDoc);
+	    window.removeEventListener('rename-document', requestRenameDoc);
+	    window.removeEventListener('switch-view', navHandler.switchViewEvent);
 
 			monacoEditor?.dispose();
 	  	docHandler?.dispose();
@@ -418,7 +419,7 @@
 			  <div class="ml-auto flex">
 				  <DocTitleBadge 
 				  	session={dsCurrentSession} 
-				  	renameCallback={requestRename} 
+				  	renameCallback={requestRenameDoc} 
 				  	switchVersionCallback={requestSwitchDocVersion} 
 				  	switchVersionMenuCallback={requestSwitchDocVersionMenu}
 				  />

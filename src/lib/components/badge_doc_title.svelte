@@ -77,7 +77,7 @@
   v{session.versionActive}
 </button>
 <div class="card w-20 shadow-xl py-2 max-h-32 overflow-y-auto overflow-x-hidden" data-popup="popupCombobox">
-  <ListBox rounded="rounded-none" padding="px-4 py-0 text-sm">
+  <ListBox rounded="rounded-none" padding="px-4 py-1 text-sm">
     {#each Array.from({ length: session.versionCount+12 }, (_, i) => i + 1) as n, i}
     <ListBoxItem bind:group={comboboxValue} name="version" value="v{session.versionCount+12-1-i}">v{session.versionCount+12-1-i}</ListBoxItem>
     {/each}

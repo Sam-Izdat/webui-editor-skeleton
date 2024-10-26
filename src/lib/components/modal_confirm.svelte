@@ -25,7 +25,7 @@
 {#if $modalStore[0]}
   <div class="{cBase}">
     <article class="text-center">{$modalStore[0].message ?? 'Confirmation needed'}</article>
-    <div class="flex justify-end">
+    <div class="flex justify-center">
       <button class="btn variant-filled-warning m-1" on:click={actionConfirm}>
         <Icon src="{Check}" size="16" style="margin: 2px auto;" solid/>
         <span>{$modalStore[0].txtConfirm ?? 'Confirm'}</span>

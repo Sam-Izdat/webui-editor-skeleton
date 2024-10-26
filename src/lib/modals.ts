@@ -1,6 +1,9 @@
 import { base } from '$app/paths';
 import { strAboutText } from '$lib';
 import * as g from '$lib/globals';
+import { Log } from '$lib';
+
+const strNoCB = "I'm not hooked up to anything!";
 
 export const modalAbout: ModalSettings = {
 	type: 'component',
@@ -17,8 +20,9 @@ export const modalSave: ModalSettings = {
 	component: 'modalSave',
 	title: 'Save / Export / Share',
 	session: null,
-	localSaveDocCallback: () => {},
-	localSaveDocNewVersionCallback: () => {},
+	localSaveDocCallback: () => { Log.toastError(strNoCB); },
+	localSaveDocNewVersionCallback: () => { Log.toastError(strNoCB); },
+	exportFileCallback: () => { Log.toastError(strNoCB); },
 };
 
 export const modalLoad: ModalSettings = {
@@ -33,8 +37,8 @@ export const modalConfirm: ModalSettings = {
 	message: 'Are you sure?',
 	txtConfirm: 'Confirm',
 	txtCancel: 'Cancel',
-	onConfirm: () => {},
-	onCancel: () => {},
+	onConfirm: () => { Log.toastError(strNoCB); },
+	onCancel: () => { Log.toastError(strNoCB); },
 };
 
 export const modalInput: ModalSettings = {
@@ -46,6 +50,6 @@ export const modalInput: ModalSettings = {
 	placeholder: '',
 	txtConfirm: 'OK',
 	txtCancel: 'Cancel',
-	onConfirm: () => {},
-	onCancel: () => {},
+	onConfirm: () => { Log.toastError(strNoCB); },
+	onCancel: () => { Log.toastError(strNoCB); },
 };

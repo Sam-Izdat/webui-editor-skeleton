@@ -141,6 +141,11 @@
 		// Import monaco
 		monaco = (await import('$lib/monaco')).default;
 
+		// Cosmetic stuff has to be here
+		document.querySelector('body').setAttribute('data-theme', g.APP_THEME);
+		observeThemeChange(monaco.editor);
+
+		// Actual editor setup
 		codeEditor = monaco.editor.create(editorContainer, {
 	    value: "",
 	    language: "c",
@@ -202,26 +207,27 @@
     window.addEventListener('new-document', requestNewDoc);
     window.addEventListener('rename-document', requestRename);
     window.addEventListener('switch-view', navHandler.switchViewEvent);
-
-		// Cosmetic
-		document.querySelector('body').setAttribute('data-theme', g.APP_THEME);
-		observeThemeChange(monaco.editor);
 	});
 
+	// Not actually necessary in present state, but just to be thorough.
 	onDestroy(() => {
 		if ( browser ) {
-    	window.removeEventListener('save-document', docHandler.saveDoc);
-    	window.removeEventListener('switch-view', navHandler.switchViewEvent);	
+	    window.removeEventListener('save-document', requestSaveDoc);
+	    window.removeEventListener('save-document-new-version', requestSaveDocNewVersion);
+	    window.removeEventListener('switch-document-version', requestSwitchDocVersion);
+	    window.removeEventListener('new-document', requestNewDoc);
+	    window.removeEventListener('rename-document', requestRename);
+	    window.removeEventListener('switch-view', navHandler.switchViewEvent);
+
+			monaco?.editor.getModels().forEach((model) => model.dispose());
+			codeEditor?.dispose();
+	  	docHandler?.dispose();
+	  	navHandler?.dispose();
+	  	screenHandler?.dispose();
+	  	mobileHandler?.dispose();
 		}
 
-		monaco?.editor.getModels().forEach((model) => model.dispose());
-		codeEditor?.dispose();
-  	docHandler?.dispose();
-  	navHandler?.dispose();
-  	screenHandler?.dispose();
-  	mobileHandler?.dispose();
-
-  	// unsubscribeSession();
+  	unsubscribeSession();
 	});
 
  	import { AppRail, AppRailTile, AppRailAnchor } from '@skeletonlabs/skeleton';

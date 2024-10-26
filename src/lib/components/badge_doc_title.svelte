@@ -15,7 +15,7 @@
   </span>
 </button> 
 {:else}
-<button class="badge m-1 p-2 relative inline-block border-2 border-primary-500/30" style="
+<button class="badge m-1 p-2 relative inline-block border-2 border-primary-500/30" on:click={renameCallback} style="
     background-color: {uuidToPrimaryColorLight(session.docID)}; 
     box-shadow: inset 3px 2px 18px {uuidToComplimentaryColorLight(session.docID)}; 
   ">

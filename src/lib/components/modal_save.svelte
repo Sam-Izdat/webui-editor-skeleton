@@ -93,34 +93,24 @@
         <span class="hidden lg:inline ml-2">Share External</span>
       </Tab>
       <svelte:fragment slot="panel">
-        <div class="h-56 overflow-auto">
+        <div class="h-56 overflow-auto text-sm border border-primary-900/30 rounded">
         {#if tabSet === 0}
           <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
-
-
+            <div class="flex justify-center">
+              <button disabled title="Publish" class="btn m-2 variant-soft-primary">
+                <Icon src="{XMark}" size="16" style="margin: 2px auto;" solid/>
+                <span>Publish</span>
+              </button>
+            </div>
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">
-                  <Icon src="{CloudArrowUp}" size="20" style="margin: 4px auto;" alt={strSaveRemotely} solid/>
+                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt={strSaveRemotely} solid/>
                 </svelte:fragment>
-                <svelte:fragment slot="summary"><p class="font-semibold">{strSaveRemotely}</p></svelte:fragment>
-                <svelte:fragment slot="content">
-                  <div class="flex justify-center">
-                    <button disabled title="Publish" class="btn m-2 variant-soft-primary">
-                      <Icon src="{XMark}" size="16" style="margin: 2px auto;" solid/>
-                      <span>Publish</span>
-                    </button>
-                  </div>
-                </svelte:fragment>
-              </AccordionItem>
-              <AccordionItem open>
-                <svelte:fragment slot="lead">
-                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt="About" solid/>
-                </svelte:fragment>
-                <svelte:fragment slot="summary"><p class="font-semibold">About</p></svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold text-base">{strSaveRemotely}</p></svelte:fragment>
                 <svelte:fragment slot="content">               
                   {#if isStaticServer}
-                  <aside class="alert variant-soft-warning p-1">
+                  <aside class="alert variant-soft-error p-1">
                     <div class="alert-message">Server-side storage is currently available.</div>
                   </aside>
                   {/if}
@@ -131,61 +121,48 @@
           </div>
         {:else if tabSet === 1}
           <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
+            <div class="flex justify-center">
+              <button title="Save" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
+                on:click={$modalStore[0].localSaveDocCallback}>
+                <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
+                <span>Save</span>
+              </button> 
+              <button title="Save New" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
+                on:click={$modalStore[0].localSaveDocNewVersionCallback}>
+                <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
+                <span>Save v{$modalStore[0].session.versionActive}</span>
+              </button>
+            </div>
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">
-                  <Icon src="{Folder}" size="20" style="margin: 4px auto;" alt={strSaveLocally} solid/>
+                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt={strSaveLocally} solid/>
                 </svelte:fragment>
-                <svelte:fragment slot="summary"><p class="font-semibold">{strSaveLocally}</p></svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold text-base">{strSaveLocally}</p></svelte:fragment>
                 <svelte:fragment slot="content">
-                  <div class="flex justify-center">
-                    <button title="Save" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
-                      on:click={$modalStore[0].localSaveDocCallback}>
-                      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
-                      <span>Save</span>
-                    </button> 
-                    <button title="Save New" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
-                      on:click={$modalStore[0].localSaveDocNewVersionCallback}>
-                      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
-                      <span>Save v{$modalStore[0].session.versionActive}</span>
-                    </button>
-                  </div>
-                </svelte:fragment>
-              </AccordionItem>
-              <AccordionItem open>
-                <svelte:fragment slot="lead">
-                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt="About" solid/>
-                </svelte:fragment>
-                <svelte:fragment slot="summary"><p class="font-semibold">About</p></svelte:fragment>
-                <svelte:fragment slot="content">
+                  <aside class="alert variant-soft-warning p-1">
+                    <div class="alert-message">Note: <code class="code">localStorate</code> is limited to ~5-to-10MB.</div>
+                  </aside>
                   <p>Save the script to local storage.</p>
                 </svelte:fragment>
               </AccordionItem>
             </Accordion>
           </div>
         {:else if tabSet === 2}
-          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">      
+            <div class="flex justify-center">
+              <button title="Export" class="btn m-2 variant-ghost-primary" 
+                on:click={$modalStore[0].exportFileCallback}>
+                <Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
+                <span>Export</span>
+              </button> 
+            </div>
             <Accordion>
               <AccordionItem open>
                 <svelte:fragment slot="lead">
-                  <Icon src="{ArrowUpTray}" size="20" style="margin: 4px auto;" alt={strExportFile} solid/>
+                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt={strExportFile} solid/>
                 </svelte:fragment>
-                <svelte:fragment slot="summary"><p class="font-semibold">{strExportFile}</p></svelte:fragment>
-                <svelte:fragment slot="content">
-                  <div class="flex justify-center">
-                    <button title="Save" class="btn m-2 {$modalStore[0].session.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
-                      on:click={$modalStore[0].localSaveDocCallback}>
-                      <Icon src="{ArrowUpTray}" size="16" style="margin: 2px auto;" solid/>
-                      <span>Export</span>
-                    </button> 
-                  </div>
-                </svelte:fragment>
-              </AccordionItem>
-              <AccordionItem open>
-                <svelte:fragment slot="lead">
-                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt="About" solid/>
-                </svelte:fragment>
-                <svelte:fragment slot="summary"><p class="font-semibold">About</p></svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold text-base">{strExportFile}</p></svelte:fragment>
                 <svelte:fragment slot="content">
                   <p>Export the script as a plaintext file.</p>
                 </svelte:fragment>
@@ -193,20 +170,33 @@
             </Accordion>
           </div>
         {:else if tabSet === 3}
-          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">
-            <div class="p-4 space-y-4">
-              <h5 class="h5" data-toc-ignore>{strShareRaw}</h5>
-              <article class="text-sm">
-                Provide the URL of an externally-hosted <em>raw</em> script file or a gist ID and get a link to share it through the editor.
-              </article>
+          <div class="card min-h-[100%] bg-surface-50-900-token shadow-inner">      
+            <div class="flex justify-center">
+              <button disabled title="Publish" class="btn m-2 variant-soft-primary">
+                <Icon src="{XMark}" size="16" style="margin: 2px auto;" solid/>
+                <span>Womp Womp</span>
+              </button>
             </div>
+            <Accordion>
+              <AccordionItem open>
+                <svelte:fragment slot="lead">
+                  <Icon src="{InformationCircle}" size="20" style="margin: 4px auto;" alt={strShareRaw} solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold text-base">{strShareRaw}</p></svelte:fragment>
+                <svelte:fragment slot="content">
+                  <p>
+                    Provide the URL of an externally-hosted <em>raw</em> script file or 
+                    a gist ID and get a link to share it through the editor.
+                  </p>
+                </svelte:fragment>
+              </AccordionItem>
+            </Accordion>
           </div>
-          
         {/if}
         </div>
       </svelte:fragment>
     </TabGroup>
-    <footer class="flex justify-between items-center p-2 m-0 bg-surface-50-900-token shadow-inner">
+    <footer class="flex justify-between items-center p-2 m-0 border border-primary-800/30 rounded shadow-xl">
       <div class="text-left font-semibold text-lg">
           {$modalStore[0].title ?? 'Save'}
       </div>

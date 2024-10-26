@@ -9,7 +9,7 @@
     XMark,
   } from "svelte-hero-icons";
 
-  const cBase = 'card p-4 w-modal shadow-xl space-y-4 w-min';
+  const cBase:string = 'card p-4 w-modal shadow-xl space-y-4 w-min';
 
   const actionCancel = () => {
     $modalStore[0].onCancel();

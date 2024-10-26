@@ -25,14 +25,14 @@
 
   const modalStore = getModalStore();
 
-  const cButton = 'fixed top-4 right-4 z-50 font-bold shadow-xl';
-  const cBase = 'card p-4 w-modal shadow-xl space-y-4';
+  const cButton: string           = 'fixed top-4 right-4 z-50 font-bold shadow-xl';
+  const cBase: string             = 'card p-4 w-modal shadow-xl space-y-4';
   // const cHeader = 'text-2xl font-bold';
 
-  const isPWA = window.matchMedia('(display-mode: standalone)').matches;
-  const isStaticServer = __BUILD_TYPE__ == 'static';
-  const isStatic = isPWA || isStaticServer;
-  let tabSet: number = isStatic ? 1 : 0;
+  const isPWA: boolean            = window.matchMedia('(display-mode: standalone)').matches;
+  const isStaticServer: boolean   = __BUILD_TYPE__ == 'static';
+  const isStatic: boolean         = isPWA || isStaticServer;
+  let tabSet: number              = isStatic ? 1 : 0;
 
   // SAVE
   // If PWA:

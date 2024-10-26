@@ -2,20 +2,37 @@
   import type { SvelteComponent } from 'svelte';
 
   import { getModalStore } from '@skeletonlabs/skeleton';
+
+  import * as ds from '$lib/stores/doc_session';
+  import type DocumentSession from '$lib/doc_types';
+
   // Props
   /** Exposes parent props to this component. */
   export let parent: SvelteComponent;
   const modalStore = getModalStore();
 
-  const cButton = 'fixed top-4 right-4 z-50 font-bold shadow-xl';
-  const cImage = 'max-w-[90%] max-h-[90%] rounded-container-token overflow-hidden float-left m-5';
-  const cBase = 'card p-4 w-modal shadow-xl space-y-4';
-  const cHeader = 'text-2xl font-bold';
+  const cButton: string   = 'fixed top-4 right-4 z-50 font-bold shadow-xl';
+  const cImage: string    = 'max-w-[90%] max-h-[90%] rounded-container-token overflow-hidden float-left m-5';
+  const cBase: string     = 'card p-4 w-modal shadow-xl space-y-4';
+  const cHeader: string   = 'text-2xl font-bold';
+
+  const savedDocuments = ds.listStoredSessions();
+  console.log(savedDocuments);
 </script>
+
 
 
 {#if $modalStore[0]}
   <div class="{cBase}">
+        
+    <ul>
+      {#each savedDocuments as doc}
+        <li>
+          {doc.docName} (ID: {doc.docID})
+          <button >Delete</button>
+        </li>
+      {/each}
+    </ul>
     <footer class="flex justify-between items-center p-2 m-0 bg-surface-50-900-token shadow-inner">
       <div class="text-left font-semibold text-lg">
           {$modalStore[0].title ?? 'Load'}

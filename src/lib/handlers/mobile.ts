@@ -1,10 +1,13 @@
-import { onDestroy, tick } from 'svelte';
+import { tick } from 'svelte';
+import { get } from 'svelte/store';
 import { orientationLandscape, currentView } from '$lib/stores';
 import * as panes from '$lib/panes';
 
 export class MobileHandler {
   constructor(screenRef) {
     this.screenRef = screenRef;
+    this.landscape = get(orientationLandscape);
+    this.view = get(currentView);
     this.unsubscribeAll = [
       orientationLandscape.subscribe(landscape => {
         this.landscape = landscape;

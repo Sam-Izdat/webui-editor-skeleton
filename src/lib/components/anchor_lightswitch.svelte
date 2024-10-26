@@ -79,7 +79,7 @@
 </svelte:head>
 
 
-<AppRailAnchor href="#" title="Toggle light or dark mode."
+<AppRailAnchor href="#" title={title}
   on:click={onToggleHandler}
   on:click
   on:keydown={onKeyDown}

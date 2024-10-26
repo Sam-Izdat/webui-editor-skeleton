@@ -1,5 +1,15 @@
 // Pane defaults
-export const resetPaneSizes = () => {
+export type PaneSizes = {
+  sizeLandscapePaneLeft: number;
+  sizeLandscapePaneRight: number;
+  sizeLandscapePaneTopRight: number;
+  sizeLandscapePaneBottomRight: number;
+  sizePortraitPaneTop: number;
+  sizePortraitPaneMid: number;
+  sizePortraitPaneBot: number;
+};
+
+export const resetPaneSizes = (): PaneSizes => {
   return {
     sizeLandscapePaneLeft:          65,
     sizeLandscapePaneRight:         35,
@@ -11,7 +21,7 @@ export const resetPaneSizes = () => {
   }
 };
 
-export const moveContent = (idContent, idContainer) => {
+export const moveContent = (idContent:string, idContainer:string) => {
   const source = document.querySelector('#' + idContent);
   const dest = document.querySelector('#' + idContainer);
   dest.appendChild(source);
@@ -29,7 +39,7 @@ export const returnContentToSplit = () => {
   moveContent('ct3', 'cr-pane3');
 };
 
-export const showView = (currentView) => {
+export const showView = (currentView:number) => {
   if (currentView == 0) { // split pane
     document.querySelector('#cr-full').style.display = "none";
     document.querySelector('#cr-panes').style.display = "block";

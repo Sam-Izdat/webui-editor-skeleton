@@ -1,11 +1,12 @@
 // SPA Navigation
-import { onDestroy } from 'svelte';
+import { get } from 'svelte/store';
 import { currentView } from '$lib/stores/app_state';
 import * as panes from '$lib/panes';
 import { Log } from '$lib';
 
 export class NavHandler {
   constructor() {
+    this.view = get(currentView);
     this.unsubscribeAll = [
       currentView.subscribe(view => {
         this.view = view;

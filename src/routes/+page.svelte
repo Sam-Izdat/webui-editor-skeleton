@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { onDestroy, onMount, tick } from 'svelte';
 	import type { ComponentType } from 'svelte';
-	import type { Writable } from 'svelte/store';
 	import { writable } from 'svelte/store';
 	import { propertyStore } from 'svelte-writable-derived'; 
 	import { beforeNavigate } from "$app/navigation";
 	import { browser } from '$app/environment';
   import { base } from '$app/paths';  
-  import * as g from '$lib/globals';
-  import { Log } from '$lib';
   import Device from 'svelte-device-info';
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 	import { strAboutText } from '$lib';
+
+
+  import * as g from '$lib/globals';
+  import { Log } from '$lib';
 	import * as ds from '$lib/stores/doc_session';	
 
 	// Global editor state
@@ -72,38 +73,10 @@
 	  }
 	});
 
-  // Mobile orientation
-  // let orientationLandscape = true;
-
-
-  // const handleOrientationChange = async () => {
-  //   if (orientationLandscape && screen.orientation.type.startsWith('portrait')) {
-  //     panes.moveContentToStaging();
-  //     orientationLandscape = false;     
-  //     await tick(); // Wait for DOM to be updated
-  //     panes.returnContentToSplit();
-  //     if ($currentView == 1) panes.moveContent('ct1', 'cr-full');
-  //     else if ($currentView == 2) panes.moveContent('ct2', 'cr-full');
-  //     else if ($currentView == 3) panes.moveContent('ct3', 'cr-full');
-  //     panes.showView($currentView);
-  //   } else  {
-  //     panes.moveContentToStaging();
-  //     orientationLandscape = true;
-  //     await tick();
-  //     panes.returnContentToSplit();
-  //     if ($currentView == 1) panes.moveContent('ct1', 'cr-full');
-  //     else if ($currentView == 2) panes.moveContent('ct2', 'cr-full');
-  //     else if ($currentView == 3) panes.moveContent('ct3', 'cr-full');
-  //     panes.showView($currentView);
-  //   }
-  // };
-
-
-	// When browser is ready...
+	// When browser stuff is available
 	onMount(async () => {
 		// Populate panes
 		panes.returnContentToSplit();
-
 
 		// Import monaco
 		monaco = (await import('$lib/monaco')).default;
@@ -181,7 +154,7 @@
   	screenHandler?.dispose();
   	mobileHandler?.dispose();
 
-  	unsubscribeSession();
+  	// unsubscribeSession();
 	});
 
  	import { AppRail, AppRailTile, AppRailAnchor } from '@skeletonlabs/skeleton';
@@ -263,7 +236,7 @@
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle Auto-Build" 
-			on:click={() => { $isAutoBuild.set(!$isAutoBuild); }} 
+			on:click={() => { isAutoBuild.set(!$isAutoBuild); }} 
 			class={$isAutoBuild ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
 			<Icon src="{PlayCircle}" size="16" style="margin: 4px auto;" solid/>

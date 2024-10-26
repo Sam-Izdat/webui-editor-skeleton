@@ -1,10 +1,12 @@
 import { writable } from 'svelte/store';
-import * as panes from '$lib/panes';
+import { resetPaneSizes } from '$lib/panes';
+import type { PaneSizes } from '$lib/panes';
 
-export const isAutoBuild          = writable(true);
-export const isFullscreen         = writable(false);
-export const isReadOnly           = writable(false);  
-export const isDark               = writable(true);
-export const orientationLandscape = writable(true);
-export const currentView          = writable(0);
-export const paneSizes            = writable({...panes.resetPaneSizes()});
+// Global (SPA) state
+export const isAutoBuild:boolean          = writable(true);
+export const isFullscreen:boolean         = writable(false);
+export const isReadOnly:boolean           = writable(false);  
+export const isDark:boolean               = writable(true);
+export const orientationLandscape:boolean = writable(true);
+export const currentView:number           = writable(0);
+export const paneSizes                    = writable<PaneSizes>({...resetPaneSizes()});

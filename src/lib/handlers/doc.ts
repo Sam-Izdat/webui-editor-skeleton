@@ -1,3 +1,4 @@
+import { get } from 'svelte/store';
 import * as ds from '$lib/stores/doc_session'; 
 import { Log, strInitialEditorContents } from '$lib'; 
 import { isReadOnly } from '$lib/stores';
@@ -6,6 +7,7 @@ export class DocHandler {
   constructor(session, editor) {
     this.editor = editor;
     this.session = session;
+    this.readonly = get(isReadOnly);
     this.unsubscribeAll = [
       isReadOnly.subscribe(readonly => {
         this.readonly = readonly;

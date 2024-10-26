@@ -1,12 +1,14 @@
 import { Log } from '$lib';
 
 // export let isFullscreen = false;
+import { get } from 'svelte/store';
 import { isFullscreen } from '$lib/stores';
 
 export class ScreenHandler {
   constructor(docRef, screenRef) {
     this.docRef = docRef;
     this.screenRef = screenRef;
+    this.fs = get(isFullscreen);
     this.unsubscribeAll = [
       isFullscreen.subscribe(fs => {
         this.fs = fs;

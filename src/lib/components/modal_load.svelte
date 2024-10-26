@@ -146,14 +146,12 @@
                     
 
 
-                  <div class="flex flex-col items-center p-1 w-min">
+                  <div class="flex flex-row items-center p-1 w-min">
                     <button title="Load" class="btn m-1 py-1 px-2 variant-ghost-primary">
-                      <Icon src="{ArrowUpOnSquare}" size="16" style="margin: 2px auto;" solid/>
-                      <span class="text-xs">Load</span>
+                      <Icon src="{ArrowUpOnSquare}" size="18" style="margin: 2px auto;" solid/>
                     </button>
                     <button title="Delete" class="btn m-1 py-1 px-2 variant-ghost-error">
-                      <Icon src="{XMark}" size="16" style="margin: 2px auto;" solid/>
-                      <span class="text-xs">Delete</span>
+                      <Icon src="{XMark}" size="18" style="margin: 2px auto;" solid/>
                     </button>
                   </div>
 

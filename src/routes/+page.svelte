@@ -89,7 +89,7 @@
 					txtConfirm: `Overwrite v${dsCurrentSession.versionActive}`,
 					txtCancel: `Save as v${dsCurrentSession.versionCount}`,
 					onConfirm: docHandler.saveDoc,
-					onCancel: docHandler.saveDocNewVersion,
+					onCancel: requestSaveDocNewVersion,
 				});
 			} else { docHandler.saveDoc(); }
 		} else { Log.toastInfo('no changes to save') }			      		
@@ -98,11 +98,12 @@
 	const requestSaveDocNewVersion = () => {
 		if (dsCurrentSession.unsavedChanges) {
 			docHandler.saveDocNewVersion();
-			Log.toastWarning('requestSaveDocNewVersion');
+			docHandler.loadLastVersion();
 		} else { Log.toastInfo('no changes to save') }
 	};
-	const requestSwitchDocVersion = () => {
-		Log.toastWarning('requestSwitchDocVersion');
+	const requestSwitchDocVersion = (v) => {
+		docHandler.loadVersion(v);
+		// Log.toastWarning('requestSwitchDocVersion');
 	};
 	const requestSwitchDocVersionMenu = () => {
 		Log.toastWarning('requestSwitchDocVersionMenu');
@@ -418,11 +419,10 @@
 		    </button>
 			  <div class="ml-auto flex">
 				  <DocTitleBadge 
-				  	session={dsCurrentSession} 
 				  	renameCallback={requestRenameDoc} 
 				  	switchVersionCallback={requestSwitchDocVersion} 
-				  	switchVersionMenuCallback={requestSwitchDocVersionMenu}
 				  />
+				  	<!-- switchVersionMenuCallback={requestSwitchDocVersionMenu} -->
 			  </div>
 			</div>
 			<div class="flex p-1">

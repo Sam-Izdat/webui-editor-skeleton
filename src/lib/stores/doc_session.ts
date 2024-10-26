@@ -4,6 +4,7 @@ import * as localStorageEngine from '$lib/storage/local';
 import * as remoteStorageEngine from '$lib/storage/remote';
 import type DocumentSession from '$lib/doc_types';
 import { Log } from '$lib';
+import { get } from 'svelte/store';
 
 // TODO: This should handle remote storage when running a nonstatic build
 // Make activeContent to avoid slicing constantly
@@ -30,6 +31,22 @@ export const newSession = (docName: string = 'Untitled Script') => {
   });
 };
 
+export const newVersion = () => {  
+  documentSession.update(session => {
+    session.content.push('');
+    session.versionCount += 1;
+    return session;
+  });
+};
+
+export const setActiveVersion = (version: number) => {  
+  documentSession.update(session => {
+    session.versionActive = version;
+    session.unsavedChanges = false;
+    return session;
+  });
+};
+
 export const updateContentBuffer = (newContent: string) => {
   documentSession.update(session => {
     // pulseEditorBackground();
@@ -37,10 +54,18 @@ export const updateContentBuffer = (newContent: string) => {
     session.unsavedChanges = true;
     return session;
   });
-}
+};
+
 export const commitContentBufferToActiveVersion = () => {
   documentSession.update(session => {
     session.content[session.versionActive] = session.contentBuffer;
+    return session;
+  });
+};
+
+export const commitContentBufferToLastVersion = () => {
+  documentSession.update(session => {
+    session.content[session.versionCount - 1] = session.contentBuffer;
     return session;
   });
 };

@@ -6,7 +6,7 @@ export const APP_SHORT_NAME     = 'WES';
 export const APP_DESCRIPTION    = 'A web UI template for code editors.';
 export const APP_HOST_PATH      = 'https://sam-izdat.github.io/webui-editor-skeleton/';
 export const APP_BASE_PATH      = '/webui-editor-skeleton';
-export const APP_THEME          = 'hamlindigo';
+export const APP_THEME          = 'hamlindigo'; // skeleton UI theme
 
 // LOGGING
 export const LOG_LEVEL_DEV      = 'DEBUG';
@@ -23,4 +23,4 @@ export const PWA_FILE_ACTION    = APP_HOST_PATH + 'open-file';
 export const PWA_URL_PATTERN    = 'myscript://*';
 export const PWA_THEME_COLOR    = '#3B4762';
 export const PWA_BG_COLOR       = '#ffffff';
-export const PWA_ORIENTATION    = 'any';
+export const PWA_ORIENTATION    = 'any'; // 'landscape' will force PWA into landscape mode at all times

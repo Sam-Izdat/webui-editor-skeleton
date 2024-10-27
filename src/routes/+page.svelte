@@ -128,15 +128,18 @@ import { get } from 'svelte/store';
 		} else { Log.toastInfo('no changes to save') }
 	};
 	const requestSwitchDocVersion = (v) => {
+		if (typeof v != 'number'){
+			Log.toastError('fuck');
+		}
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
 				...modals.modalConfirm, 
 				message: "Unsaved changes will be discarded. Load version anyway?",
 				txtConfirm: `Switch to v${v}`,
-				onConfirm: () => { docHandler.loadVersion(v); },
+				onConfirm: () => { docHandler.loadVersion(parseInt(v)); },
 			});
 		} else {
-			docHandler.loadVersion(v);
+			docHandler.loadVersion(parseInt(v));
 		}
 	};
 	const requestNewDoc = () => {
@@ -250,30 +253,11 @@ import { get } from 'svelte/store';
   // let currentView: number = 0;
 
   // Icons
+  import { Icon } from 'svelte-hero-icons';
+  import * as hero from 'svelte-hero-icons';
 
-  import { 
-  	Icon, 
-  	ArrowUp, 
-  	ViewColumns, 
-  	CodeBracket, 
-  	AdjustmentsHorizontal,
-  	PlayCircle,
-  	ArrowsPointingOut, 
-  	Photo, 
-  	LockOpen, 
-  	LockClosed,
-  	ExclamationTriangle,
-  	ExclamationCircle,
-  	QuestionMarkCircle,
-  	Document,
-  	DocumentArrowUp,
-  	DocumentArrowDown,
-  	ArrowPath,
-  	ArrowDownOnSquare,
-  	ArrowDownOnSquareStack,
-  	ArrowsUpDown,
-  	Folder,
-  } from "svelte-hero-icons";
+  import { CustomIcon } from '$lib/components/icons';
+  import * as ico from '$lib/components/icons';
 </script>
 
 <div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
@@ -288,7 +272,7 @@ import { get } from 'svelte/store';
 			name="tile-0" 
 			value={0}>
 			<svelte:fragment slot="lead">
-				<Icon src="{ViewColumns}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.ViewColumns}" size="16" style="margin: 4px auto;" solid/>
 			</svelte:fragment>
 		</AppRailTile>
 		<AppRailTile 
@@ -297,7 +281,7 @@ import { get } from 'svelte/store';
 			name="tile-1" 
 			value={1}>
 			<svelte:fragment slot="lead">
-				<Icon src="{CodeBracket}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.CodeBracket}" size="16" style="margin: 4px auto;" solid/>
 			</svelte:fragment>
 		</AppRailTile>
 		<AppRailTile 
@@ -306,7 +290,7 @@ import { get } from 'svelte/store';
 			name="tile-2" 
 			value={2}>
 			<svelte:fragment slot="lead">
-				<Icon src="{Photo}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.Photo}" size="16" style="margin: 4px auto;" solid/>
 			</svelte:fragment>
 		</AppRailTile>
 		<AppRailTile 
@@ -315,7 +299,7 @@ import { get } from 'svelte/store';
 			name="tile-3" 
 			value={3}>
 			<svelte:fragment slot="lead">
-				<Icon src="{AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.AdjustmentsHorizontal}" size="16" style="margin: 4px auto;" solid/>
 			</svelte:fragment>
 		</AppRailTile>
 		<hr classs="hr m-1"/>
@@ -327,7 +311,7 @@ import { get } from 'svelte/store';
 			on:click={() => { isAutoBuild.set(!$isAutoBuild); }} 
 			class={$isAutoBuild ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
-			<Icon src="{PlayCircle}" size="16" style="margin: 4px auto;" solid/>
+			<Icon src="{hero.PlayCircle}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
 		<AppRailAnchor 
 			href="#" 
@@ -335,7 +319,7 @@ import { get } from 'svelte/store';
 			on:click={screenHandler.toggleFullscreen} 
 			class={$isFullscreen ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
-			<Icon src="{ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
+			<Icon src="{hero.ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
 		<AppRailAnchor 
 			href="#" 
@@ -343,7 +327,7 @@ import { get } from 'svelte/store';
 			on:click={docHandler.toggleEditing} 
 			class={$isReadOnly ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
-			<Icon src="{$isReadOnly ? LockClosed : LockOpen}" size="16" style="margin: 4px auto;" solid/>
+			<Icon src="{$isReadOnly ? hero.LockClosed : hero.LockOpen}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
 		<svelte:fragment slot="trail">
 			<AppRailAnchor 
@@ -351,28 +335,28 @@ import { get } from 'svelte/store';
 				title="New Script (alt+{km.keyNewDoc})" 
 				on:click={requestNewDoc}
 				style="display:block;">
-				<Icon src="{Document}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.Document}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
 				title="Archive (alt+{km.keyArchive})" 
 				on:click={requestSaveMenu}
 				style="display:block;">
-				<Icon src="{Folder}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.Folder}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
 				title="Import / Export" 
 				on:click={() => modalStore.trigger(modals.modalLoad)}
 				style="display:block;">
-				<Icon src="{ArrowsUpDown}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.ArrowsUpDown}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
 				title="Reset Panes" 
 				on:click={() => {paneSizes.set({...panes.resetPaneSizes()});}}
 				style="display:block;">
-				<Icon src="{ArrowPath}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.ArrowPath}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AnchorLightSwitch />
 			<AppRailAnchor 
@@ -380,7 +364,7 @@ import { get } from 'svelte/store';
 				title="About" 
 				on:click={() => modalStore.trigger(modals.modalAbout)}
 				style="display:block;">
-				<Icon src="{QuestionMarkCircle}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{hero.QuestionMarkCircle}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 		</svelte:fragment>
 	</AppRail>
@@ -435,7 +419,8 @@ import { get } from 'svelte/store';
 		    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
 		      on:click={requestSaveDoc}
 		    >
-		      <Icon src="{ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
+		      <!-- <Icon src="{hero.ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/> -->
+		      <CustomIcon src="{ico.Fork}" size="16" style="margin: 2px auto;" solid/>
 		      <span class="hidden lg:inline ml-2">Save</span>
 		    </button> 
 		    <button 
@@ -443,7 +428,7 @@ import { get } from 'svelte/store';
 		    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
 		      on:click={requestSaveDocNewVersion}
 		    >
-		      <Icon src="{ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
+		      <Icon src="{hero.ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
 		      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionCount}</span>
 		    </button>
 			  <div class="ml-auto flex">

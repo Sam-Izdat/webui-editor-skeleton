@@ -119,19 +119,18 @@
             </thead>
             <tbody>
               {#each savedDocuments as doc}
-                <tr>
-                <td class="px-0 m-0 border-b border-primary-800/30">
-                    <div class="flex items-center gap-3 px-2">
-                      <div class="placeholder w-16 h-12 rounded" />
-                      <div class="flex flex-col w-64">
-                          <span class="text-sm font-semibold truncate">
-                          {doc.docName}
-                          </span>
-                          <span class="badge bg-primary-500/20 text-xs m-1 p-1 w-min h-min">
-                          {doc.versionCount} {doc.versionCount > 1 ? 'versions' : 'version' }
-                          </span>
-                      </div>
+                <tr><td class="px-0 m-0 border-b border-primary-800/30">
+                  <button class="btn flex justify-start items-center bg-surface-500/15 rounded gap-3 mx-1 my-1 px-2 py-1">
+                    <div class="placeholder w-16 h-12 rounded" />
+                    <div class="flex flex-col items-start w-64">
+                      <span class="text-sm font-regular truncate overflow-hidden text-ellipsis whitespace-nowrap text-left w-full">
+                        {doc.docName}
+                      </span>
+                      <span class="badge bg-tertiary-500/25 text-xs m-1 p-1 w-min h-min">
+                        {doc.versionCount} {doc.versionCount > 1 ? 'versions' : 'version' }
+                      </span>
                     </div>
+                  </button>
                 </td>
                 <td class="px-0 m-0 border-b border-primary-800/30">
                     <p class="text-xs">
@@ -147,11 +146,8 @@
 
 
                   <div class="flex flex-row items-center p-1 w-min">
-                    <button title="Load" class="btn m-1 py-1 px-2 variant-ghost-primary">
-                      <Icon src="{ArrowUpOnSquare}" size="18" style="margin: 2px auto;" solid/>
-                    </button>
-                    <button title="Delete" class="btn m-1 py-1 px-2 variant-ghost-error">
-                      <Icon src="{XMark}" size="18" style="margin: 2px auto;" solid/>
+                    <button title="Delete" class="btn m-1 py-2 px-2 variant-ghost-error">
+                      <Icon src="{XMark}" size="20" style="margin: 2px auto;" solid/>
                     </button>
                   </div>
 

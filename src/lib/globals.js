@@ -23,4 +23,4 @@ export const PWA_FILE_ACTION    = APP_HOST_PATH + 'open-file';
 export const PWA_URL_PATTERN    = 'myscript://*';
 export const PWA_THEME_COLOR    = '#3B4762';
 export const PWA_BG_COLOR       = '#ffffff';
-export const PWA_ORIENTATION    = 'landscape';
+export const PWA_ORIENTATION    = 'any';

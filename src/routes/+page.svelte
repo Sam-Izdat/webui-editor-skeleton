@@ -52,11 +52,37 @@
 	import { MonacoEditor, AnchorLightSwitch, AnchorScriptStatus, DocTitleBadge }  from '$lib/components';
 	import * as panes from '$lib/panes';
 
-  // Modals
-  import { getModalStore } from '@skeletonlabs/skeleton';
-	export const modalStore = getModalStore();
+  // Modals, Drawers
+  import { getModalStore, getDrawerStore } from '@skeletonlabs/skeleton';
+	const modalStore = getModalStore();
+	const drawerStore = getDrawerStore();
   import * as modals from '$lib/modals';
+
+  import { drawerContentStore } from '$lib/stores/drawer';
+  import DrawerArchive from '$lib/components/drawer_archive.svelte';
+import { get } from 'svelte/store';
+	const drawerSettings: DrawerSettings = {
+		id: 'example-3',
+		// Provide your property overrides:
+		// bgDrawer: 'bg-purple-900 text-white',
+		// bgBackdrop: 'bg-gradient-to-tr from-indigo-500/50 via-purple-500/50 to-pink-500/50',
+		width: 'w-[340px] md:w-[720px]',
+		padding: 'p-0',
+		// rounded: 'rounded',
+		position: 'right',
+	};
 	
+	const openArchiveDrawer = () => {
+    drawerContentStore.set({
+      id: 'archive',
+      component: DrawerArchive,
+      props: {
+				message: 'hi',
+      },
+    });
+		drawerStore.open(drawerSettings);
+  }
+
 	// Unsaved changes guardrails
   beforeNavigate(({ cancel }) => {
 	  if (dsCurrentSession.unsavedChanges) {
@@ -245,6 +271,8 @@
   	ArrowPath,
   	ArrowDownOnSquare,
   	ArrowDownOnSquareStack,
+  	ArrowsUpDown,
+  	Folder,
   } from "svelte-hero-icons";
 </script>
 
@@ -327,17 +355,17 @@
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
-				title="Save / Export / Share" 
+				title="Archive (alt+{km.keyArchive})" 
 				on:click={requestSaveMenu}
 				style="display:block;">
-				<Icon src="{DocumentArrowUp}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{Folder}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
-				title="Load / Import / Browse" 
+				title="Import / Export" 
 				on:click={() => modalStore.trigger(modals.modalLoad)}
 				style="display:block;">
-				<Icon src="{DocumentArrowDown}" size="16" style="margin: 4px auto;" solid/>
+				<Icon src="{ArrowsUpDown}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
@@ -423,6 +451,7 @@
 				  	renameCallback={requestRenameDoc} 
 				  	switchVersionCallback={requestSwitchDocVersion} 
 				  />
+				  <button on:click={openArchiveDrawer}> AAA</button>
 			  </div>
 			</div>
 			<div class="flex p-1">

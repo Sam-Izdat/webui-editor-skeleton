@@ -25,7 +25,7 @@ export const observeKeyboard = () => {
       window.dispatchEvent(new CustomEvent('switch-document-version'));
     }
 
-    // ALT + key for new (CTRL + S blocked by chrome)
+    // ALT + key for new (CTRL + N blocked by chrome)
     if (event.altKey && event.key === keys.keyNewDoc) {
       event.preventDefault();
       window.dispatchEvent(new CustomEvent('new-document'));
@@ -37,7 +37,13 @@ export const observeKeyboard = () => {
       window.dispatchEvent(new CustomEvent('rename-document'));
     }
 
-    // Switch views with tilde, 1, 2, 3, etc keys
+    // ALT + key for load / save / browse / publish shelf
+    if (event.altKey && event.key === keys.keyArchive) {
+      event.preventDefault();
+      window.dispatchEvent(new CustomEvent('archive-shelf'));
+    }
+
+    // Switch views with ALT + tilde, 1, 2, 3, etc keys
     if ((event.altKey && event.key) === keys.keyViewSplit   || 
         (event.altKey && event.key) === keys.keyViewCode    || 
         (event.altKey && event.key) === keys.keyViewCanvas  || 

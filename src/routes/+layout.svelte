@@ -16,9 +16,19 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
-	// Modals, Toasts/Growls
-	import { initializeStores, Modal, Toast } from '@skeletonlabs/skeleton';
+	// Modals, Toasts/Growls, Drawers
+	import { initializeStores, Modal, Toast, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';	
+	import type { DrawerSettings, DrawerStore } from '@skeletonlabs/skeleton';
+	import { drawerContentStore  } from '$lib/stores/drawer';
 	initializeStores();
+  let drawerContent;
+  let props = {};
+
+  // Subscribe to updates to dynamically load the component
+  drawerContentStore.subscribe(({ component, props: componentProps }) => {
+    drawerContent = component;
+    props = componentProps;
+  });
 
 	import  { ModalInfo, ModalSave, ModalLoad, ModalConfirm, ModalInput }  from '$lib/components';
 	const modalRegistry: Record<string, ModalComponent> = {
@@ -45,6 +55,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 </svelte:head>
 <Modal components={modalRegistry} />
+<Drawer>
+  {#if drawerContent}
+    <svelte:component this={drawerContent} {...props} />
+  {/if}
+</Drawer>
 <Toast class="!z-[1000]" />
 <AppShell slotSidebarLeft="bg-surface-500/5 w-56 h-[100%] p-4">
 <!-- 	<svelte:fragment slot="sidebarLeft">

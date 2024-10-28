@@ -6,8 +6,6 @@ import type DocumentSession from '$lib/doc_types';
 import { get } from 'svelte/store';
 
 // TODO: This should handle remote storage when running a nonstatic build
-// Make activeContent to avoid slicing constantly
-// Active-Session operations
 
 export const documentSession = writable<DocumentSession>({
   docID: uuidv4(),
@@ -77,20 +75,6 @@ export const commitContentBufferToLastVersion = () => {
     return session;
   });
 };
-
-// export const commitContentBufferToVersion = (newContent: string, version: int) => {
-//   documentSession.update(session => {
-//     return {
-//       ...session,
-//       content: [
-//         ...session.content.slice(0, version),
-//         newContent,
-//         ...session.content.slice(version + 1)
-//       ],
-//       unsavedChanges: true
-//     };
-//   });
-// };
 
 export const updateSessionParams = (sessionParams) => {
   documentSession.update(session => {

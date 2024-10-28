@@ -52,6 +52,15 @@ export class DocHandler {
     }
   };
 
+  forkDoc = () => {    
+    try {
+      ds.newSession(this.session.docName, this.session.content[this.session.versionActive] ?? '');
+      Log.toastSuccess('script forked');
+    } catch(e) {
+      Log.error(e);
+      Log.toastError('fork script failed');
+    } 
+  }
 
   loadVersion = (version:number) => {
     try {
@@ -63,7 +72,7 @@ export class DocHandler {
       ds.setActiveVersion(version);
     } catch(e) {
       Log.error(e);
-      Log.toastError('something went wrong');
+      Log.toastError('load version failed');
     } 
   };
 
@@ -98,17 +107,20 @@ export class DocHandler {
     if (!content) {
       Log.toastInfo('new script')
     } else {
-      Log.toastInfo('imported script')
+      Log.toastSuccess('imported script')
     }
   }; 
 
-  refreshLocalDocList = () => {
+  getCurrentEditorContent = () => {
+    return this.editor.getValue();
+  }
+
+  refreshDocList = () => {
     savedDocuments.set(ds.listStoredSessions());
   };
 
   deleteDoc = (uuid:string) => {
-    try {       
-      this.newDoc();
+    try {
       ds.deleteStoredSession(uuid);
     } catch(e) {
       Log.error(e);

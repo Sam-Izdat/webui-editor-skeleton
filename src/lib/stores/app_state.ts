@@ -3,7 +3,7 @@ import { resetPaneSizes } from '$lib/panes';
 import type { PaneSizes } from '$lib/panes';
 
 // Global (SPA) state
-export const isAutoBuild:boolean          = writable(true);
+export const isAutoBuild:boolean          = writable(false);
 export const isFullscreen:boolean         = writable(false);
 export const isReadOnly:boolean           = writable(false);  
 export const isDark:boolean               = writable(true);

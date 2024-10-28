@@ -51,7 +51,8 @@
 <div class="shadow-[0_2px_6px_rgba(0,0,0,0.4)] p-0 m-1 inline-block {savedStatusClasses}">
   <button 
     title="Rename (alt+{km.keyRenameDoc})" 
-    class="badge m-0 p-2 relative inline-block" on:click={renameCallback} 
+    class="badge m-0 p-2 relative inline-block truncate overflow-hidden text-ellipsis whitespace-nowrap text-left max-w-80" 
+    on:click={renameCallback} 
     style="
       background-color: {primColorDark}; 
       box-shadow: inset 3px 2px 22px {compColorDark}; 
@@ -68,7 +69,7 @@
 <div class="shadow-[0_2px_6px_rgba(1,0,0,0.4)] p-0 m-1 inline-block {savedStatusClasses}">
   <button 
     title="Rename (alt+{km.keyRenameDoc})" 
-    class="badge m-0 p-2 relative inline-block" 
+    class="badge m-0 p-2 relative inline-block truncate overflow-hidden text-ellipsis whitespace-nowrap text-left max-w-80" 
     on:click={renameCallback} style="
       background-color: {primColorLight}; 
       box-shadow: inset 3px 2px 22px {compColorLight}; 

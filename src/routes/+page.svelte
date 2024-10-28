@@ -96,13 +96,15 @@ import { get } from 'svelte/store';
 
   // UI actions		
 	const reqOpenArchiveDrawer = () => {		
-    docHandler.refreshLocalDocList();
+    docHandler.refreshDocList();
     drawerContentStore.set({
       id: 'archive',
       component: DrawerArchive,
       props: {
       	deleteDocCallback: reqDeleteDoc,
       	loadDocCallback: reqLoadDoc,
+      	saveDocCallback: reqSaveDoc,
+      	saveDocNewVersionCallback: reqSaveDocNewVersion,
       },
     });
 		drawerStore.open(drawerSettings);
@@ -123,18 +125,79 @@ import { get } from 'svelte/store';
 		}
 	};
 
-
-	const reqLoadDoc = (uuid:string) => {
+	const reqLoadDoc = (uuid: string) => {
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
 				...modals.modalConfirm, 
 				message: "Unsaved changes will be discarded. Load a new script anyway?",
 				txtConfirm: "Load Script",
-				onConfirm: () => { docHandler.loadDoc(uuid); },
+				onConfirm: () => { docHandler.loadDoc(uuid); drawerStore.close(); },
 			});
 		} else {
 			docHandler.loadDoc(uuid); 
+			drawerStore.close();
 		}
+	};
+
+	const reqForkDoc = () => {
+		if (dsCurrentSession.unsavedChanges){
+			modalStore.trigger({
+				...modals.modalConfirm, 
+				message: "Unsaved changes will be discarded. Fork script anyway?",
+				txtConfirm: "Fork Script",
+				onConfirm: docHandler.forkDoc,
+			});
+		} else {
+			docHandler.forkDoc();
+		}
+		reqRenameDoc();
+	};
+
+	const reqImportFile = (content: string, baseFilename?: string) => {
+		if (dsCurrentSession.unsavedChanges){
+			modalStore.trigger({
+				...modals.modalConfirm, 
+				message: "Unsaved changes will be discarded. Import file anyway?",
+				txtConfirm: "Import File",
+				onConfirm: () => { docHandler.newDoc(content, baseFilename ?? ''); },
+			});
+		} else {
+			docHandler.newDoc(content, baseFilename ?? '');
+		}
+		modalStore.close();
+		reqRenameDoc(baseFilename ?? '');
+	};
+
+		function downloadString(content: string, filename: string, extension: string): void {
+  // Create a Blob with the content
+  const blob = new Blob([content], { type: "application/octet-stream" }); // Adjust MIME type as needed
+
+  // Create a temporary link element
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${filename}.${extension}`; // Set custom file name and extension
+
+  // Append link, trigger download, then remove the link
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // Release the object URL for cleanup
+  URL.revokeObjectURL(link.href);
+}
+
+	const reqExportFile = () => {
+		Log.toastInfo('foo');
+		let content:string = docHandler.getCurrentEditorContent();
+		let filename = dsCurrentSession.docName;
+		const blob = new Blob([content], { type: "application/octet-stream" });
+		const link = document.createElement("a");
+		link.href = URL.createObjectURL(blob);
+		link.download = filename.trim().replace(/[\/:*?"<>|]/g, "")+g.PWA_FILE_EXT;
+	  document.body.appendChild(link);
+	  link.click();
+	  document.body.removeChild(link);
+	  URL.revokeObjectURL(link.href);
 	};
 
   const reqSaveDoc = () => {
@@ -159,12 +222,12 @@ import { get } from 'svelte/store';
 		} else { Log.toastInfo('no changes to save') }
 	};
 
-	const reqDeleteDoc = (uuid:string) => {
+	const reqDeleteDoc = (uuid: string) => {
 		modalStore.trigger({
 			...modals.modalConfirm, 
 			message: "Delete script?",
 			txtConfirm: "Delete",
-			onConfirm: () => { docHandler.deleteDoc(uuid); docHandler.refreshLocalDocList(); },
+			onConfirm: () => { docHandler.deleteDoc(uuid); docHandler.refreshDocList(); },
 		});
 	};
 
@@ -184,7 +247,7 @@ import { get } from 'svelte/store';
 		}
 	};
 
-	const reqRevert = () => {
+	const reqRevertDoc = () => {
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
 				...modals.modalConfirm, 
@@ -197,12 +260,12 @@ import { get } from 'svelte/store';
 		}
 	}
 
-	const reqRenameDoc = () => {
+	const reqRenameDoc = (name?: string) => {
 		modalStore.trigger({
 			...modals.modalInput, 
 			message: 'What shall we call this?',
 			placeholder: 'Script Name',
-			inputValue: dsCurrentSession.docName,
+			inputValue: typeof name === 'string' ? name : dsCurrentSession.docName,
 			txtConfirm: 'Rename',
 			onConfirm: (inputVal) => { docHandler.renameDoc(inputVal); }
 		})
@@ -238,7 +301,7 @@ import { get } from 'svelte/store';
   	screenHandler = new ScreenHandler(window);
   	mobileHandler = new MobileHandler(window);
 
-    // Check if an uploaded file exists in sessionStorage or localStorage
+    // Check if an uploaded file exists in sessionStorage
     const fileData = sessionStorage.getItem('activeFile'); 
     let contentToLoad; 
     if (fileData) {
@@ -266,6 +329,7 @@ import { get } from 'svelte/store';
     window.addEventListener('switch-document-version', reqSwitchDocVersion);
     window.addEventListener('new-document', reqNewDoc);
     window.addEventListener('rename-document', reqRenameDoc);
+    window.addEventListener('archive-shelf', reqOpenArchiveDrawer);
     window.addEventListener('switch-view', navHandler.switchViewEvent);
 	});
 
@@ -277,6 +341,7 @@ import { get } from 'svelte/store';
 	    window.removeEventListener('switch-document-version', reqSwitchDocVersion);
 	    window.removeEventListener('new-document', reqNewDoc);
 	    window.removeEventListener('rename-document', reqRenameDoc);
+    	window.removeEventListener('archive-shelf', reqOpenArchiveDrawer);
 	    window.removeEventListener('switch-view', navHandler.switchViewEvent);
 
 			monacoEditor?.dispose();
@@ -387,7 +452,11 @@ import { get } from 'svelte/store';
 			<AppRailAnchor 
 				href="#" 
 				title="Import / Export" 
-				on:click={() => modalStore.trigger(modals.modalLoad)}
+				on:click={() => modalStore.trigger({
+					...modals.modalImportExport, 
+					importFileCallback: reqImportFile,
+					exportFileCallback: reqExportFile,
+				})}
 				style="display:block;">
 				<Icon src="{hero.ArrowsUpDown}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
@@ -472,7 +541,12 @@ import { get } from 'svelte/store';
 		    </button>
 			  <div class="ml-auto flex">
 				  <DocTitleBadge renameCallback={reqRenameDoc} switchVersionCallback={reqSwitchDocVersion} />
-				  <DocMenuBadge revertCallback={reqRevert} resetPanesCallback={reqResetPanes} />
+				  <DocMenuBadge 
+				  	revertCallback={reqRevertDoc} 
+				  	resetPanesCallback={reqResetPanes} 
+				  	forkCallback={reqForkDoc} 
+				  	exportCallback={reqExportFile}
+				  />
 			  </div>
 			</div>
 			<div class="flex p-1">

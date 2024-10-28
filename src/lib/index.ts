@@ -8,7 +8,6 @@ export * from './log';
 export * from './modals';
 export * from './panes';
 export * from './strings';
-export * from './uri';
 
 // dir
 export * from './components';

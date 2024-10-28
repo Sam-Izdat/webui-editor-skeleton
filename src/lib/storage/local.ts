@@ -38,13 +38,17 @@ export const rename = (uuid: string, newName: string) => {
 
 export const search = (substring: string) => {
   const searchLower = substring.toLowerCase();
-  return Object.keys(localStorage)
+  let res =Object.keys(localStorage)
     .filter(key => key.startsWith('saved-doc'))
     .map(key => {
         const doc = JSON.parse(localStorage.getItem(key));
         return { id: key.replace('saved-doc-', ''), ...doc };
     })
     .filter(doc => doc.docName.toLowerCase().includes(searchLower));
+
+
+  console.log(res); 
+  return res;
 };
 
 export const list = (descending = true) => {

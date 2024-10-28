@@ -1,26 +1,29 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { base } from '$app/paths';
+  import { page } from '$app/stores';
   import { Log } from '$lib';
+  import { get } from 'svelte/store';
 
   onMount(() => {
-    const currentUrl = window.location.href;
-    const url = new URL(currentUrl);
-    const params = new URLSearchParams(url.search);
-    const gistUrl = params.get('raw_gist_url');
+    const { gistID } = get(page).params; // Extract the gistID from the route parameters
 
-    if (gistUrl) {
-      fetch(gistUrl)
+    if (gistID) {
+      fetch(`https://api.github.com/gists/${gistID}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-          return response.text(); // Use response.json() for JSON data
+          return response.json();
+        })
+        .then(gist => {
+          const firstEntry = Object.entries(gist.files)[0];
+          const [firstKey, firstValue] = firstEntry ?? [];
+          return firstValue.content;
         })
         .then(data => {
-          // Store the Gist content in sessionStorage
           sessionStorage.setItem('activeFile', JSON.stringify([{ name: 'gist_content', content: data }]));
-          Log.info('Gist content loaded:', data); // Use the Gist content as needed
+          Log.info('Gist content loaded:', data);
           window.location.href = `${base}/`;
         })
         .catch(error => {

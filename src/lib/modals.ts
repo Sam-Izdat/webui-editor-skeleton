@@ -15,22 +15,12 @@ export const modalAbout: ModalSettings = {
 	body: strAboutText
 };
 
-export const modalSave: ModalSettings = {
+export const modalImportExport: ModalSettings = {
 	type: 'component',
-	component: 'modalSave',
-	title: 'Save / Export / Share',
-	session: null,
-	localSaveDocCallback: () => { Log.toastError(strNoCB); },
-	localSaveDocNewVersionCallback: () => { Log.toastError(strNoCB); },
-	exportFileCallback: () => { Log.toastError(strNoCB); },
-};
-
-export const modalLoad: ModalSettings = {
-	type: 'component',
-	component: 'modalLoad',
-	title: 'Load / Import / Browse',
-	localLoadDocCallback: () => { Log.toastError(strNoCB); },
+	component: 'modalImportExport',
+	title: 'Import / Export / Link',
 	importFileCallback: () => { Log.toastError(strNoCB); },
+	exportFileCallback: () => { Log.toastError(strNoCB); },
 };
 
 export const modalConfirm: ModalSettings = {

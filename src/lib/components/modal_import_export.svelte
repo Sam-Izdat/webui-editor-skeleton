@@ -64,6 +64,7 @@
       Log.warning('No file selected.');
     }
   };
+
   const copyToClipboard = () => {
     if (shareableURL) {
       navigator.clipboard.writeText(shareableURL).then(() => {
@@ -75,20 +76,30 @@
     }
   };
 
-  let extResourceValue: string = '';
-  let selectedOption: string = 'Raw URL';
-  let shareableURL: string = '';
+  const handlePaste = (event: ClipboardEvent) => {
+    event.preventDefault();
+    const pastedText = event.clipboardData.getData('text');
+    extResourceValue = pastedText;
+    makeURL();
+  };
 
+  let extResourceValue: string = '';
+  let selectedOption: string = 'raw';
+  let shareableURL: string = '';
   $: makeURL = () => {
     if (extResourceValue.trim() === '') {
       shareableURL = ''; 
       return; 
     }
-    if (selectedOption === 'Raw URL') {
+    if (selectedOption === 'raw') {
       const encodedURL = encodeURIComponent(extResourceValue.trim());
-      shareableURL = `https://example.com/url/${encodedURL}`;
-    } else if (selectedOption === 'Gist ID') {
-      shareableURL = `https://example.com/gist/${extResourceValue.trim()}`;
+      shareableURL = __BUILD_TYPE__ == 'static'
+        ? `${g.APP_HOST_PATH}get-url?q=${encodedURL}`
+        : `${g.APP_HOST_PATH}url/${encodedURL}`;
+    } else if (selectedOption === 'gist') {
+      shareableURL = __BUILD_TYPE__ == 'static'
+        ? `${g.APP_HOST_PATH}get-gist?q=${extResourceValue.trim()}`
+        : `${g.APP_HOST_PATH}gist/${extResourceValue.trim()}`;
     }
   };
 
@@ -145,12 +156,13 @@
                   type="text" 
                   placeholder="URL/URI" 
                   on:input={makeURL} 
+                  on:paste={handlePaste} 
                   bind:value={extResourceValue} 
                   class="flex-grow" 
                 />
-                <select bind:value={selectedOption} on:input={makeURL}>
-                  <option>Raw URL</option>
-                  <option>Gist ID</option>
+                <select bind:value={selectedOption}>
+                  <option value='raw'>Raw URL</option>
+                  <option value='gist'>Gist ID</option>
                 </select>
               </div>
             </div>

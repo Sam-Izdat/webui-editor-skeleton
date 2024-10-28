@@ -19,9 +19,9 @@
       "url_pattern": "myscript://*"
     }
   ],
-  "orientation": "landscape",
+  "orientation": "any",
   "background_color": "#ffffff",
-  "theme_color": "#73420d",
+  "theme_color": "#3B4762",
   "icons": [
     {
       "src": "./icons/icon-128.png",

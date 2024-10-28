@@ -10,6 +10,12 @@ const config = {
 			fallback: 'index.html' // may differ from host to host
 		})
 	},
+  prerender: {
+			crawl: true,
+			entries: process.env.BUILD_TYPE === 'static' 
+				? ['/get-gist', '/get-url'] // Add your static routes here
+				: [] // No entries for dynamic routes
+		},
 	extensions: ['.svelte'],
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors

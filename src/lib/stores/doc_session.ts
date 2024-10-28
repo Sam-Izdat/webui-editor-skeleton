@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 import * as localStorageEngine from '$lib/storage/local';
 import * as remoteStorageEngine from '$lib/storage/remote';
 import type DocumentSession from '$lib/doc_types';
-import { Log } from '$lib';
 import { get } from 'svelte/store';
 
 // TODO: This should handle remote storage when running a nonstatic build
@@ -42,6 +41,15 @@ export const newVersion = () => {
 export const setActiveVersion = (version: number) => {  
   documentSession.update(session => {
     session.versionActive = version;
+    session.unsavedChanges = false;
+    return session;
+  });
+};
+
+// TODO: Update active
+export const loadSession = (uuid: string) => {
+  documentSession.set(localStorageEngine.load(uuid));
+  documentSession.update(session => {
     session.unsavedChanges = false;
     return session;
   });
@@ -105,8 +113,6 @@ export const saveSession = () => {
     });
 };
 
-// TODO: Update active
-export const loadSession = (uuid: string) => localStorageEngine.load(uuid);
 
 // Storage only operations (active session is not automatically updated)
 

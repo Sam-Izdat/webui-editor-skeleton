@@ -1,5 +1,5 @@
 import type DocumentSession from '$lib/doc_types';
-
+import { Log } from '$lib';
 const prefix = 'saved-doc-';
 
 export const save = (session: DocumentSession) => {
@@ -11,8 +11,10 @@ export const save = (session: DocumentSession) => {
 };
 
 export const load = (uuid: string) => {
+  console.log(uuid);
   const key = prefix + uuid;
   const session = localStorage.getItem(key);
+  console.log(session);
   return session ? JSON.parse(session) : null;
 };
 
@@ -22,7 +24,7 @@ export const remove = (uuid: string) => {
 };
 
 export const rename = (uuid: string, newName: string) => {  
-  const key = `saved-doc-${uuid}`;
+  const key = prefix + uuid;
   const session = localStorage.getItem(key);
   if (session) {
     const parsed = JSON.parse(session);

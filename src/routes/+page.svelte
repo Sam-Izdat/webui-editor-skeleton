@@ -49,7 +49,7 @@
   import { observeKeyboard } from '$lib/keybind';
 
 	// Core components
-	import { MonacoEditor, AnchorLightSwitch, AnchorScriptStatus, DocTitleBadge }  from '$lib/components';
+	import { MonacoEditor, AnchorLightSwitch, AnchorScriptStatus, DocTitleBadge, DocMenuBadge }  from '$lib/components';
 	import * as panes from '$lib/panes';
 
   // Modals, Drawers
@@ -71,17 +71,6 @@ import { get } from 'svelte/store';
 		// rounded: 'rounded',
 		position: 'right',
 	};
-	
-	const openArchiveDrawer = () => {
-    drawerContentStore.set({
-      id: 'archive',
-      component: DrawerArchive,
-      props: {
-				message: 'hi',
-      },
-    });
-		drawerStore.open(drawerSettings);
-  }
 
 	// Unsaved changes guardrails
   beforeNavigate(({ cancel }) => {
@@ -91,7 +80,6 @@ import { get } from 'svelte/store';
 	    }
 	  }
 	});
-
   // Create a promise to wait for the editor instance
   const waitForEditorInstance = () => {
     return new Promise((resolve) => {
@@ -105,44 +93,24 @@ import { get } from 'svelte/store';
 
   let setEditorInstance;
 
-  // UI actions
-  const requestSaveDoc = () => {
-		if (dsCurrentSession.unsavedChanges) {
-			if (dsCurrentSession.versionActive != dsCurrentSession.versionCount - 1) {
-				modalStore.trigger({
-					...modals.modalConfirm, 
-					message: `You are saving over an old version. Overwrite it?`,
-					txtConfirm: `Overwrite v${dsCurrentSession.versionActive}`,
-					txtCancel: `Save as v${dsCurrentSession.versionCount}`,
-					onConfirm: docHandler.saveDoc,
-					onCancel: requestSaveDocNewVersion,
-				});
-			} else { docHandler.saveDoc(); }
-		} else { Log.toastInfo('no changes to save') }			      		
-	};
 
-	const requestSaveDocNewVersion = () => {
-		if (dsCurrentSession.unsavedChanges) {
-			docHandler.saveDocNewVersion();
-			docHandler.loadLastVersion();
-		} else { Log.toastInfo('no changes to save') }
-	};
-	const requestSwitchDocVersion = (v) => {
-		if (typeof v != 'number'){
-			Log.toastError('fuck');
-		}
-		if (dsCurrentSession.unsavedChanges){
-			modalStore.trigger({
-				...modals.modalConfirm, 
-				message: "Unsaved changes will be discarded. Load version anyway?",
-				txtConfirm: `Switch to v${v}`,
-				onConfirm: () => { docHandler.loadVersion(parseInt(v)); },
-			});
-		} else {
-			docHandler.loadVersion(parseInt(v));
-		}
-	};
-	const requestNewDoc = () => {
+  // UI actions		
+	const reqOpenArchiveDrawer = () => {		
+    docHandler.refreshLocalDocList();
+    drawerContentStore.set({
+      id: 'archive',
+      component: DrawerArchive,
+      props: {
+      	deleteDocCallback: reqDeleteDoc,
+      	loadDocCallback: reqLoadDoc,
+      },
+    });
+		drawerStore.open(drawerSettings);
+  };
+
+  const reqResetPanes = () => paneSizes.set({...panes.resetPaneSizes()});
+
+	const reqNewDoc = () => {
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
 				...modals.modalConfirm, 
@@ -155,7 +123,81 @@ import { get } from 'svelte/store';
 		}
 	};
 
-	const requestRenameDoc = () => {
+
+	const reqLoadDoc = (uuid:string) => {
+		if (dsCurrentSession.unsavedChanges){
+			modalStore.trigger({
+				...modals.modalConfirm, 
+				message: "Unsaved changes will be discarded. Load a new script anyway?",
+				txtConfirm: "Load Script",
+				onConfirm: () => { docHandler.loadDoc(uuid); },
+			});
+		} else {
+			docHandler.loadDoc(uuid); 
+		}
+	};
+
+  const reqSaveDoc = () => {
+		if (dsCurrentSession.unsavedChanges) {
+			if (dsCurrentSession.versionActive != dsCurrentSession.versionCount - 1) {
+				modalStore.trigger({
+					...modals.modalConfirm, 
+					message: `You are saving over an old version. Overwrite it?`,
+					txtConfirm: `Overwrite v${dsCurrentSession.versionActive}`,
+					txtCancel: `Save as v${dsCurrentSession.versionCount}`,
+					onConfirm: docHandler.saveDoc,
+					onCancel: reqSaveDocNewVersion,
+				});
+			} else { docHandler.saveDoc(); }
+		} else { Log.toastInfo('no changes to save') }			      		
+	};
+
+	const reqSaveDocNewVersion = () => {
+		if (dsCurrentSession.unsavedChanges) {
+			docHandler.saveDocNewVersion();
+			docHandler.loadLastVersion();
+		} else { Log.toastInfo('no changes to save') }
+	};
+
+	const reqDeleteDoc = (uuid:string) => {
+		modalStore.trigger({
+			...modals.modalConfirm, 
+			message: "Delete script?",
+			txtConfirm: "Delete",
+			onConfirm: () => { docHandler.deleteDoc(uuid); docHandler.refreshLocalDocList(); },
+		});
+	};
+
+	const reqSwitchDocVersion = (v) => {
+		if (typeof v != 'number'){
+			Log.toastError('fuck'); //FIXME
+		}
+		if (dsCurrentSession.unsavedChanges){
+			modalStore.trigger({
+				...modals.modalConfirm, 
+				message: "Unsaved changes will be discarded. Load version anyway?",
+				txtConfirm: `Switch to v${v}`,
+				onConfirm: () => { docHandler.loadVersion(parseInt(v)); },
+			});
+		} else {
+			docHandler.loadVersion(parseInt(v));
+		}
+	};
+
+	const reqRevert = () => {
+		if (dsCurrentSession.unsavedChanges){
+			modalStore.trigger({
+				...modals.modalConfirm, 
+				message: "Revert to last saved changes?",
+				txtConfirm: `Revert`,
+				onConfirm: () => { docHandler.loadVersion(parseInt(dsCurrentSession.versionActive)); },
+			});
+		} else {
+			Log.toastInfo('no changes to revert')
+		}
+	}
+
+	const reqRenameDoc = () => {
 		modalStore.trigger({
 			...modals.modalInput, 
 			message: 'What shall we call this?',
@@ -166,12 +208,12 @@ import { get } from 'svelte/store';
 		})
 	};
 
-	const requestSaveMenu = () => {
+	const reqSaveMenu = () => {
 		modalStore.trigger({
 			...modals.modalSave, 
 			session: dsCurrentSession,
-			localSaveDocCallback: requestSaveDoc,
-			localSaveDocNewVersionCallback: requestSaveDocNewVersion,
+			localSaveDocCallback: reqSaveDoc,
+			localSaveDocNewVersionCallback: reqSaveDocNewVersion,
 		})
 	};
 
@@ -219,22 +261,22 @@ import { get } from 'svelte/store';
 
 		// Custom events from keybind
     observeKeyboard();
-    window.addEventListener('save-document', requestSaveDoc);
-    window.addEventListener('save-document-new-version', requestSaveDocNewVersion);
-    window.addEventListener('switch-document-version', requestSwitchDocVersion);
-    window.addEventListener('new-document', requestNewDoc);
-    window.addEventListener('rename-document', requestRenameDoc);
+    window.addEventListener('save-document', reqSaveDoc);
+    window.addEventListener('save-document-new-version', reqSaveDocNewVersion);
+    window.addEventListener('switch-document-version', reqSwitchDocVersion);
+    window.addEventListener('new-document', reqNewDoc);
+    window.addEventListener('rename-document', reqRenameDoc);
     window.addEventListener('switch-view', navHandler.switchViewEvent);
 	});
 
 	// Not actually necessary in present state, but just to be thorough.
 	onDestroy(() => {
 		if ( browser ) {
-	    window.removeEventListener('save-document', requestSaveDoc);
-	    window.removeEventListener('save-document-new-version', requestSaveDocNewVersion);
-	    window.removeEventListener('switch-document-version', requestSwitchDocVersion);
-	    window.removeEventListener('new-document', requestNewDoc);
-	    window.removeEventListener('rename-document', requestRenameDoc);
+	    window.removeEventListener('save-document', reqSaveDoc);
+	    window.removeEventListener('save-document-new-version', reqSaveDocNewVersion);
+	    window.removeEventListener('switch-document-version', reqSwitchDocVersion);
+	    window.removeEventListener('new-document', reqNewDoc);
+	    window.removeEventListener('rename-document', reqRenameDoc);
 	    window.removeEventListener('switch-view', navHandler.switchViewEvent);
 
 			monacoEditor?.dispose();
@@ -250,12 +292,10 @@ import { get } from 'svelte/store';
  	import { AppRail, AppRailTile, AppRailAnchor } from '@skeletonlabs/skeleton';
 
   import { Pane, Splitpanes } from 'svelte-splitpanes';
-  // let currentView: number = 0;
 
   // Icons
   import { Icon } from 'svelte-hero-icons';
   import * as hero from 'svelte-hero-icons';
-
   import { CustomIcon } from '$lib/components/icons';
   import * as ico from '$lib/components/icons';
 </script>
@@ -304,7 +344,6 @@ import { get } from 'svelte/store';
 		</AppRailTile>
 		<hr classs="hr m-1"/>
 		<AnchorScriptStatus />
-		<hr classs="hr m-1"/>
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle Auto-Build" 
@@ -312,6 +351,15 @@ import { get } from 'svelte/store';
 			class={$isAutoBuild ? 'bg-tertiary-500' : ''} 
 			style="display:block;">
 			<Icon src="{hero.PlayCircle}" size="16" style="margin: 4px auto;" solid/>
+		</AppRailAnchor>
+		<hr classs="hr m-1"/>
+		<AppRailAnchor 
+			href="#" 
+			title="Toggle Read-Only" 
+			on:click={docHandler.toggleEditing} 
+			class={$isReadOnly ? 'bg-tertiary-500' : ''} 
+			style="display:block;">
+			<Icon src="{$isReadOnly ? hero.LockClosed : hero.LockOpen}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
 		<AppRailAnchor 
 			href="#" 
@@ -321,26 +369,18 @@ import { get } from 'svelte/store';
 			style="display:block;">
 			<Icon src="{hero.ArrowsPointingOut}" size="16" style="margin: 4px auto;" solid/>
 		</AppRailAnchor>
-		<AppRailAnchor 
-			href="#" 
-			title="Toggle Read-Only" 
-			on:click={docHandler.toggleEditing} 
-			class={$isReadOnly ? 'bg-tertiary-500' : ''} 
-			style="display:block;">
-			<Icon src="{$isReadOnly ? hero.LockClosed : hero.LockOpen}" size="16" style="margin: 4px auto;" solid/>
-		</AppRailAnchor>
 		<svelte:fragment slot="trail">
 			<AppRailAnchor 
 				href="#" 
 				title="New Script (alt+{km.keyNewDoc})" 
-				on:click={requestNewDoc}
+				on:click={reqNewDoc}
 				style="display:block;">
 				<Icon src="{hero.Document}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
 			<AppRailAnchor 
 				href="#" 
 				title="Archive (alt+{km.keyArchive})" 
-				on:click={requestSaveMenu}
+				on:click={reqOpenArchiveDrawer}
 				style="display:block;">
 				<Icon src="{hero.Folder}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
@@ -351,13 +391,13 @@ import { get } from 'svelte/store';
 				style="display:block;">
 				<Icon src="{hero.ArrowsUpDown}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
-			<AppRailAnchor 
+			<!-- <AppRailAnchor 
 				href="#" 
 				title="Reset Panes" 
 				on:click={() => {paneSizes.set({...panes.resetPaneSizes()});}}
 				style="display:block;">
 				<Icon src="{hero.ArrowPath}" size="16" style="margin: 4px auto;" solid/>
-			</AppRailAnchor>
+			</AppRailAnchor> -->
 			<AnchorLightSwitch />
 			<AppRailAnchor 
 				href="#" 
@@ -417,26 +457,22 @@ import { get } from 'svelte/store';
 		    <button 
 		    	title="Save (alt+{km.keySaveDoc} / ctrl+{km.keySaveDoc})" 
 		    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}" 
-		      on:click={requestSaveDoc}
+		      on:click={reqSaveDoc}
 		    >
-		      <!-- <Icon src="{hero.ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/> -->
-		      <CustomIcon src="{ico.Fork}" size="16" style="margin: 2px auto;" solid/>
+		      <Icon src="{hero.ArrowDownOnSquare}" size="16" style="margin: 2px auto;" solid/>
 		      <span class="hidden lg:inline ml-2">Save</span>
 		    </button> 
 		    <button 
 		    	title="Save v{dsCurrentSession.versionCount} (alt+{km.keySaveDocNewVersion})"
 		    	class="badge m-1 {dsCurrentSession.unsavedChanges ? 'variant-ghost-primary' : 'variant-soft-primary'}"
-		      on:click={requestSaveDocNewVersion}
+		      on:click={reqSaveDocNewVersion}
 		    >
 		      <Icon src="{hero.ArrowDownOnSquareStack}" size="16" style="margin: 2px auto;" solid/>
 		      <span class="hidden lg:inline ml-2">Save v{dsCurrentSession.versionCount}</span>
 		    </button>
 			  <div class="ml-auto flex">
-				  <DocTitleBadge 
-				  	renameCallback={requestRenameDoc} 
-				  	switchVersionCallback={requestSwitchDocVersion} 
-				  />
-				  <button on:click={openArchiveDrawer}> AAA</button>
+				  <DocTitleBadge renameCallback={reqRenameDoc} switchVersionCallback={reqSwitchDocVersion} />
+				  <DocMenuBadge revertCallback={reqRevert} resetPanesCallback={reqResetPanes} />
 			  </div>
 			</div>
 			<div class="flex p-1">

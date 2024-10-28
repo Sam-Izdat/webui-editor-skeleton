@@ -2,12 +2,15 @@ import { get } from 'svelte/store';
 import * as ds from '$lib/stores/doc_session'; 
 import { Log, strInitialEditorContents } from '$lib'; 
 import { isReadOnly } from '$lib/stores';
+import { savedDocuments } from '$lib/stores';
+// import type DocumentSession from '$lib/doc_types';
 
 export class DocHandler {
   constructor(session, editor) {
     this.editor = editor;
     this.readonly = get(isReadOnly);
     this.session = get(ds.documentSession);
+    // this.savedDocuments = get(savedDocuments);
     this.unsubscribeAll = [
       isReadOnly.subscribe(readonly => {
         this.readonly = readonly;
@@ -15,6 +18,9 @@ export class DocHandler {
       ds.documentSession.subscribe(session => {
         this.session = session;
       }),
+      // savedDocuments.subscribe(sd => {
+      //   this.savedDocuments = sd;
+      // })
     ];
   }
 
@@ -32,7 +38,22 @@ export class DocHandler {
     }
   };
 
-  loadVersion = (version) => {
+
+  loadDoc = (uuid:string) => {
+    try {
+      ds.loadSession(uuid);
+      this.editor.setValue(this.session.content[this.session.versionCount - 1] ?? '');
+      ds.updateContentBuffer(this.session.content[this.session.versionCount - 1]);
+      ds.setActiveVersion(this.session.versionCount - 1);
+      Log.toastSuccess('script loaded');
+    } catch(e) {
+      Log.error(e);
+      Log.toastError('load failed');
+    }
+  };
+
+
+  loadVersion = (version:number) => {
     try {
       if (!(version >= 0 && version < this.session.versionCount)){
         throw new Error(`tried to load undefined doc version index ${version} of count ${this.session.versionCount}` );
@@ -80,6 +101,21 @@ export class DocHandler {
       Log.toastInfo('imported script')
     }
   }; 
+
+  refreshLocalDocList = () => {
+    savedDocuments.set(ds.listStoredSessions());
+  };
+
+  deleteDoc = (uuid:string) => {
+    try {       
+      this.newDoc();
+      ds.deleteStoredSession(uuid);
+    } catch(e) {
+      Log.error(e);
+      Log.toastInfo('failed to delete script');
+    }
+    Log.toastInfo('script deleted');
+  }
 
   disableEditing = () => {
     this.editor.updateOptions({ readOnly: true });

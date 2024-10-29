@@ -98,7 +98,7 @@
                   {doc.docName ?? 'unknown'}
                 </span>
                 <span class="badge bg-tertiary-500/25 text-xs m-1 p-1 w-min h-min">
-                  {doc.docName ?? 'unknown'} {doc.versionCount ?? 1 > 1 ? 'versions' : 'version' }
+                  {doc.versionCount ?? 'unknown'} {(doc.versionCount ?? 1) > 1 ? 'versions' : 'version' }
                 </span>
               </div>
             </button>

@@ -47,7 +47,9 @@ npm i
 
 ## Option 2
 
-Either download a release and stick it wherever, then rename it or clone the repo:
+Either download a release and stick it wherever, then rename it.
+
+Or clone the repo:
 
 ```
 git clone https://github.com/Sam-Izdat/webui-editor-skeleton.git

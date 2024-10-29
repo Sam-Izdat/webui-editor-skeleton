@@ -20,7 +20,6 @@
         })
         .then(data => {
           sessionStorage.setItem('importRequestFile', JSON.stringify([{ name: 'raw_content', content: data }]));
-          Log.info('Script content loaded:', data);
           window.location.href = `${base}/`; // Redirect after loading the content
         })
         .catch(error => {

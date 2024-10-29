@@ -352,7 +352,7 @@ import { get } from 'svelte/store';
 
 	// Not actually necessary in present state, but just to be thorough.
 	onDestroy(() => {
-		if ( browser ) {
+		if (browser) {
 	    window.removeEventListener('save-document', reqSaveDoc);
 	    window.removeEventListener('save-document-new-version', reqSaveDocNewVersion);
 	    window.removeEventListener('new-document', reqNewDoc);

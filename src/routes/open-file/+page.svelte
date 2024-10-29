@@ -1,39 +1,33 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { base } from '$app/paths';
-
-  let fileContentTest = 'foo';
-  let filenameTest = 'bar';
+  import { browser } from "$app/environment";
+  import { Log } from '$lib';
 
   onMount(() => {
-    console.log('baz');
-    window.addEventListener('launch', (event) => {
-      console.log('baz+');
-      const files = event.files;
+    if (browser) {
+      const reader = new FileReader();
+      if ("launchQueue" in window) {
+        launchQueue.setConsumer(async (launchParams) => {
+          let fileHandle;
+          for (const file of launchParams.files) {
+            fileHandle = await file.getFile();
 
-      if (files.length > 0) {
-        console.log('baz++');
-        const file = files[0];
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-          console.log('baz+++');
-          const fileContent = e.target.result; // This contains the file content as a string
-          console.log("FILE", file.name);
-          console.log("FILE", fileContent);
-          sessionStorage.setItem('activeFile', JSON.stringify([{ name: file.name, content: fileContent }]));
-        };
-        
-        reader.readAsText(file);
+            reader.onload = (event) => {
+              const data = event.target?.result; 
+              sessionStorage.setItem('importRequestFile', JSON.stringify([{ name: 'file_content', content: data }]));
+              window.location.href = `${base}/`;
+            };
+
+            reader.onerror = (error) => {
+              Log.error('Error reading file:', error);
+              Log.toastError('error reading file');
+            };
+
+            reader.readAsText(fileHandle);
+          }
+        });
       }
-
-      //window.location.href = `${base}/`;
-    });
+    }
   });
 </script>
-<div>
-  {filenameTest}
-</div>
-<div>
-  {fileContentTest}
-</div>

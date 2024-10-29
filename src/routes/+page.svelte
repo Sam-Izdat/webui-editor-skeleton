@@ -537,11 +537,11 @@ import { get } from 'svelte/store';
   			<span class="badge variant-soft">Current view: {$currentView}</span>
 
   			<!-- ----------------- -->
-	  		<br/><br/><br/><br/>
+	  		<br/><br/>
 				<div class="badge display-block text-lg">
 				File system access supported? {fileSystemAccessSupported ? 'Yes.' : 'No.'}
 				</div>
-				<br/><br/>
+				<br/>
 				<div class="badge display-block text-lg">
 				Persistent storage available? {persistentStorageAvailable ? 'Yes.' : 'No.'}
 				</div> 

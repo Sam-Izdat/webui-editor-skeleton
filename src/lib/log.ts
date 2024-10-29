@@ -1,4 +1,4 @@
-import * as g from '$lib/globals';
+import { cfg } from '$root/webui.config.js';
 import { postScriptMessage, clearScriptMessages } from '$lib/stores';
 import { writable } from 'svelte/store';
 import { getToastStore } from '@skeletonlabs/skeleton';
@@ -64,7 +64,7 @@ export class Log {
 
   debug = (...msg) => {
     if (this.level <= Log.Level.DEBUG) {
-      console.log(`[${g.APP_SHORT_NAME}][DBG]`, ...msg); 
+      console.log(`[${cfg.APP_SHORT_NAME}][DBG]`, ...msg); 
       if (this.baseTraceLevel <= Log.Level.DEBUG) { 
         console.trace('TRACE'); 
       } 
@@ -73,7 +73,7 @@ export class Log {
 
   info = (...msg) => {
     if (this.level <= Log.Level.DEBUG) { 
-      console.info(`[${g.APP_SHORT_NAME}][INF]`,...msg); 
+      console.info(`[${cfg.APP_SHORT_NAME}][INF]`,...msg); 
       if (this.baseTraceLevel <= Log.Level.INFO) { 
         console.trace('TRACE'); 
       } 
@@ -82,7 +82,7 @@ export class Log {
 
   warning = (...msg) => {
     if (this.level <= Log.Level.WARNING) { 
-      console.warn(`[${g.APP_SHORT_NAME}][WRN]`, ...msg); 
+      console.warn(`[${cfg.APP_SHORT_NAME}][WRN]`, ...msg); 
       if (this.baseTraceLevel <= Log.Level.WARNING) { 
         console.trace('TRACE'); 
       } 
@@ -91,7 +91,7 @@ export class Log {
 
   error = (...msg) => {
     if (this.level <= Log.Level.ERROR) {
-      console.error(`[${g.APP_SHORT_NAME}][ERR]`, ...msg); 
+      console.error(`[${cfg.APP_SHORT_NAME}][ERR]`, ...msg); 
       if (this.baseTraceLevel <= Log.Level.ERROR) { 
         console.trace('TRACE'); 
       }
@@ -100,7 +100,7 @@ export class Log {
 
   critical = (...msg) => {
     if (this.level <= Log.Level.CRITICAL) { 
-      console.error(`[${g.APP_SHORT_NAME}][**CRIT**]`, ...msg);
+      console.error(`[${cfg.APP_SHORT_NAME}][**CRIT**]`, ...msg);
       if (this.baseTraceLevel <= Log.Level.CRITICAL) { 
         console.trace('TRACE'); 
       } 

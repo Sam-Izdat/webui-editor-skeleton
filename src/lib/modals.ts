@@ -1,6 +1,6 @@
 import { base } from '$app/paths';
 import { strAboutText } from '$lib/strings';
-import * as g from '$lib/globals';
+import { cfg } from '$root/webui.config.js';
 import { Log } from '$lib';
 
 const strNoCB = "I'm not hooked up to anything!";
@@ -9,7 +9,7 @@ export const modalAbout: ModalSettings = {
 	type: 'component',
 	component: 'modalInfo',
 	logo: `${base}/icons/icon-128.png`,
-	title: g.APP_TITLE,
+	title: cfg.APP_TITLE,
 	package: `${__APP_NAME__} ${__BUILD_TYPE__}`,
 	version: __APP_VERSION__,
 	body: strAboutText

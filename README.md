@@ -1,38 +1,27 @@
-# create-svelte
+# What is it?
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+It's a template for any kind of specialized code editor that needs a build step, a controls window and an output window. 
+It's built on [Sveltekit](https://svelte.dev/), [Skeleton UI toolkit](https://www.skeleton.dev/) and [Monaco Editor](https://microsoft.github.io/monaco-editor/).
 
-## Creating a project
+[You can preview it here.](https://sam-izdat.github.io/webui-editor-skeleton/)
 
-If you're seeing this, you've probably already done this step. Congrats!
+![screenshot](./doc/images/screenshot1.png)
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Features
 
-# create a new project in my-app
-npm create svelte@latest my-app
+- cross platform server and client
+- static and dynamic builds
+- mobile support
+- local storage adapter for saving code
+- extensible for server storage
+
+# Install
+
+It would probably make the most sense to fork it configure it beforehand, but:
+
 ```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+git clone https://github.com/Sam-Izdat/webui-editor-skeleton.git
+cd webui-editor-skeleton
+npm install i
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

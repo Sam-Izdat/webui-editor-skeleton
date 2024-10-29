@@ -20,6 +20,9 @@ const config = {
 		},
     paths: {
       base: APP_BASE_PATH
+    },
+    alias: {
+    	'$root': './src/*'
     }
 	},
 	extensions: ['.svelte'],

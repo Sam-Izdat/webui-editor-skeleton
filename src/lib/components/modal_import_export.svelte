@@ -7,7 +7,7 @@
   import { getModalStore } from '@skeletonlabs/skeleton';
 
   import { Log } from '$lib';
-  import * as g from '$lib/globals';
+  import { cfg } from '$root/webui.config.js';
 
   import * as ds from '$lib/stores/doc_session';
   import type DocumentSession from '$lib/doc_types';
@@ -38,11 +38,11 @@
     if (files && files.length > 0) {
       const file = files[0];
 
-      const validExtensions = [g.PWA_FILE_EXT, '.txt']; // Add your valid extensions here
+      const validExtensions = [cfg.PWA_FILE_EXT, '.txt']; // Add your valid extensions here
       const extension = file.name.split('.').pop()?.toLowerCase();
       
       if (!validExtensions.includes(`.${extension}`)) {
-        Log.toastError(`Invalid file type. Please upload a ${g.PWA_FILE_EXT} or .txt file.`);
+        Log.toastError(`Invalid file type. Please upload a ${cfg.PWA_FILE_EXT} or .txt file.`);
         return; 
       }
 
@@ -63,6 +63,41 @@
     } else {
       Log.warning('No file selected.');
     }
+  };
+  
+  const guessURL = (url: string): string => {
+    // Define a list of URL transformation patterns
+    const patterns = [
+      {
+        // Pattern to match GitHub blob URL structure
+        regex: /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)$/,
+        transform: (match: RegExpMatchArray) =>
+          `https://raw.githubusercontent.com/${match[1]}/${match[2]}/${match[3]}/${match[4]}`
+      },
+      {
+        regex: /^https:\/\/gist\.github\.com\/([^/]+)\/(\w+)$/,
+        transform: (match: RegExpMatchArray) =>
+          `https://gist.githubusercontent.com/${match[1]}/${match[2]}/raw`
+      },
+      {
+        // Pastebin URL to raw content, only if not already raw
+        regex: /^https:\/\/pastebin\.com\/(?!raw\/)(\w+)$/,
+        transform: (match: RegExpMatchArray) =>
+          `https://pastebin.com/raw/${match[1]}`
+      }
+      // Add more patterns here if needed
+    ];
+
+    // Apply each pattern, return transformed URL if matched
+    for (const { regex, transform } of patterns) {
+      const match = url.match(regex);
+      if (match) {
+        return transform(match);
+      }
+    }
+
+    // Return original string if no patterns match
+    return url;
   };
 
   const copyToClipboard = () => {
@@ -86,20 +121,22 @@
   let extResourceValue: string = '';
   let selectedOption: string = 'raw';
   let shareableURL: string = '';
+
   $: makeURL = () => {
     if (extResourceValue.trim() === '') {
       shareableURL = ''; 
       return; 
     }
-    const encodedURI = encodeURIComponent(extResourceValue.trim());
+    let rawURL = cfg.GUESS_RAW_URL ? guessURL(extResourceValue) : extResourceValue;
+    const encodedURI = encodeURIComponent(rawURL.trim());
     if (selectedOption === 'raw') {      
       shareableURL = __BUILD_TYPE__ == 'static'
-        ? `${g.APP_HOST_PATH}get-url?q=${encodedURI}`
-        : `${g.APP_HOST_PATH}url/${encodedURI}`;
+        ? `${cfg.APP_HOST_PATH}get-url?q=${encodedURI}`
+        : `${cfg.APP_HOST_PATH}url/${encodedURI}`;
     } else if (selectedOption === 'gist') {
       shareableURL = __BUILD_TYPE__ == 'static'
-        ? `${g.APP_HOST_PATH}get-gist?q=${encodedURI}`
-        : `${g.APP_HOST_PATH}gist/${encodedURI}`;
+        ? `${cfg.APP_HOST_PATH}get-gist?q=${encodedURI}`
+        : `${cfg.APP_HOST_PATH}gist/${encodedURI}`;
     }
   };
 
@@ -133,7 +170,7 @@
                 <Icon src="{hero.ArrowDownTray}" size="20" class="mx-auto" solid/>
               </svelte:fragment>
               <svelte:fragment slot="message">Import</svelte:fragment>
-              <svelte:fragment slot="meta">browse or drag: {g.PWA_FILE_EXT}, .txt</svelte:fragment>
+              <svelte:fragment slot="meta">browse or drag: {cfg.PWA_FILE_EXT}, .txt</svelte:fragment>
             </FileDropzone>
             <div class="flex justify-center p-1">
               <button title="Export" class="btn mt-5 variant-ghost-primary" 

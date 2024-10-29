@@ -6,8 +6,10 @@
   import { get } from 'svelte/store';
 
   onMount(() => {
-    const { rawURL } = get(page).params;
+    let { rawURL } = get(page).params;
     if (rawURL) {
+      // cache bust
+      rawURL += (rawURL.includes('?') ? '&' : '?') + `cacheBust=${Date.now()}`;
       fetch(rawURL)
         .then(response => {
           if (!response.ok) {

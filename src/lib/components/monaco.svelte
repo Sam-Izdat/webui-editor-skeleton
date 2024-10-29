@@ -4,8 +4,6 @@
   import { observeThemeChange } from '$lib/stores/dark_mode';
   import { createEventDispatcher } from 'svelte';
   import { isDark } from '$lib/stores';
-  
-  import * as g from '$lib/globals';
 
   const dispatch = createEventDispatcher();
 
@@ -19,8 +17,6 @@
     // Import monaco
     monaco = (await import('./monaco.ts')).default;
 
-    // Cosmetic stuff has to be here
-    document.querySelector('body').setAttribute('data-theme', g.APP_THEME);
     observeThemeChange(monaco.editor);
 
     // Actual editor setup

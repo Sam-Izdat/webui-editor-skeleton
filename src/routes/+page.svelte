@@ -10,7 +10,7 @@
 	import { strAboutText } from '$lib';
 	import type { editor } from 'monaco-editor';
 
-  import * as g from '$lib/globals';
+  import { cfg } from '$root/webui.config.js';
   import { Log } from '$lib';
 	import * as ds from '$lib/stores/doc_session';	
 	import * as km from '$lib/keymap';
@@ -95,7 +95,7 @@ import { get } from 'svelte/store';
 
 
   // UI actions		
-	const reqOpenArchiveDrawer = () => {		
+	const reqOpenArchiveDrawer = () => {
     docHandler.refreshDocList();
     drawerContentStore.set({
       id: 'archive',
@@ -193,7 +193,7 @@ import { get } from 'svelte/store';
 		const blob = new Blob([content], { type: "application/octet-stream" });
 		const link = document.createElement("a");
 		link.href = URL.createObjectURL(blob);
-		link.download = filename.trim().replace(/[\/:*?"<>|]/g, "")+g.PWA_FILE_EXT;
+		link.download = filename.trim().replace(/[\/:*?"<>|]/g, "")+cfg.PWA_FILE_EXT;
 	  document.body.appendChild(link);
 	  link.click();
 	  document.body.removeChild(link);
@@ -211,14 +211,15 @@ import { get } from 'svelte/store';
 					onConfirm: docHandler.saveDoc,
 					onCancel: reqSaveDocNewVersion,
 				});
-			} else { docHandler.saveDoc(); }
-		} else { Log.toastInfo('no changes to save') }			      		
+			} else { docHandler.saveDoc(); docHandler.refreshDocList(); }
+		} else { Log.toastInfo('no changes to save') }
 	};
 
 	const reqSaveDocNewVersion = () => {
 		if (dsCurrentSession.unsavedChanges) {
 			docHandler.saveDocNewVersion();
 			docHandler.loadLastVersion();
+    	docHandler.refreshDocList();
 		} else { Log.toastInfo('no changes to save') }
 	};
 
@@ -284,6 +285,8 @@ import { get } from 'svelte/store';
 
 	// When browser stuff is available
 	onMount(async () => {
+    document.querySelector('body').setAttribute('data-theme', cfg.APP_THEME);
+
 		await waitForEditorInstance(); 
 
     // Listen for changes in Monaco editor and update the store

@@ -1,6 +1,6 @@
 <script lang="ts">
   import '../app.postcss';
-  import * as g from '$lib/globals';
+  import { cfg } from '$root/webui.config.js';
   import { AppShell, AppBar } from '@skeletonlabs/skeleton';
   // import { LightSwitch } from '@skeletonlabs/skeleton';
 
@@ -42,15 +42,15 @@
 
   const dev_mode = import.meta.env.MODE === 'development';
   new Log({
-    baseLogLevel:     Log.Level[dev_mode ? g.LOG_LEVEL_DEV : g.LOG_LEVEL_PROD], 
-    baseTraceLevel:   Log.Level[dev_mode ? g.TRACE_LEVEL_DEV : g.TRACE_LEVEL_PROD],
+    baseLogLevel:     Log.Level[dev_mode ? cfg.LOG_LEVEL_DEV : cfg.LOG_LEVEL_PROD], 
+    baseTraceLevel:   Log.Level[dev_mode ? cfg.TRACE_LEVEL_DEV : cfg.TRACE_LEVEL_PROD],
   });
 </script>
 
 <svelte:head>
   {@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}
   <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="{g.PWA_THEME_COLOR}">
+  <meta name="theme-color" content="{cfg.PWA_THEME_COLOR}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 </svelte:head>
 <Modal components={modalRegistry} />

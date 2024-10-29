@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 
 
 // Import global variables from globals.js
-import * as g from '../src/lib/globals.js';
+import { cfg } from '../src/webui.config.js';
 
 // Enable ES module compatible path handling
 const __filename = fileURLToPath(import.meta.url);
@@ -26,20 +26,20 @@ const APP_VERSION = pkg.version;
 // Modify the template with dynamic data from globals.js
 const dynamicManifest = {
   ...manifestTemplate,
-  name:             g.APP_TITLE,
-  short_name:       g.APP_SHORT_NAME,
-  description:      g.APP_DESCRIPTION,
-  theme_color:      g.PWA_THEME_COLOR,
-  background_color: g.PWA_BG_COLOR,
+  name:             cfg.APP_TITLE,
+  short_name:       cfg.APP_SHORT_NAME,
+  description:      cfg.APP_DESCRIPTION,
+  theme_color:      cfg.PWA_THEME_COLOR,
+  background_color: cfg.PWA_BG_COLOR,
   version:          APP_VERSION,
-  scope:            g.PWA_SCOPE,
-  start_url:        g.PWA_START_URL,
-  orientation:      g.PWA_ORIENTATION
+  scope:            cfg.PWA_SCOPE,
+  start_url:        cfg.PWA_START_URL,
+  orientation:      cfg.PWA_ORIENTATION
 };
-dynamicManifest['file_handlers'][0]['action'] = g.PWA_FILE_ACTION;
+dynamicManifest['file_handlers'][0]['action'] = cfg.PWA_FILE_ACTION;
 dynamicManifest['file_handlers'][0]['accept'] = {};
-dynamicManifest['file_handlers'][0]['accept'][g.PWA_FILE_MIME_TYPE] = [g.PWA_FILE_EXT];
-dynamicManifest['url_handlers'][0]['url_pattern'] = g.PWA_URL_PATTERN;
+dynamicManifest['file_handlers'][0]['accept'][cfg.PWA_FILE_MIME_TYPE] = [cfg.PWA_FILE_EXT];
+dynamicManifest['url_handlers'][0]['url_pattern'] = cfg.PWA_URL_PATTERN;
 
 // Write the dynamic manifest to the static folder
 const outputPath = path.join(__dirname, '../static/manifest.json');

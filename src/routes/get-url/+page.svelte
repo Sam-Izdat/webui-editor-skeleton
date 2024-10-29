@@ -6,9 +6,11 @@
   onMount(() => {
     // Extract the search parameters from the current URL
     const urlParams = new URLSearchParams(window.location.search);
-    const rawURL = urlParams.get('q'); // Get the rawURL from the query parameter
+    let rawURL: string = urlParams.get('q'); // Get the rawURL from the query parameter
 
     if (rawURL) {
+      // cache bust
+      rawURL += (rawURL.includes('?') ? '&' : '?') + `cacheBust=${Date.now()}`;
       fetch(rawURL)
         .then(response => {
           if (!response.ok) {

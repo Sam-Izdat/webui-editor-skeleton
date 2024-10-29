@@ -9,7 +9,10 @@
     const { gistID } = get(page).params; // Extract the gistID from the route parameters
 
     if (gistID) {
-      fetch(`https://api.github.com/gists/${gistID}`)
+      // cache bust
+      let rawURL: string = `https://api.github.com/gists/${gistID}`;
+      rawURL += (rawURL.includes('?') ? '&' : '?') + `cacheBust=${Date.now()}`;
+      fetch(rawURL)
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');

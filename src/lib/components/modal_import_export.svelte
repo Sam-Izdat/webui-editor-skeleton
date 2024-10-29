@@ -91,15 +91,15 @@
       shareableURL = ''; 
       return; 
     }
-    if (selectedOption === 'raw') {
-      const encodedURL = encodeURIComponent(extResourceValue.trim());
+    const encodedURI = encodeURIComponent(extResourceValue.trim());
+    if (selectedOption === 'raw') {      
       shareableURL = __BUILD_TYPE__ == 'static'
-        ? `${g.APP_HOST_PATH}get-url?q=${encodedURL}`
-        : `${g.APP_HOST_PATH}url/${encodedURL}`;
+        ? `${g.APP_HOST_PATH}get-url?q=${encodedURI}`
+        : `${g.APP_HOST_PATH}url/${encodedURI}`;
     } else if (selectedOption === 'gist') {
       shareableURL = __BUILD_TYPE__ == 'static'
-        ? `${g.APP_HOST_PATH}get-gist?q=${extResourceValue.trim()}`
-        : `${g.APP_HOST_PATH}gist/${extResourceValue.trim()}`;
+        ? `${g.APP_HOST_PATH}get-gist?q=${encodedURI}`
+        : `${g.APP_HOST_PATH}gist/${encodedURI}`;
     }
   };
 
@@ -160,7 +160,7 @@
                   bind:value={extResourceValue} 
                   class="flex-grow" 
                 />
-                <select bind:value={selectedOption}>
+                <select bind:value={selectedOption} on:change={makeURL}>
                   <option value='raw'>Raw URL</option>
                   <option value='gist'>Gist ID</option>
                 </select>

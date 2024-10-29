@@ -3,7 +3,6 @@
   export let loadDocCallback = () => {};
   export let saveDocCallback = () => {};
   export let saveDocNewVersionCallback = () => {};
-
   export let formAction = () => {}
 
   import * as ds from '$lib/stores/doc_session';
@@ -13,23 +12,20 @@
 
   import { Log } from '$lib';
 
-
   let inputValue = '';
+  
+  import * as km from '$lib/keymap';
 
   // Icons
   import { Icon } from 'svelte-hero-icons';
   import * as hero from 'svelte-hero-icons';
   import { CustomIcon } from '$lib/components/icons';
   import * as ico from '$lib/components/icons';
-
-  import * as km from '$lib/keymap';
   
   const isPWA: boolean            = window.matchMedia('(display-mode: standalone)').matches;
   const isStaticServer: boolean   = __BUILD_TYPE__ == 'static';
   const isStatic: boolean         = isPWA || isStaticServer;
 </script>
-
-
 
 <div class="overflow-x-auto flex p-1 items-center justify-center">
   <button 
@@ -129,5 +125,3 @@
       </table>
   </div>
 </div>
-
-

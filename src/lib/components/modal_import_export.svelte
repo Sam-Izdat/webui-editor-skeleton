@@ -4,6 +4,14 @@
   import { TabGroup, Tab, TabAnchor } from '@skeletonlabs/skeleton';
   import { FileDropzone } from '@skeletonlabs/skeleton';
 
+  import { CodeBlock } from '@skeletonlabs/skeleton';
+  import hljs from 'highlight.js/lib/core';
+  import xml from 'highlight.js/lib/languages/xml';
+  hljs.registerLanguage('xml', xml);
+  import 'highlight.js/styles/github-dark-dimmed.css';
+  import { storeHighlightJs } from '@skeletonlabs/skeleton';
+  storeHighlightJs.set(hljs);
+
   import { getModalStore } from '@skeletonlabs/skeleton';
 
   import { Log } from '$lib';
@@ -25,7 +33,7 @@
   const strLoadRemotely: string = "Load from Web";
   const strLoadLocally: string  = "Load Locally";
   const strImportFile: string   = "Import File";
-  const strImportRawURL: string = "Import External Resource";
+  const strImportRawURL: string = "About Importing External Resources";
 
   const fileImportHandler = (e: Event): void => {
     const target = e.target as HTMLInputElement;
@@ -156,13 +164,13 @@
       </Tab>
       <Tab bind:group={tabSet} name="tab3" value={1}>
         <svelte:fragment slot="lead"><Icon src="{hero.Link}" size="20" style="margin: 4px auto;" alt={strImportRawURL} solid/></svelte:fragment>
-        <span class="hidden lg:inline ml-2">Link External</span>
+        <span class="hidden lg:inline ml-2">Import / Share External</span>
       </Tab>
       <svelte:fragment slot="panel">
-        <div class="h-full overflow-auto text-sm border border-primary-900/30 rounded">
+        <div class="h-full overflow-auto text-sm border border-primary-900/30">
         {#if tabSet === 0}
-          <div class="card min-h-48 bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">  
-            <FileDropzone name="files" class="h-24" on:change={fileImportHandler}>    
+          <div class="card min-h-48 bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10 rounded h-56 overflow-y-auto">  
+            <FileDropzone name="files" class="h-28" on:change={fileImportHandler}>    
               <svelte:fragment slot="lead">
                 <Icon src="{hero.ArrowDownTray}" size="20" class="mx-auto" solid/>
               </svelte:fragment>
@@ -170,7 +178,7 @@
               <svelte:fragment slot="meta">browse or drag: {cfg.PWA_FILE_EXT}, .txt</svelte:fragment>
             </FileDropzone>
             <div class="flex justify-center p-1">
-              <button title="Export" class="btn mt-5 variant-ghost-primary" 
+              <button title="Export" class="btn mt-8 variant-ghost-primary" 
                 on:click={$modalStore[0].exportFileCallback}>
                 <Icon src="{hero.ArrowUpTray}" size="20" style="margin: 2px auto;" solid/>
                 <span>Export</span>
@@ -178,7 +186,7 @@
             </div>
           </div>
         {:else if tabSet === 1}
-          <div class="card min-h-48 bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10">
+          <div class="card min-h-48 bg-surface-50-900-token shadow-inner divide-y divide-surface-400/10 h-56 overflow-y-auto">
 
           <form on:submit|preventDefault>
             <div class="card p-4 w-full text-token space-y-4">
@@ -202,33 +210,59 @@
             </div>
           </form>
 
-          <div class="card variant-soft-secondary">
-            <div class="flex items-center justify-between p-2">
-              <div class="flex-grow truncate overflow-hidden text-ellipsis whitespace-nowrap text-left max-w-[calc(100%-64px)]">
-                {shareableURL}
-              </div>
-              <div class="flex space-x-2">
-                <button on:click={copyToClipboard} title="Copy to Clipboard">
-                  <Icon src="{hero.ClipboardDocumentCheck}" size="20" solid/>
-                </button>
-                <button on:click={() => window.open(shareableURL, '_blank')} title="Go">
-                  <Icon src="{hero.ArrowRightCircle}" size="20" solid/>
-                </button>
-              </div>
-            </div>
-          </div>
 
 
             <Accordion>
-              <AccordionItem open>
+              <AccordionItem>
                 <svelte:fragment slot="lead">
-                  <Icon src="{hero.InformationCircle}" size="20" style="margin: 4px auto;" alt={strImportRawURL} solid/>
+                  <Icon src="{hero.InformationCircle}" size="20" style="margin: 4px auto;" alt="About" solid/>
                 </svelte:fragment>
                 <svelte:fragment slot="summary"><p class="font-semibold text-base">{strImportRawURL}</p></svelte:fragment>
                 <svelte:fragment slot="content">
-                  <p class="text-xs">
-                    You can import and share externally-hosted scripts if you have a URL to a <em>raw</em> file or a gist ID.
+                  <p class="text-sm">
+                    You can import externally-hosted scripts if you have a URL to a raw script file or a gist ID. 
+                    The import link generated will be shareable and will stay up tp date if the file changes on the external host. 
+                    You can also embed this editor with its external resource in an iframe - e.g. to post on a blog.
                   </p>
+                </svelte:fragment>
+              </AccordionItem>
+              <AccordionItem open>
+                <svelte:fragment slot="lead">
+                  <Icon src="{hero.Share}" size="20" style="margin: 4px auto;" alt="link" solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold text-base">Shareable Link</p></svelte:fragment>
+                <svelte:fragment slot="content">
+
+
+                  <div class="card variant-soft-secondary">
+                    <div class="flex items-center justify-between p-2">
+                      <div class="flex-grow truncate overflow-hidden text-ellipsis whitespace-nowrap text-left max-w-[calc(100%-64px)]">
+                        {shareableURL}
+                      </div>
+                      <div class="flex space-x-2">
+                        <button on:click={copyToClipboard} title="Copy to Clipboard">
+                          <Icon src="{hero.ClipboardDocumentCheck}" size="20" solid/>
+                        </button>
+                        <button on:click={() => window.open(shareableURL, '_blank')} title="Go">
+                          <Icon src="{hero.ArrowRightCircle}" size="20" solid/>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </svelte:fragment>
+              </AccordionItem>
+              <AccordionItem>
+                <svelte:fragment slot="lead">
+                  <Icon src="{hero.CodeBracketSquare}" size="20" style="margin: 4px auto;" alt="link" solid/>
+                </svelte:fragment>
+                <svelte:fragment slot="summary"><p class="font-semibold text-base">Embed</p></svelte:fragment>
+                <svelte:fragment slot="content">
+
+                  <CodeBlock language="html" code={`<!-- adjust width & height as needed -->\n`+
+                  `<iframe width="300" height="200" allow="fullscreen" src="${shareableURL}" title="${cfg.APP_TITLE}">
+            `}></CodeBlock>
                 </svelte:fragment>
               </AccordionItem>
             </Accordion>

@@ -36,6 +36,7 @@
   "dependencies": {
     "@floating-ui/dom": "^1.6.11",
     "@sveltejs/adapter-static": "^3.0.5",
+    "highlight.js": "^11.10.0",
     "monaco-editor": "^0.52.0",
     "svelte-device-info": "^1.0.6",
     "svelte-splitpanes": "^8.0.8",

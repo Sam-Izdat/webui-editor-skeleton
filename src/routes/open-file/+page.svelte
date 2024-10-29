@@ -2,6 +2,9 @@
   import { onMount } from 'svelte';
   import { base } from '$app/paths';
 
+  $: fileContentTest = '';
+  $: fileName = '';
+
   onMount(() => {
     window.addEventListener('launch', (event) => {
       const files = event.files;
@@ -16,13 +19,22 @@
         
         reader.onload = (e) => {
           const fileContent = e.target.result; // This contains the file content as a string
+          fileNameTest = file.name;
+          fileContentTest = fileContent;
           sessionStorage.setItem('activeFile', JSON.stringify([{ name: file.name, content: fileContent }]));
         };
         
         reader.readAsText(file);
       }
 
-      window.location.href = `${base}/`;
+      //window.location.href = `${base}/`;
     });
   });
 </script>
+
+<div>
+  {filenameTest}
+</div>
+<div>
+  {fileContentTest}
+</div>

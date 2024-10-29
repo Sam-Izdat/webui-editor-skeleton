@@ -14,7 +14,7 @@
         const file = files[0];
         const reader = new FileReader();
         
-        reader.onload = (e) => {
+        reader.onload = (e) => {https://sam-izdat.github.io/webui-editor-skeleton/
           const fileContent = e.target.result; // This contains the file content as a string
           sessionStorage.setItem('activeFile', JSON.stringify([{ name: file.name, content: fileContent }]));
         };

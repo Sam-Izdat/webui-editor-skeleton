@@ -40,7 +40,7 @@
 
 <svelte:head>
   {@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}
-  <link rel="manifest" href="./manifest.json">
+  <link rel="manifest" href="./manifest.webmanifest">
   <meta name="theme-color" content="{cfg.PWA_THEME_COLOR}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <meta name="description" content={cfg.APP_DESCRIPTION} />

@@ -108,9 +108,9 @@
   const copyToClipboard = () => {
     if (shareableURL) {
       navigator.clipboard.writeText(shareableURL).then(() => {
-        Log.toastSuccess('URL copied to clipboard!');
+        Log.toastSuccess('copied to clipboard');
       }).catch(err => {
-        Log.toastError('Could not copy text :(');
+        Log.toastError('could not copy to clipboard');
         Log.error(err);
       });
     }

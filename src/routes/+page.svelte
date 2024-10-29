@@ -292,11 +292,22 @@ import { get } from 'svelte/store';
 
 	let monacoEditor: editor.IStandaloneCodeEditor;
 
+  $: fileSystemAccessSupported = false;
+  $: persistentStorageAvailable = false;
+
+  let checkStorageSupport = async () => {
+    if (browser){
+      fileSystemAccessSupported = ('showOpenFilePicker' in self);
+      persistentStorageAvailable = await navigator.storage.persist();
+    }
+  }
+
 	// When browser stuff is available
 	onMount(async () => {
     document.querySelector('body').setAttribute('data-theme', cfg.APP_THEME);
 
 		await waitForEditorInstance(); 
+		await checkStorageSupport();
 
     // Listen for changes in Monaco editor and update the store
     monacoEditor.onDidChangeModelContent(() => {
@@ -524,6 +535,19 @@ import { get } from 'svelte/store';
   		<div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-[100%] w-[100%]">
   			<span class="badge variant-soft">This is where the canvas would be.</span>
   			<span class="badge variant-soft">Current view: {$currentView}</span>
+
+  			<!-- ----------------- -->
+	  		<br/><br/><br/><br/>
+				<div class="badge display-block text-lg">
+				File system access supported? {fileSystemAccessSupported ? 'Yes.' : 'No.'}
+				</div>
+				<br/><br/>
+				<div class="badge display-block text-lg">
+				Persistent storage available? {persistentStorageAvailable ? 'Yes.' : 'No.'}
+				</div> 
+				<!-- ----------------- -->
+
+
   		</div>
   		<!-- / Replace this with actual canvas -->
     </div>	      

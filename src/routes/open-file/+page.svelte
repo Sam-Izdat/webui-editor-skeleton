@@ -2,25 +2,25 @@
   import { onMount } from 'svelte';
   import { base } from '$app/paths';
 
-  $: fileContentTest = '';
-  $: filenameTest = '';
+  let fileContentTest = 'foo';
+  let filenameTest = 'bar';
 
   onMount(() => {
+    console.log('baz');
     window.addEventListener('launch', (event) => {
+      console.log('baz+');
       const files = event.files;
 
-      // Dumbest way:
-      // sessionStorage.setItem('activeFile', JSON.stringify(files));
-
-      // More robust:
       if (files.length > 0) {
+        console.log('baz++');
         const file = files[0];
         const reader = new FileReader();
         
         reader.onload = (e) => {
+          console.log('baz+++');
           const fileContent = e.target.result; // This contains the file content as a string
-          fileNameTest = file.name;
-          fileContentTest = fileContent;
+          console.log("FILE", file.name);
+          console.log("FILE", fileContent);
           sessionStorage.setItem('activeFile', JSON.stringify([{ name: file.name, content: fileContent }]));
         };
         
@@ -31,7 +31,6 @@
     });
   });
 </script>
-<div>test</div>
 <div>
   {filenameTest}
 </div>

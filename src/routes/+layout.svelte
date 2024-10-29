@@ -39,7 +39,6 @@
 </script>
 
 <svelte:head>
-      <link rel="manifest" href="./manifest.json">
   {@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}
   <meta name="theme-color" content="{cfg.PWA_THEME_COLOR}">
   <meta name="description" content={cfg.APP_DESCRIPTION} />

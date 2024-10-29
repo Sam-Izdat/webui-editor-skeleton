@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load the manifest template
-const manifestTemplatePath = path.join(__dirname, '../src/lib/templates/manifest.json');
+const manifestTemplatePath = path.join(__dirname, '../src/lib/templates/manifest.webmanifest');
 const manifestTemplate = JSON.parse(fs.readFileSync(manifestTemplatePath, 'utf-8'));
 
 // Resolve the path to package.json relative to this file
@@ -42,7 +42,7 @@ dynamicManifest['file_handlers'][0]['accept'][cfg.PWA_FILE_MIME_TYPE] = [cfg.PWA
 dynamicManifest['url_handlers'][0]['url_pattern'] = cfg.PWA_URL_PATTERN;
 
 // Write the dynamic manifest to the static folder
-const outputPath = path.join(__dirname, '../static/manifest.json');
+const outputPath = path.join(__dirname, '../static/manifest.webmanifest');
 fs.writeFileSync(outputPath, JSON.stringify(dynamicManifest, null, 2));
 
-console.log('Dynamic manifest.json created.');
+console.log('Dynamic manifest.webmanifest created.');

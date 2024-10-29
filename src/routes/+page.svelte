@@ -7,7 +7,7 @@
 	import { browser } from '$app/environment';
   import { base } from '$app/paths';  
   import Device from 'svelte-device-info';
-	import { strAboutText } from '$lib';
+	import { pulseEditorBackground, strAboutText } from '$lib';
 	import type { editor } from 'monaco-editor';
 
   import { cfg } from '$root/webui.config.js';
@@ -112,6 +112,23 @@ import { get } from 'svelte/store';
 
   const reqResetPanes = () => paneSizes.set({...panes.resetPaneSizes()});
 
+  let autoBuildTimeoutID: number;
+
+  const reqBuild = () => {
+  	Log.clearScriptLog();
+
+  	let buildSuccessFul = true;
+  	pulseEditorBackground(buildSuccessFul ? cfg.BUILD_COL_SUCCESS : cfg.BUILD_COL_FAILURE) ;
+
+  	// Insert your build code here
+
+  	if (buildSuccessFul) {
+  		Log.scriptSuccess('Build successful (except not really because this is a template)')	
+  	} else {
+  		Log.scriptError('There was a problem! (except not really because this is a template)')
+  	}
+  	
+  }
 	const reqNewDoc = () => {
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
@@ -123,6 +140,7 @@ import { get } from 'svelte/store';
 		} else {
 			docHandler.newDoc();
 		}
+		Log.clearScriptLog();
 	};
 
 	const reqLoadDoc = (uuid: string) => {
@@ -137,6 +155,7 @@ import { get } from 'svelte/store';
 			docHandler.loadDoc(uuid); 
 			drawerStore.close();
 		}
+		Log.clearScriptLog();
 	};
 
 	const reqForkDoc = () => {
@@ -151,6 +170,7 @@ import { get } from 'svelte/store';
 			docHandler.forkDoc();
 		}
 		reqRenameDoc();
+		Log.clearScriptLog();
 	};
 
 	const reqImportFile = (content: string, baseFilename?: string) => {
@@ -166,25 +186,8 @@ import { get } from 'svelte/store';
 		}
 		modalStore.close();
 		reqRenameDoc(baseFilename ?? '');
+		Log.clearScriptLog();
 	};
-
-		function downloadString(content: string, filename: string, extension: string): void {
-  // Create a Blob with the content
-  const blob = new Blob([content], { type: "application/octet-stream" }); // Adjust MIME type as needed
-
-  // Create a temporary link element
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `${filename}.${extension}`; // Set custom file name and extension
-
-  // Append link, trigger download, then remove the link
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  // Release the object URL for cleanup
-  URL.revokeObjectURL(link.href);
-}
 
 	const reqExportFile = () => {
 		Log.toastInfo('foo');
@@ -213,6 +216,7 @@ import { get } from 'svelte/store';
 				});
 			} else { docHandler.saveDoc(); docHandler.refreshDocList(); }
 		} else { Log.toastInfo('no changes to save') }
+		reqBuild();
 	};
 
 	const reqSaveDocNewVersion = () => {
@@ -221,6 +225,7 @@ import { get } from 'svelte/store';
 			docHandler.loadLastVersion();
     	docHandler.refreshDocList();
 		} else { Log.toastInfo('no changes to save') }
+		reqBuild();
 	};
 
 	const reqDeleteDoc = (uuid: string) => {
@@ -246,6 +251,7 @@ import { get } from 'svelte/store';
 		} else {
 			docHandler.loadVersion(parseInt(v));
 		}
+		Log.clearScriptLog();
 	};
 
 	const reqRevertDoc = () => {
@@ -259,6 +265,7 @@ import { get } from 'svelte/store';
 		} else {
 			Log.toastInfo('no changes to revert')
 		}
+		Log.clearScriptLog();
 	}
 
 	const reqRenameDoc = (name?: string) => {
@@ -270,6 +277,7 @@ import { get } from 'svelte/store';
 			txtConfirm: 'Rename',
 			onConfirm: (inputVal) => { docHandler.renameDoc(inputVal); }
 		})
+		Log.clearScriptLog();
 	};
 
 	const reqSaveMenu = () => {
@@ -293,6 +301,10 @@ import { get } from 'svelte/store';
     monacoEditor.onDidChangeModelContent(() => {
       const content = monacoEditor.getValue();
       docHandler.updateDoc(content);
+      if ($isAutoBuild) {		      	
+		  	clearTimeout(autoBuildTimeoutID);  	
+		  	autoBuildTimeoutID = setTimeout(reqBuild, cfg.AUTOBUILD_DELAY);
+      }
     });
 
 		// Populate panes
@@ -371,10 +383,6 @@ import { get } from 'svelte/store';
 
 <div class="card bg-surface-50-900-token rounded-none h-[100%] grid grid-cols-[auto_1fr] w-full">
 	<AppRail class="w-8">
-		<!-- <svelte:fragment slot="lead">
-			<AppRailAnchor href="#" ><Icon src="{ArrowUp}" size="16" style="margin:auto;"/></AppRailAnchor>
-		</svelte:fragment> -->
-		<!-- --- -->
 		<AppRailTile 
 			title="Split-Pane"
 			bind:group={$currentView} 
@@ -412,7 +420,7 @@ import { get } from 'svelte/store';
 			</svelte:fragment>
 		</AppRailTile>
 		<hr classs="hr m-1"/>
-		<AnchorScriptStatus />
+		<AnchorScriptStatus buildCallback={reqBuild} />
 		<AppRailAnchor 
 			href="#" 
 			title="Toggle Auto-Build" 
@@ -464,13 +472,6 @@ import { get } from 'svelte/store';
 				style="display:block;">
 				<Icon src="{hero.ArrowsUpDown}" size="16" style="margin: 4px auto;" solid/>
 			</AppRailAnchor>
-			<!-- <AppRailAnchor 
-				href="#" 
-				title="Reset Panes" 
-				on:click={() => {paneSizes.set({...panes.resetPaneSizes()});}}
-				style="display:block;">
-				<Icon src="{hero.ArrowPath}" size="16" style="margin: 4px auto;" solid/>
-			</AppRailAnchor> -->
 			<AnchorLightSwitch />
 			<AppRailAnchor 
 				href="#" 

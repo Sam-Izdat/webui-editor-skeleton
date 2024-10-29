@@ -107,12 +107,3 @@ export const renameStoredSession = (uuid: string, newName: string) => localStora
 export const searchStoredSessions = (substring: string) => localStorageEngine.search(substring);
 
 export const listStoredSessions = (descending: boolean = true) => localStorageEngine.list(descending);
-
-const pulseEditorBackground = (color: string = '#00ff00', duration: number = 100) => {
-  const bg = document.querySelector('.monaco-editor-background');
-  if (bg.style.transition != '') return;
-  bg.style.transition = 'background 1s';
-  bg.style.background = '#00ff00';
-  setTimeout(() => bg.style.background = '', duration);
-  setTimeout(() => bg.style.transition = '', duration * 2);
-}

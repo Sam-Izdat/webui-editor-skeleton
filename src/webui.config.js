@@ -27,9 +27,9 @@ export const cfg = {
   PWA_FILE_MIME_TYPE:'application/x-my-custom-script',
   PWA_FILE_ACTION:   APP_HOST_PATH + 'open-file',
   PWA_URL_PATTERN:   'myscript://*',
-  PWA_THEME_COLOR:   '#3B4762',
-  PWA_BG_COLOR:      '#ffffff',
-  PWA_ORIENTATION:   'any',   // 'landscape' will force PWA into landscape mode at all times
+  PWA_THEME_COLOR:   '#3B4762', // theme color for app status/title bars etc
+  PWA_BG_COLOR:      '#3B4762', // splash screen background
+  PWA_ORIENTATION:   'any',     // setting 'landscape' will force PWA into landscape mode at all times
 
   // the programming language monaco editor should use
   EDITOR_LANGUAGE:    'c',    
@@ -37,4 +37,11 @@ export const cfg = {
   GUESS_RAW_URL:      true,   
   // start mobile clients in 'read-only' mode (prevent keyboard from popping up until user enables editing)
   MOBILE_READONLY:    true,
+  // delay before auto-build fires in ms (so we're not spamming build requests with every keystroke)
+  AUTOBUILD_DELAY:    350,
+  // color to flash editor on build success
+  BUILD_COL_SUCCESS:  '#00ff00',
+  // color to flash editor on build failure
+  BUILD_COL_FAILURE:  '#ff0000',
+
 };

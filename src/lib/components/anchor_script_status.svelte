@@ -6,6 +6,8 @@
   import { scriptErrorLog } from '$lib/stores'; // Store for message queue
   import { AppRailAnchor } from '@skeletonlabs/skeleton';
 
+  export let buildCallback = () => {};
+
   // Define the types for messages
   type MessageType = 'info' | 'success' | 'warning' | 'error';
 
@@ -65,12 +67,16 @@
 </script>
 
 <!-- Need wrapper because AppRailAnchor can't use popup -->
-<div class="m-0 p-0" use:popup={{ event: 'click', target: 'error-popup', placement: 'right' }}>
+<div class="m-0 p-0" 
+  use:popup={{ event: 'click', target: 'error-popup', placement: 'right' }}
+>
 <AppRailAnchor 
   href="#" 
   title="Build" 
   class={statusClass} 
-  style="display:block;">
+  style="display:block;"
+  on:click={buildCallback}
+>
   <Icon src="{activeIcon}" size="16" style="margin: 4px auto;" solid />
   <div 
     class="card place-content-stretch text-left font-normal p-1 max-w-72 bg-gradient-to-br variant-gradient-error-warning shadow shadow-error-900" 

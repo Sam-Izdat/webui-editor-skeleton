@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load the manifest template
-const manifestTemplatePath = path.join(__dirname, '../src/lib/templates/manifest.webmanifest');
+const manifestTemplatePath = path.join(__dirname, '../src/lib/templates/manifest.json');
 const manifestTemplate = JSON.parse(fs.readFileSync(manifestTemplatePath, 'utf-8'));
 
 // Resolve the path to package.json relative to this file

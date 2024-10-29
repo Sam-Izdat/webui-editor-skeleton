@@ -7,7 +7,7 @@
 	import { browser } from '$app/environment';
   import { base } from '$app/paths';  
   import Device from 'svelte-device-info';
-	import { pulseEditorBackground, strAboutText } from '$lib';
+	import { pulseEditorBackground } from '$lib';
 	import type { editor } from 'monaco-editor';
 
   import { cfg } from '$root/webui.config.js';
@@ -96,18 +96,22 @@ import { get } from 'svelte/store';
 
   // UI actions		
 	const reqOpenArchiveDrawer = () => {
-    docHandler.refreshDocList();
-    drawerContentStore.set({
-      id: 'archive',
-      component: DrawerArchive,
-      props: {
-      	deleteDocCallback: reqDeleteDoc,
-      	loadDocCallback: reqLoadDoc,
-      	saveDocCallback: reqSaveDoc,
-      	saveDocNewVersionCallback: reqSaveDocNewVersion,
-      },
-    });
-		drawerStore.open(drawerSettings);
+		if (!$drawerStore.open){
+	    docHandler.refreshDocList();
+	    drawerContentStore.set({
+	      id: 'archive',
+	      component: DrawerArchive,
+	      props: {
+	      	deleteDocCallback: reqDeleteDoc,
+	      	loadDocCallback: reqLoadDoc,
+	      	saveDocCallback: reqSaveDoc,
+	      	saveDocNewVersionCallback: reqSaveDocNewVersion,
+	      },
+	    });
+			drawerStore.open(drawerSettings);
+		} else {
+			drawerStore.close();
+		}
   };
 
   const reqResetPanes = () => paneSizes.set({...panes.resetPaneSizes()});

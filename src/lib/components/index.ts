@@ -8,3 +8,4 @@ export { default as DocTitleBadge } from './badge_doc_title.svelte';
 export { default as DocMenuBadge } from './badge_doc_menu.svelte';
 export { default as DrawerArchive } from './drawer_archive.svelte';
 export { default as MonacoEditor } from './monaco.svelte';
+export { default as InfoKeyboard } from './info_keyboard.svelte';

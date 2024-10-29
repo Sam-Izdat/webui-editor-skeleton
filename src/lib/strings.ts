@@ -1,4 +1,3 @@
-export const strAboutText = `Parturient per lobortis mus luctus nunc cubilia a. Ultricies varius eleifend in; dolor leo cras. `
 export const strInitialEditorContents = `void ColorPass(
   in float r,
   in float g,

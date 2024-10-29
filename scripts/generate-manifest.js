@@ -42,7 +42,7 @@ dynamicManifest['file_handlers'][0]['accept'][cfg.PWA_FILE_MIME_TYPE] = [cfg.PWA
 dynamicManifest['url_handlers'][0]['url_pattern'] = cfg.PWA_URL_PATTERN;
 
 // Write the dynamic manifest to the static folder
-const outputPath = path.join(__dirname, '../static/manifest.webmanifest');
+const outputPath = path.join(__dirname, '../static/manifest.json');
 fs.writeFileSync(outputPath, JSON.stringify(dynamicManifest, null, 2));
 
-console.log('Dynamic manifest.webmanifest created.');
+console.log('Dynamic manifest.json created.');

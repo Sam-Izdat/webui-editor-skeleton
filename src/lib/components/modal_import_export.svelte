@@ -26,7 +26,7 @@
   const strLoadLocally: string  = "Load Locally";
   const strImportFile: string   = "Import File";
   const strImportRawURL: string = "Import External Resource";
-  
+
   const fileImportHandler = (e: Event): void => {
     const target = e.target as HTMLInputElement;
     const files = target.files;
@@ -120,6 +120,7 @@
   let shareableURL: string = '';
 
   $: makeURL = () => {
+    Log.toastInfo('hi', extResourceValue);
     if (extResourceValue.trim() === '') {
       shareableURL = ''; 
       return; 
@@ -189,9 +190,9 @@
                 <input 
                   type="text" 
                   placeholder="URL/URI" 
+                  bind:value={extResourceValue} 
                   on:input={makeURL} 
                   on:paste={handlePaste} 
-                  bind:value={extResourceValue} 
                   class="flex-grow" 
                 />
                 <select bind:value={selectedOption} on:change={makeURL}>

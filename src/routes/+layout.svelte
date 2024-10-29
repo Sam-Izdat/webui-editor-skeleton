@@ -49,6 +49,9 @@
 
 <svelte:head>
   {@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}
+  <title>{cfg.APP_TITLE}</title>
+  <meta name="description" content={cfg.APP_DESCRIPTION} />
+
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="{cfg.PWA_THEME_COLOR}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">

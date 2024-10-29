@@ -30,7 +30,7 @@
 >
   <Icon src="{hero.EllipsisVertical}" size="16" style="margin: 2px auto;" solid/>
 </button>
-<div class="card w-fit shadow-xl py-2 max-h-36 overflow-y-auto overflow-x-hidden" data-popup="popup_doc_menu">
+<div class="card w-fit shadow-xl py-2 overflow-y-auto overflow-x-hidden" data-popup="popup_doc_menu">
   <ListBox rounded="rounded-none" padding="px-4 py-1 text-sm">
     <ListBoxItem 
     name='doc_menu'

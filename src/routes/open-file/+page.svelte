@@ -3,7 +3,7 @@
   import { base } from '$app/paths';
 
   $: fileContentTest = '';
-  $: fileName = '';
+  $: filenameTest = '';
 
   onMount(() => {
     window.addEventListener('launch', (event) => {

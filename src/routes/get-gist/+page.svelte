@@ -26,7 +26,7 @@
           return firstValue.content;
         })
         .then(data => {
-          sessionStorage.setItem('activeFile', JSON.stringify([{ name: 'gist_content', content: data }]));
+          sessionStorage.setItem('importRequestFile', JSON.stringify([{ name: 'gist_content', content: data }]));
           Log.info('Gist content loaded:', data);
           window.location.href = `${base}/`; // Redirect after loading the content
         })

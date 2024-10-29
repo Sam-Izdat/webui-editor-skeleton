@@ -305,7 +305,8 @@ import { get } from 'svelte/store';
   	mobileHandler = new MobileHandler(window);
 
     // Check if an uploaded file exists in sessionStorage
-    const fileData = sessionStorage.getItem('activeFile'); 
+    const fileData = sessionStorage.getItem('importRequestFile'); 
+    sessionStorage.removeItem('importRequestFile'); 
     let contentToLoad; 
     if (fileData) {
       const file = JSON.parse(fileData);
@@ -323,7 +324,7 @@ import { get } from 'svelte/store';
 		mobileHandler.orientationChange();
 
 		// Turn off editing by default on mobile devices, because soft keys suck
-		if (Device.isMobile) docHandler.disableEditing();
+		if (Device.isMobile && cfg.MOBILE_READONLY) docHandler.disableEditing();
 
 		// Custom events from keybind
     observeKeyboard();

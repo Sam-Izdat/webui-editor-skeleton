@@ -19,7 +19,7 @@
           return response.text();
         })
         .then(data => {
-          sessionStorage.setItem('activeFile', JSON.stringify([{ name: 'raw_content', content: data }]));
+          sessionStorage.setItem('importRequestFile', JSON.stringify([{ name: 'raw_content', content: data }]));
           Log.info('script content loaded:', data); 
           window.location.href = `${base}/`;
         })

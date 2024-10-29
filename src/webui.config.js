@@ -29,7 +29,12 @@ export const cfg = {
   PWA_URL_PATTERN:   'myscript://*',
   PWA_THEME_COLOR:   '#3B4762',
   PWA_BG_COLOR:      '#ffffff',
-  PWA_ORIENTATION:   'any', // 'landscape' will force PWA into landscape mode at all times
+  PWA_ORIENTATION:   'any',   // 'landscape' will force PWA into landscape mode at all times
 
-  GUESS_RAW_URL:      true, // attempt to guess at "raw" URLs if given an HTML page address to import
+  // the programming language monaco editor should use
+  EDITOR_LANGUAGE:    'c',    
+  // attempt to guess at "raw" URLs if given an HTML page address to import
+  GUESS_RAW_URL:      true,   
+  // start mobile clients in 'read-only' mode (prevent keyboard from popping up until user enables editing)
+  MOBILE_READONLY:    true,
 };

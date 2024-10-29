@@ -7,21 +7,97 @@ It's built on [Sveltekit](https://svelte.dev/), [Skeleton UI toolkit](https://ww
 
 ![screenshot](./doc/images/screenshot1.png)
 
-## Features
+## What does it do?
+
+### Core features
 
 - cross platform for server and client
-- static and dynamic builds
-- mobile support
-- local storage adapter for saving code
-- extensible for server storage
+- static or dynamic builds with build switch
+- local storage adapter for saving code on static builds
+- automatically-generated [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) manifest
+- extendable with server storage
+- mobile browser support
+
+### UI features
+
+Note: all the actual save/load features are implemented with `localStorage`. You have to bring and connect your own server logic.
+
+- create/update/save/load/delete/search scripts
+- create/update per-script versions/revisions
+- import and export script files
+- import scripts from external URLs
+- remappable keyboard shortcuts
+- three selectable views with resizable/resettable panes in split view (via [svelte-splitpanes](https://github.com/orefalo/svelte-splitpanes))
+- lock editing (e.g. to prevents mobile keyboard from popping up)
+- fullscreen
+- auto-build toggle
+- light and dark mode
+- themeable
 
 # Install
 
-It would probably make the most sense to fork it configure it beforehand, but:
+## Option 1
+
+Just fork it on GH, rename your fork, and clone that. Then:
+
+```
+cd my-forked-webui
+npm i
+```
+
+## Option 2
+
+Either download a release and stick it wherever, then rename it or clone the repo:
 
 ```
 git clone https://github.com/Sam-Izdat/webui-editor-skeleton.git
-cd webui-editor-skeleton
-npm install i
+```
+
+Then, presumably, you would want to configure and customize it, so:
+
+```
+mv webui-editor-skeleton my-app-name
+cd my-app-name
+rm -rf .git
+git init
+npm i
+```
+
+# Configure
+
+Edit the following, for starters:
+
+- `package.json` and fill in your project name/version
+- `src/webui.config.js` and fill in your project's details and global configuration options
+- replace `static/favicon.ico` and `static/icons/*.*` with your icons
+- `src/lib/keymap` to customize keyboard shortcuts
+
+
+# Develop / build
+
+To develop static build:
+```
 npm run dev
 ```
+To develop dynamic server build:
+```
+npm run dev:server
+```
+To build static:
+```
+npm run build
+```
+To build dynamic:
+```
+npm run build:server
+```
+
+The variable `__BUILD_TYPE__` will be set to `static` or `server` depending on the above.
+
+# Docs
+
+Maybe later. Almost everything should be fairly self-explanatory, if you poke around the `src` folder.
+
+# Stuff to do
+
+- actually convert everything typescript proper, instead of just sprinkling in type hints occasionally

@@ -4,6 +4,7 @@
   import { observeThemeChange } from '$lib/stores/dark_mode';
   import { createEventDispatcher } from 'svelte';
   import { isDark } from '$lib/stores';
+  import { cfg } from '$root/webui.config.js';
 
   const dispatch = createEventDispatcher();
 
@@ -39,7 +40,7 @@
     monacoTextarea.setAttribute('spellcheck', false);
 
     // Start the monaco engine, start new doc session
-    const model = monaco.editor.createModel('', 'c');
+    const model = monaco.editor.createModel('', cfg.EDITOR_LANGUAGE);
     editorInstance.setModel(model);
     dispatch('init', editorInstance);  // Emit the initialized editor
   });

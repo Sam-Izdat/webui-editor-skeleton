@@ -19,7 +19,7 @@
           return response.text(); // Fetch the response text
         })
         .then(data => {
-          sessionStorage.setItem('activeFile', JSON.stringify([{ name: 'raw_content', content: data }]));
+          sessionStorage.setItem('importRequestFile', JSON.stringify([{ name: 'raw_content', content: data }]));
           Log.info('Script content loaded:', data);
           window.location.href = `${base}/`; // Redirect after loading the content
         })

@@ -120,7 +120,6 @@
   let shareableURL: string = '';
 
   $: makeURL = () => {
-    Log.toastInfo('hi', extResourceValue);
     if (extResourceValue.trim() === '') {
       shareableURL = ''; 
       return; 

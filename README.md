@@ -1,6 +1,6 @@
 # What is it?
 
-It's a template for any kind of specialized code editor that needs a build step, a controls window and an output window. 
+It's a UI template for any kind of specialized code editor that needs a build step, a controls window and an output window. 
 It's built on [Sveltekit](https://svelte.dev/), [Skeleton UI toolkit](https://www.skeleton.dev/) and [Monaco Editor](https://microsoft.github.io/monaco-editor/).
 
 [You can preview it here.](https://sam-izdat.github.io/webui-editor-skeleton/)
@@ -9,7 +9,7 @@ It's built on [Sveltekit](https://svelte.dev/), [Skeleton UI toolkit](https://ww
 
 ## Features
 
-- cross platform server and client
+- cross platform for server and client
 - static and dynamic builds
 - mobile support
 - local storage adapter for saving code

@@ -88,17 +88,17 @@
         <tr>
           <td class="px-0 m-0 border-b border-primary-800/30">
             <button 
-              title={doc.docName}
+              title={doc.docName ?? 'unknown'}
               class="btn flex justify-start items-center bg-surface-500/15 rounded gap-3 mx-0 my-1 px-2 py-1 w-full"
               on:click={ () => { loadDocCallback(doc.docID); }}
             >
               <div class="placeholder w-16 h-12 rounded" />
               <div class="flex flex-col items-start w-64">
                 <span class="text-sm font-regular truncate overflow-hidden text-ellipsis whitespace-nowrap text-left max-w-96">
-                  {doc.docName}
+                  {doc.docName ?? 'unknown'}
                 </span>
                 <span class="badge bg-tertiary-500/25 text-xs m-1 p-1 w-min h-min">
-                  {doc.versionCount} {doc.versionCount > 1 ? 'versions' : 'version' }
+                  {doc.docName ?? 'unknown'} {doc.versionCount ?? 1 > 1 ? 'versions' : 'version' }
                 </span>
               </div>
             </button>
@@ -109,7 +109,7 @@
                 year: "numeric",
                 month: "short",
                 day: "numeric",
-              }).format(new Date(doc.dateSaved))}
+              }).format(new Date(doc.dateSaved ?? 'unknown'))}
               </p>
           </td>
           <td class="px-0 m-0 border-b border-primary-800/30">
@@ -117,7 +117,7 @@
               <button 
                 title="Delete" 
                 class="btn m-1 py-2 px-2 variant-ghost-error" 
-                on:click={ () => { deleteDocCallback(doc.docID); }}
+                on:click={ () => { deleteDocCallback(doc.docID ?? 0); }}
               >
                 <Icon src="{hero.XMark}" size="20" style="margin: 2px auto;" solid/>
               </button>

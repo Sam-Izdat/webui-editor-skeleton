@@ -26,10 +26,7 @@
   const strLoadLocally: string  = "Load Locally";
   const strImportFile: string   = "Import File";
   const strImportRawURL: string = "Import External Resource";
-
-  export let importFileCallback = (content:string, baseFilename:string) => { };
-  export let exportFileCallback = () => { };
-
+  
   const fileImportHandler = (e: Event): void => {
     const target = e.target as HTMLInputElement;
     const files = target.files;

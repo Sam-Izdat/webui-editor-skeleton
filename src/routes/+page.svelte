@@ -238,9 +238,6 @@ import { get } from 'svelte/store';
 	};
 
 	const reqSwitchDocVersion = (v) => {
-		if (typeof v != 'number'){
-			Log.toastError('fuck'); //FIXME
-		}
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
 				...modals.modalConfirm, 
@@ -342,11 +339,11 @@ import { get } from 'svelte/store';
     observeKeyboard();
     window.addEventListener('save-document', reqSaveDoc);
     window.addEventListener('save-document-new-version', reqSaveDocNewVersion);
-    window.addEventListener('switch-document-version', reqSwitchDocVersion);
     window.addEventListener('new-document', reqNewDoc);
     window.addEventListener('rename-document', reqRenameDoc);
     window.addEventListener('archive-shelf', reqOpenArchiveDrawer);
     window.addEventListener('switch-view', navHandler.switchViewEvent);
+    window.addEventListener('build-script', reqBuild);
 	});
 
 	// Not actually necessary in present state, but just to be thorough.
@@ -354,11 +351,11 @@ import { get } from 'svelte/store';
 		if ( browser ) {
 	    window.removeEventListener('save-document', reqSaveDoc);
 	    window.removeEventListener('save-document-new-version', reqSaveDocNewVersion);
-	    window.removeEventListener('switch-document-version', reqSwitchDocVersion);
 	    window.removeEventListener('new-document', reqNewDoc);
 	    window.removeEventListener('rename-document', reqRenameDoc);
     	window.removeEventListener('archive-shelf', reqOpenArchiveDrawer);
 	    window.removeEventListener('switch-view', navHandler.switchViewEvent);
+    	window.removeEventListener('build-script', reqBuild);
 
 			monacoEditor?.dispose();
 	  	docHandler?.dispose();

@@ -1,4 +1,4 @@
-export const strAboutText = `Parturient per lobortis mus luctus nunc cubilia a. Ultricies varius eleifend in; dolor leo cras. Venenatis ipsum eget auctor ridiculus magnis aptent venenatis mollis. Habitant aenean vestibulum per, parturient dapibus mattis senectus. Porttitor erat potenti gravida aenean pharetra et imperdiet quam. Interdum tellus class facilisis aptent dignissim.`
+export const strAboutText = `Parturient per lobortis mus luctus nunc cubilia a. Ultricies varius eleifend in; dolor leo cras. `
 export const strInitialEditorContents = `void ColorPass(
   in float r,
   in float g,

@@ -19,12 +19,6 @@ export const observeKeyboard = () => {
       window.dispatchEvent(new CustomEvent('save-document-new-version'));
     }
 
-    // ALT + key for switch version
-    if (event.altKey && event.key === keys.keySwitchDocVersion) {
-      event.preventDefault();
-      window.dispatchEvent(new CustomEvent('switch-document-version'));
-    }
-
     // ALT + key for new (CTRL + N blocked by chrome)
     if (event.altKey && event.key === keys.keyNewDoc) {
       event.preventDefault();
@@ -41,6 +35,12 @@ export const observeKeyboard = () => {
     if (event.altKey && event.key === keys.keyArchive) {
       event.preventDefault();
       window.dispatchEvent(new CustomEvent('archive-shelf'));
+    }
+
+    // ALT + key for load / save / browse / publish shelf
+    if (event.altKey && event.key === keys.keyBuild) {
+      event.preventDefault();
+      window.dispatchEvent(new CustomEvent('build-script'));
     }
 
     // Switch views with ALT + tilde, 1, 2, 3, etc keys

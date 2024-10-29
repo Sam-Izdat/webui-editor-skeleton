@@ -3,6 +3,8 @@
 
   // Stores
   import { getModalStore } from '@skeletonlabs/skeleton';
+  
+  import * as key from '$lib/keymap';
 
   // Props
   /** Exposes parent props to this component. */
@@ -28,13 +30,65 @@
       <span class="text-xs md:text-xs">Version {$modalStore[0].version ?? '(version missing)'}</span>
     {/if}
     <article>{$modalStore[0].body ?? '(body missing)'}</article>
-      <footer class="flex justify-between items-center p-2 m-0 bg-surface-50-900-token shadow-inner">
-        <div class="text-left font-semibold text-lg">
-            {$modalStore[0].title ?? 'Load'}
-        </div>
-        <div class="flex justify-end">
-            <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>
-        </div>
-      </footer>
+    <div class="table-container w-full shadow-xl">
+      <table class="table table-compact table-hover">
+        <thead>
+          <tr>
+            <td>Keyboard shortcut</td>
+            <td>Key</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>New Script:</td>
+            <td>{key.keySaveDoc}</td>
+          </tr>
+          <tr>
+            <td>Save Script:</td>
+            <td>{key.keySaveDoc}</td>
+          </tr>
+          <tr>
+            <td>Save New Script Version:</td>
+            <td>{key.keySaveDocNewVersion}</td>
+          </tr>
+          <tr>
+            <td>Rename Script:</td>
+            <td>{key.keyRenameDoc}</td>
+          </tr>
+          <tr>
+            <td>Open Achive (save/load):</td>
+            <td>{key.keyArchive}</td>
+          </tr>
+          <tr>
+            <td>Build (without saving):</td>
+            <td>{key.keyBuild}</td>
+          </tr>
+          <tr>
+            <td>View Split:</td>
+            <td>{key.keyViewSplit}</td>
+          </tr>
+          <tr>
+            <td>View Code:</td>
+            <td>{key.keyViewCode}</td>
+          </tr>
+          <tr>
+            <td>View Canvas:</td>
+            <td>{key.keyViewCanvas}</td>
+          </tr>
+          <tr>
+            <td>View Controls:</td>
+            <td>{key.keyViewControls}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <footer class="flex justify-between items-center p-2 m-0 bg-surface-50-900-token shadow-inner">
+      <div class="text-left font-semibold text-lg">
+          {$modalStore[0].title ?? 'Load'}
+      </div>
+      <div class="flex justify-end">
+          <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>
+      </div>
+    </footer>
   </div>
 {/if}

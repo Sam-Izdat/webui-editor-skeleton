@@ -33,7 +33,7 @@
   const strLoadRemotely: string = "Load from Web";
   const strLoadLocally: string  = "Load Locally";
   const strImportFile: string   = "Import File";
-  const strImportRawURL: string = "About Importing External Resources";
+  const strImportRawURL: string = "About External Resources";
 
   const fileImportHandler = (e: Event): void => {
     const target = e.target as HTMLInputElement;

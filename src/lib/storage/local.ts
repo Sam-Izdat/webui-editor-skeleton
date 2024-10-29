@@ -11,10 +11,8 @@ export const save = (session: DocumentSession) => {
 };
 
 export const load = (uuid: string) => {
-  console.log(uuid);
   const key = prefix + uuid;
   const session = localStorage.getItem(key);
-  console.log(session);
   return session ? JSON.parse(session) : null;
 };
 
@@ -45,9 +43,6 @@ export const search = (substring: string) => {
         return { id: key.replace('saved-doc-', ''), ...doc };
     })
     .filter(doc => doc.docName.toLowerCase().includes(searchLower));
-
-
-  console.log(res); 
   return res;
 };
 

@@ -1,7 +1,6 @@
 export * from './canvas_tools';
 export * from './color';
 export * from './doc_types';
-export * from './globals';
 export * from './keybind';
 export * from './keymap';
 export * from './log';

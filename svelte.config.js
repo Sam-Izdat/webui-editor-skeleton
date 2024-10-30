@@ -1,6 +1,6 @@
 // import adapter from '@sveltejs/adapter-auto';
 import adapter from '@sveltejs/adapter-static';
-import { APP_BASE_PATH } from './src/lib/globals.js';
+import { APP_BASE_PATH } from './src/webui.config.js';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /* @type {import('@sveltejs/kit').Config} */

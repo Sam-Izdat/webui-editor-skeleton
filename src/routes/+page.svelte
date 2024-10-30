@@ -415,7 +415,7 @@
 			</svelte:fragment>
 		</AppRailTile>
 		<AppRailTile 
-			title="View Script"
+			title="View Code"
 			bind:group={$currentView} 
 			name="tile-1" 
 			value={1}>

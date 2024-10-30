@@ -3,6 +3,7 @@
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
   import { TabGroup, Tab, TabAnchor } from '@skeletonlabs/skeleton';
   import { FileDropzone } from '@skeletonlabs/skeleton';
+  import { RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
 
   import { CodeBlock } from '@skeletonlabs/skeleton';
   import hljs from 'highlight.js/lib/core';
@@ -143,6 +144,12 @@
     }
   };
 
+  $: iframeWidth            = null;
+  $: iframeHeight           = null;
+  $: iframeView             = 0;
+  $: iframeAutoBuild        = 0;
+  $: iframeReadOnly         = 0;
+  $: iframeAllowFullscreen  = 1;
 
   // Icons
   import { Icon } from 'svelte-hero-icons';
@@ -257,10 +264,79 @@
                 </svelte:fragment>
                 <svelte:fragment slot="summary"><p class="font-semibold text-base">Embed</p></svelte:fragment>
                 <svelte:fragment slot="content">
-
-                  <CodeBlock language="html" code={`<!-- adjust width & height as needed -->\n`+
-                  `<iframe width="800" height="600" allow="fullscreen" src="${shareableURL}" title="${cfg.APP_TITLE}">
-            `}></CodeBlock>
+                  <div>
+                    <div class="flex items-center justify-center">
+                      <input 
+                        class="input w-28 display-inline-block m-1" 
+                        title="Width" 
+                        type="text" 
+                        placeholder="Width" 
+                        bind:value={iframeWidth}
+                      />
+                      <input 
+                        class="input w-28 display-inline-block m-1" 
+                        title="Height" 
+                        type="text" 
+                        placeholder="Height" 
+                        bind:value={iframeHeight}
+                      />
+                      <RadioGroup class="mx-1">
+                        <RadioItem 
+                          bind:group={iframeAllowFullscreen} 
+                          on:click={() => {iframeAllowFullscreen = +!iframeAllowFullscreen;}}
+                          name="iframe-allow-fullscreen" value={1} title="Allow Fullscreen"
+                        >
+                          <Icon src="{hero.ArrowsPointingOut}" size="16" class="mx-0 my-1" solid/>
+                        </RadioItem>
+                      </RadioGroup>
+                    </div>
+                    <div class="flex items-center justify-center my-1">
+                      <RadioGroup class="mx-1">
+                        <RadioItem bind:group={iframeView} name="iframe-view" value={0} title="Split-Pane">
+                          <Icon src="{hero.ViewColumns}" size="16" class="mx-0 my-1" solid/>
+                        </RadioItem>
+                        <RadioItem bind:group={iframeView} name="iframe-view" value={1} title="View Code">
+                          <Icon src="{hero.CodeBracket}" size="16" class="mx-0 my-1" solid/>
+                        </RadioItem>
+                        <RadioItem bind:group={iframeView} name="iframe-view" value={2} title="View Canvas">
+                          <Icon src="{hero.Photo}" size="16" class="mx-0 my-1" solid/>
+                        </RadioItem>
+                        <RadioItem bind:group={iframeView} name="iframe-view" value={3} title="View Controls">
+                          <Icon src="{hero.AdjustmentsHorizontal}" size="16" class="mx-0 my-1" solid/>
+                        </RadioItem>
+                      </RadioGroup>
+                      <RadioGroup class="mx-1">
+                        <RadioItem 
+                          bind:group={iframeAutoBuild} 
+                          on:click={() => {iframeAutoBuild = +!iframeAutoBuild;}}
+                          name="iframe-autobuild" value={1} title="Auto-Build"
+                        >
+                          <Icon src="{hero.PlayCircle}" size="16" class="mx-0 my-1" solid/>
+                        </RadioItem>
+                      </RadioGroup>
+                      <RadioGroup class="mx-1">
+                        <RadioItem 
+                          bind:group={iframeReadOnly} 
+                          on:click={() => {iframeReadOnly = +!iframeReadOnly;}}
+                          name="iframe-readonly" value={1} title="Read-Only"
+                        >
+                          <Icon src="{iframeReadOnly ? hero.LockClosed : hero.LockOpen}" size="16" class="mx-0 my-1" solid/>
+                        </RadioItem>
+                      </RadioGroup>
+                    </div>
+                  </div>
+                  <CodeBlock language="html" code={
+                  `<iframe ` +
+                  `\n  width="${iframeWidth || 800}" `+
+                  `\n  height="${iframeHeight || 600}" ` + 
+                  `${iframeAllowFullscreen ? '\n  allow="fullscreen" ' : ''}` + 
+                  `\n  src="${shareableURL || '[PROVIDE URL ABOVE]'}${shareableURL.includes('?') ? '&' : '?'}` +
+                    `view=${iframeView}&` +
+                    `autobuild=${iframeAutoBuild}&` +
+                    `readonly=${iframeReadOnly}` +
+                  `" ` + 
+                  `\n  title="${cfg.APP_TITLE}">`}>                    
+                  </CodeBlock>
                 </svelte:fragment>
               </AccordionItem>
             </Accordion>

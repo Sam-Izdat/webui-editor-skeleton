@@ -44,6 +44,7 @@ Just fork it on GH, rename your fork, and clone that. Then:
 ```
 cd my-forked-webui
 npm i
+npm build
 ```
 
 ## Option 2
@@ -64,6 +65,7 @@ cd my-app-name
 rm -rf .git
 git init
 npm i
+npm build
 ```
 
 # Configure
@@ -80,11 +82,11 @@ Edit the following, for starters:
 
 To develop static build:
 ```
-npm run dev
+npm run dev -- --host
 ```
 To develop dynamic server build:
 ```
-npm run dev:server
+npm run dev:server -- --host
 ```
 To build static:
 ```

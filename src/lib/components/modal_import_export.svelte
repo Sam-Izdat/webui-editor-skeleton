@@ -346,8 +346,8 @@
       </svelte:fragment>
     </TabGroup>
     <footer class="flex justify-between items-center p-2 m-0 border border-primary-800/30 rounded shadow-xl">
-      <div class="text-left font-semibold text-lg">
-          {$modalStore[0].title ?? 'Load'}
+      <div class="text-left pl-4">
+          <h4 class="h4">{$modalStore[0].title ?? 'Import / Export'}</h4>
       </div>
       <div class="flex justify-end">
           <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>

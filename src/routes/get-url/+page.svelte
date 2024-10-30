@@ -2,11 +2,18 @@
   import { onMount } from 'svelte';
   import { base } from '$app/paths';
   import { Log } from '$lib';
+  import { ScreenFailedFetch } from '$lib/components';
+
+  $: failed = false;
+  $: url = '';
 
   onMount(() => {
-    // Extract the search parameters from the current URL
     const urlParams = new URLSearchParams(window.location.search);
-    let rawURL: string = urlParams.get('q'); // Get the rawURL from the query parameter
+    let rawURL: string = urlParams.get('q');
+    
+    const reqView       = urlParams.get('view');
+    const reqAutoBuild  = urlParams.get('autobuild');
+    const reqReadOnly   = urlParams.get('readonly');
 
     if (rawURL) {
       // cache bust
@@ -14,17 +21,27 @@
       fetch(rawURL)
         .then(response => {
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            failed = true;
+            url = urlParams.get('q');
+            Log.error('Network response was not ok');
           }
-          return response.text(); // Fetch the response text
+          return response.text(); 
         })
         .then(data => {
           sessionStorage.setItem('importRequestFile', JSON.stringify([{ name: 'raw_content', content: data }]));
-          window.location.href = `${base}/`; // Redirect after loading the content
+          if (reqView !== null)       sessionStorage.setItem('importRequestView', reqView);
+          if (reqAutoBuild !== null)  sessionStorage.setItem('importRequestAutoBuild', reqAutoBuild);
+          if (reqReadOnly !== null)   sessionStorage.setItem('importRequestReadOnly', reqReadOnly);
+          window.location.href = `${base}/`; 
         })
         .catch(error => {
+          failed = true;
+          url = urlParams.get('q');
           Log.error('Error fetching script:', error);
         });
     }
   });
 </script>
+{#if failed}
+<ScreenFailedFetch url={url} />
+{/if}

@@ -20,7 +20,8 @@ It's built on [Sveltekit](https://svelte.dev/), [Skeleton UI toolkit](https://ww
 
 ### UI features
 
-Note: all the actual save/load features are implemented with `localStorage`. You have to bring and connect your own server logic.
+All the actual save/load features are implemented with indexedDB, with LocalStorage fallback. 
+You have to bring and connect your own server logic.
 
 - create/update/save/load/delete/search scripts
 - create/update per-script versions/revisions

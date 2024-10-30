@@ -130,9 +130,17 @@ export const saveSession = async () => {
 
 // Storage only operations (active session is not automatically updated)
 
-export const deleteStoredSession = async (uuid: string) => await storageAdapterIDB.remove(uuid);
+export const deleteStoredSession = async (uuid: string, adapter: string) => {
+  if (adapter == 'idb') {
+    await storageAdapterIDB.remove(uuid);
+  } else if (adapter == 'ls') {
+    await storageAdapterLS.remove(uuid);
+  } else {
+    throw new Error('unknown adapter:', adapter);
+  }
+}
 
-export const renameStoredSession = async (uuid: string, newName: string) => await storageAdapterIDB.rename(uuid, newName);
+// export const renameStoredSession = async (uuid: string, newName: string) => await storageAdapterIDB.rename(uuid, newName);
 
 export const searchStoredSessions = async (substring: string) => {
   let idbSearch = await storageAdapterIDB.search(substring);

@@ -236,14 +236,14 @@
 		reqBuild();
 	};
 
-	const reqDeleteDoc = async (uuid: string) => {
+	const reqDeleteDoc = async (uuid: string, adapter: string) => {
 		modalStore.trigger({
 			...modals.modalConfirm, 
 			message: "Delete script?",
 			txtConfirm: "Delete",
 			onConfirm: async () => { 
-				await docHandler.deleteDoc(uuid); 
-				await docHandler.refreshDocList(); 
+				await docHandler.deleteDoc(uuid, adapter);
+				await docHandler.refreshDocList();
 			},
 		});
 	};
@@ -338,7 +338,23 @@
 
     // Check if an uploaded file exists in sessionStorage
     const fileData = sessionStorage.getItem('importRequestFile'); 
-    sessionStorage.removeItem('importRequestFile'); 
+    sessionStorage.removeItem('importRequestFile');
+    const importRequestView = sessionStorage.getItem('importRequestView');
+    if (importRequestView !== null && +importRequestView <= 3 && +importRequestView >= 0) {
+    	$currentView = parseInt(importRequestView);
+    	sessionStorage.removeItem('importRequestView');
+    }
+    const importRequestAutoBuild = sessionStorage.getItem('importRequestAutoBuild');
+    if (importRequestAutoBuild !== null) {
+    	isAutoBuild.set(!!+importRequestAutoBuild)
+    	sessionStorage.removeItem('importRequestAutoBuild');
+    }
+    const importRequestReadOnly = sessionStorage.getItem('importRequestReadOnly');
+    if (importRequestReadOnly !== null) {
+    	!!+importRequestReadOnly ? docHandler.disableEditing() : docHandler.enableEditing();
+    	sessionStorage.removeItem('importRequestReadOnly');
+    }
+
     let contentToLoad; 
     if (fileData) {
       const file = JSON.parse(fileData);

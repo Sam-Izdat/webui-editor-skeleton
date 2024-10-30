@@ -42,7 +42,20 @@
   onMount(async () => {    
     if (browser) await checkStorageSupport();
   });
+
+
+  import { getModalStore, getDrawerStore } from '@skeletonlabs/skeleton';
+  const drawerStore = getDrawerStore();
 </script>
+
+<div class="flex justify-between items-center p-2 m-0 border border-primary-800/30 rounded shadow-xl">
+  <div class="text-left pl-4">
+      <h3 class="h3">Archive</h3>
+  </div>
+  <div class="flex justify-end">
+      <button class="btn variant-ghost-primary" on:click={drawerStore.close}>Close</button>
+  </div>
+</div>
 
 {#if !persistentStorageAvailable}
     <aside class="alert variant-ghost-warning">
@@ -163,7 +176,7 @@
               <button 
                 title="Delete" 
                 class="btn m-1 py-2 px-2 variant-ghost-error" 
-                on:click={ async () => { await deleteDocCallback(doc.docID ?? 0); }}
+                on:click={ async () => { await deleteDocCallback(doc.docID ?? 0, doc.adapter); }}
               >
                 <Icon src="{hero.XMark}" size="20" style="margin: 2px auto;" solid/>
               </button>

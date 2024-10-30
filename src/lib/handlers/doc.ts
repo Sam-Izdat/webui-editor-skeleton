@@ -35,7 +35,7 @@ export class DocHandler {
   };
 
 
-  loadDoc = async (uuid:string, adapter:string) => {
+  loadDoc = async (uuid: string, adapter: string) => {
     try {
       await ds.loadSession(uuid, adapter);
       this.editor.setValue(this.session.content[this.session.versionCount - 1] ?? '');
@@ -58,7 +58,7 @@ export class DocHandler {
     } 
   }
 
-  loadVersion = (version:number) => {
+  loadVersion = (version: number) => {
     try {
       if (!(version >= 0 && version < this.session.versionCount)){
         throw new Error(`tried to load undefined doc version index ${version} of count ${this.session.versionCount}` );
@@ -93,7 +93,7 @@ export class DocHandler {
     ds.updateContentBuffer(content);
   };
 
-  renameDoc = (docName:string) => {
+  renameDoc = (docName: string) => {
     ds.updateSessionParams({docName: docName});
   };
 
@@ -115,9 +115,9 @@ export class DocHandler {
     docListStore.set(await ds.listStoredSessions());
   };
 
-  deleteDoc = async (uuid:string) => {
+  deleteDoc = async (uuid: string, adapter: string) => {
     try {
-      await ds.deleteStoredSession(uuid);
+      await ds.deleteStoredSession(uuid, adapter);
     } catch(e) {
       Log.error(e);
       Log.toastInfo('failed to delete script');

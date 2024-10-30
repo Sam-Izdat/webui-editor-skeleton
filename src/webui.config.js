@@ -1,8 +1,8 @@
 // Note: __APP_NAME__, __APP_VERSION__ and __BUILD_TYPE__ are provided by vite config
 
 // URL
-const APP_HOST_PATH = 'https://sam-izdat.github.io/webui-editor-skeleton/';
-const APP_BASE_PATH = '/webui-editor-skeleton';
+export const APP_HOST_PATH = 'https://sam-izdat.github.io/webui-editor-skeleton/';
+export const APP_BASE_PATH = '/webui-editor-skeleton';
 
 export const cfg = {
   APP_HOST_PATH,

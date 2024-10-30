@@ -35,9 +35,9 @@ export class DocHandler {
   };
 
 
-  loadDoc = async (uuid:string) => {
+  loadDoc = async (uuid:string, adapter:string) => {
     try {
-      await ds.loadSession(uuid);
+      await ds.loadSession(uuid, adapter);
       this.editor.setValue(this.session.content[this.session.versionCount - 1] ?? '');
       ds.updateContentBuffer(this.session.content[this.session.versionCount - 1]);
       ds.setActiveVersion(this.session.versionCount - 1);

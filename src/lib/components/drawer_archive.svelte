@@ -1,6 +1,6 @@
 <script lang="ts">
-  export let deleteDocCallback = () => {};
-  export let loadDocCallback = () => {};
+  export let deleteDocCallback = (uuid, adapter) => {};
+  export let loadDocCallback = (uuid, adapter) => {};
   export let saveDocCallback = () => {};
   export let saveDocNewVersionCallback = () => {};
   export let formAction = () => {}
@@ -126,16 +126,26 @@
             <button 
               title={doc.docName ?? 'unknown'}
               class="btn flex justify-start items-center bg-surface-500/15 rounded gap-3 mx-0 my-1 px-2 py-1 w-full"
-              on:click={ async () => { await loadDocCallback(doc.docID); }}
+              on:click={ async () => { await loadDocCallback(doc.docID, doc.adapter); }}
             >
               <div class="placeholder w-16 h-12 rounded" />
               <div class="flex flex-col items-start w-64">
-                <span class="text-sm font-regular truncate overflow-hidden text-ellipsis whitespace-nowrap text-left max-w-96">
+                <div class="text-sm font-regular truncate overflow-hidden text-ellipsis whitespace-nowrap text-left max-w-96">
                   {doc.docName ?? 'unknown'}
-                </span>
-                <span class="badge bg-tertiary-500/25 text-xs m-1 p-1 w-min h-min">
-                  {doc.versionCount ?? 'unknown'} {(doc.versionCount ?? 1) > 1 ? 'versions' : 'version' }
-                </span>
+                </div>
+                <div>
+                  <span class="badge bg-tertiary-500/25 text-xs m-1 p-1">
+                    {doc.versionCount ?? 'unknown'} {(doc.versionCount ?? 1) > 1 ? 'versions' : 'version' }
+                  </span>
+                  <span class="badge bg-secondary-500/25 text-xs m-1 p-1">
+                    {doc.adapter == 'idb' ? 'IndexedDB' : (doc.adapter == 'ls' ? 'LocalStorage' : 'unknown') }
+                  </span>
+                  {#if doc.adapter == 'idb' && !persistentStorageAvailable}
+                  <span class="badge bg-error-500/50 text-xs m-1 p-1">
+                    DATA LOSS RISK
+                  </span>
+                  {/if}
+                </div>
               </div>
             </button>
           </td>

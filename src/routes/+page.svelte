@@ -115,7 +115,6 @@
   let autoBuildTimeoutID: number;
 
   const reqBuild = () => {
-  	Log.toastInfo('?');
   	Log.clearScriptLog();
 
   	let buildSuccessFul = true;
@@ -147,19 +146,19 @@
 		Log.clearScriptLog();
 	};
 
-	const reqLoadDoc = async (uuid: string) => {
+	const reqLoadDoc = async (uuid: string, adapter: string) => {
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
 				...modals.modalConfirm, 
 				message: "Unsaved changes will be discarded. Load a new script anyway?",
 				txtConfirm: "Load Script",
 				onConfirm: async () => { 
-					await docHandler.loadDoc(uuid); 
+					await docHandler.loadDoc(uuid, adapter); 
 					drawerStore.close(); 
 				},
 			});
 		} else {
-			docHandler.loadDoc(uuid); 
+			docHandler.loadDoc(uuid, adapter); 
 			drawerStore.close();
 		}
 		Log.clearScriptLog();
@@ -197,7 +196,6 @@
 	};
 
 	const reqExportFile = () => {
-		Log.toastInfo('foo');
 		let content:string = docHandler.getCurrentEditorContent();
 		let filename = dsCurrentSession.docName;
 		const blob = new Blob([content], { type: "application/octet-stream" });

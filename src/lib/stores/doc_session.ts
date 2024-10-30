@@ -98,8 +98,16 @@ export const getVersionContent = (version: int) => documentSession.content[versi
 // Errors should be caught by doc handler.
 // ----------------------------------------------------------------------------
 
-export const loadSession = async (uuid: string) => {
-  let sessionLoaded = await storageAdapterIDB.load(uuid);
+export const loadSession = async (uuid: string, adapter: string) => {
+  let sessionLoaded: DocumentSession;
+  if (adapter == 'idb') {
+    sessionLoaded = await storageAdapterIDB.load(uuid);
+  } else if (adapter == 'ls') {
+    sessionLoaded = await storageAdapterLS.load(uuid);
+  } else {
+    throw new Error('unknown adapter:', adapter);
+  }
+
   documentSession.set(sessionLoaded);
   documentSession.update(session => {
     session.unsavedChanges = false;
@@ -108,7 +116,7 @@ export const loadSession = async (uuid: string) => {
 };
 
 export const saveSession = async () => {
-  if (await peristentStorageAvailable() || true) {
+  if (await peristentStorageAvailable()) {
     await storageAdapterIDB.save({ ...get(documentSession), contentBuffer: '', unsavedChanges: false, adapter: 'idb'}); 
   } else {
     await storageAdapterLS.save({ ...get(documentSession), contentBuffer: '', unsavedChanges: false, adapter: 'ls'})
@@ -126,6 +134,14 @@ export const deleteStoredSession = async (uuid: string) => await storageAdapterI
 
 export const renameStoredSession = async (uuid: string, newName: string) => await storageAdapterIDB.rename(uuid, newName);
 
-export const searchStoredSessions = async (substring: string) => await storageAdapterIDB.search(substring);
+export const searchStoredSessions = async (substring: string) => {
+  let idbSearch = await storageAdapterIDB.search(substring);
+  let lsSearch = await storageAdapterLS.search(substring);
+  return lsSearch.concat(idbSearch);
+};
 
-export const listStoredSessions = async (descending: boolean = true) => await storageAdapterIDB.list(descending);
+export const listStoredSessions = async (descending: boolean = true) => {
+  let idbList = await storageAdapterIDB.list(descending);
+  let lsList = await storageAdapterLS.list(descending);  
+  return lsList.concat(idbList);
+};

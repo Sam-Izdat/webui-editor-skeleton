@@ -6,3 +6,18 @@
   max-height: 100dvh !important;
   padding: 0 !important;
 }
+
+/*Actually important*/
+:global(#page-content) {
+  max-height: 100% !important;
+  overflow-y: hidden !important;
+}
+
+:global(.no-scrollbar::-webkit-scrollbar) {
+  display: none !important;
+}
+
+:global(.app-rail) {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important; 
+}

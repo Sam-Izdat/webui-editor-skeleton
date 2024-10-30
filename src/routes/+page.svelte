@@ -313,9 +313,14 @@
 	onMount(async () => {
     document.querySelector('body').setAttribute('data-theme', cfg.APP_THEME);
 
-		await waitForEditorInstance(); 
-		await checkStorageSupport();
+    try {
+    	await checkStorageSupport();
+    } catch(e) {
+    	Log.error(e);
+    }
 
+		await waitForEditorInstance(); 
+		
     // Listen for changes in Monaco editor and update the store
     monacoEditor.onDidChangeModelContent(() => {
       const content = monacoEditor.getValue();
@@ -551,8 +556,8 @@
 		</Splitpanes>
 		{/if}
 	</div>
-	<div id="cr-full" class="cr-dynamic" />
-	<div id="cr-staging">
+	<div id="cr-full" class="cr-dynamic hidden" />
+	<div id="cr-staging" class="hidden">
 		<div id="ct1">
 	 		<MonacoEditor editorInstance={monacoEditor} on:init={setEditorInstance} />
 		</div>

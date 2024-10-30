@@ -2,7 +2,7 @@ import type DocumentSession from '$lib/doc_types';
 import { Log } from '$lib';
 const prefix = 'saved-doc-';
 
-export const save = (session: DocumentSession) => {
+export const save = async (session: DocumentSession) => {
   const key = prefix + session.docID;
   localStorage.setItem(key, JSON.stringify({
     ...session,
@@ -10,18 +10,18 @@ export const save = (session: DocumentSession) => {
   }));
 };
 
-export const load = (uuid: string) => {
+export const load = async (uuid: string) => {
   const key = prefix + uuid;
   const session = localStorage.getItem(key);
   return session ? JSON.parse(session) : null;
 };
 
-export const remove = (uuid: string) => {
+export const remove = async (uuid: string) => {
   const key = prefix + uuid;
   return localStorage.removeItem(key);
 };
 
-export const rename = (uuid: string, newName: string) => {  
+export const rename = async (uuid: string, newName: string) => {  
   const key = prefix + uuid;
   const session = localStorage.getItem(key);
   if (session) {
@@ -34,7 +34,7 @@ export const rename = (uuid: string, newName: string) => {
   }
 };
 
-export const search = (substring: string) => {
+export const search = async (substring: string) => {
   const searchLower = substring.toLowerCase();
   let res =Object.keys(localStorage)
     .filter(key => key.startsWith('saved-doc'))
@@ -46,7 +46,8 @@ export const search = (substring: string) => {
   return res;
 };
 
-export const list = (descending = true) => {
+// Loads everything at present. Content can actually be excluded.
+export const list = async (descending = true) => {
   return Object.keys(localStorage)
     .filter(key => key.startsWith('saved-doc'))
     .map(key => {

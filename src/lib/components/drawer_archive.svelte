@@ -8,8 +8,8 @@
   import * as ds from '$lib/stores/doc_session';
   import type DocumentSession from '$lib/doc_types';
   
-  import { savedDocuments } from '$lib/stores';
-
+  import { docListStore } from '$lib/stores';
+  import { get } from 'svelte/store';
   import { Log } from '$lib';
 
   let inputValue = '';
@@ -31,127 +31,36 @@
   import { browser } from "$app/environment";
 
 
+  $: fileSystemAccessSupported = false;
+  $: persistentStorageAvailable = false;
 
+  let checkStorageSupport = async () => {
+    fileSystemAccessSupported = ('showOpenFilePicker' in self);
+    persistentStorageAvailable = await navigator.storage.persist();
+  };
 
-
-  onMount(() => {
-    if (browser){
-          // -------------------------------------------------
-          //// Indexeddb write test
-          //
-          // if (navigator.storage && navigator.storage.persist) {
-          //   navigator.storage.persist().then((persistent) => {
-          //     if (persistent) {
-          //       console.log("Storage will not be cleared except by explicit user action");
-          //     } else {
-          //       console.log("Storage may be cleared by the UA under storage pressure.");
-          //     }
-          //   });
-          // }
-
-
-          // const dbName = 'TestDB';
-          // const storeName = 'JunkStore';
-          // const chunkSize = 1024 * 1024 * 5; // 5 MB per chunk
-          // const totalSize = 1024 * 1024 * 15; // 15 MB
-          // let written = 0;
-
-          // function generateRandomData(size) {
-          //     let randomData = '';
-          //     for (let i = 0; i < size; i++) {
-          //         randomData += String.fromCharCode(Math.floor(Math.random() * 256));
-          //     }
-          //     return randomData;
-          // }
-
-          // // Create 5 MB of junk data
-          // const junk = generateRandomData(chunkSize);
-
-          // // Function to open or create an IndexedDB database
-          // function openDatabase() {
-          //     return new Promise((resolve, reject) => {
-          //         const request = indexedDB.open(dbName, 1);
-          //         request.onupgradeneeded = (event) => {
-          //             const db = event.target.result;
-          //             db.createObjectStore(storeName, { autoIncrement: true });
-          //         };
-          //         request.onsuccess = (event) => resolve(event.target.result);
-          //         request.onerror = (event) => reject('Database error: ' + event.target.errorCode);
-          //     });
-          // }
-
-          // // Function to write a single chunk to IndexedDB
-          // async function writeChunk(db) {
-          //     return new Promise((resolve, reject) => {
-          //         const transaction = db.transaction(storeName, 'readwrite');
-          //         const store = transaction.objectStore(storeName);
-          //         store.add(junk);
-
-          //         transaction.oncomplete = () => resolve();
-          //         transaction.onerror = (event) => reject('Transaction error: ' + event.target.error);
-          //     });
-          // }
-
-          // // Function to write all chunks to IndexedDB
-          // async function writeToIndexedDB() {
-          //     const db = await openDatabase();
-          //     while (written < totalSize) {
-          //         try {
-          //             await writeChunk(db);
-          //             written += chunkSize;
-          //             document.getElementById('status').textContent = `Written: ${(written / (1024 * 1024)).toFixed(2)} MB`;
-          //         } catch (error) {
-          //             console.error('Error writing chunk:', error);
-          //             break;
-          //         }
-          //     }
-          //     document.getElementById('status').textContent = '15 MB written to IndexedDB';
-          // }
-
-          // // Function to request persistent storage
-          // async function requestPersistentStorage() {
-          //     if ('storage' in navigator) {
-          //         try {
-          //             const persisted = await navigator.storage.persist();
-          //             console.log(persisted);
-          //             if (persisted) {
-          //                 console.log('Storage is now persistent.');
-          //             } else {
-          //                 console.log('Storage is not persistent.');
-          //             }
-          //         } catch (error) {
-          //             console.error('Error requesting persistent storage:', error);
-          //         }
-          //     } else {
-          //         console.warn('StorageManager API not supported.');
-          //     }
-          // }
-
-          // // Start process
-          // document.getElementById('start').addEventListener('click', async () => {
-          //     await requestPersistentStorage(); // Request persistent storage
-          //     writeToIndexedDB(); // Start writing to IndexedDB
-          // });
-
-
-          // <h1>IndexedDB Storage Test</h1>
-          // <button id="start">Write 15 MB to IndexedDB</button>
-          // <div id="status"></div>
-
-          // -------------------------------------------------
-
-
-
-
-      // if ('showOpenFilePicker' in self) {
-      //   // The `showOpenFilePicker()` method of the File System Access API is supported.
-      //   fileSystemAccessSupported = true;
-      // } 
-    }
+  onMount(async () => {    
+    if (browser) await checkStorageSupport();
   });
 </script>
 
-
+{#if !persistentStorageAvailable}
+    <aside class="alert variant-ghost-warning">
+        <div>
+          <Icon src="{hero.ExclamationTriangle}" size="20" style="margin: 4px auto;" alt="Warning" solid/>
+        </div>
+        <div class="alert-message">
+            <h5 class="h5">Warning: Storage Restricted</h5>
+            <p class="text-sm">
+              Failed to acquire browser permission for <code>IndexedDB</code> persistent storage! 
+              <code>LocalStorage</code> is being used as fallback for safety. Total storage capacity may 
+              be limited to ~5 MB. Any scripts below marked as still being in <code>IndexedDB</code> 
+              storage are in danger of <em>potentially</em> being deleted by your browser, if and when
+              it decides to do so. Back them up by manually exporting/downloading them to prevent data loss.
+            </p>
+        </div>
+    </aside>
+{/if}
 
 
 <div class="overflow-x-auto flex p-1 items-center justify-center">
@@ -179,7 +88,7 @@
         class="input w-full m-1 p-1" 
         type="text" 
         bind:value={inputValue} 
-        on:input={() => { savedDocuments.set(ds.searchStoredSessions(inputValue)); } }
+        on:input={async () => { docListStore.set(await ds.searchStoredSessions(inputValue)); } } 
         placeholder='Search'
         on:focus={(e) => e.target.select()}
       />
@@ -207,13 +116,17 @@
         </tr>
       </thead>
       <tbody>
-        {#each $savedDocuments as doc}
+
+
+
+
+        {#each $docListStore as doc}
         <tr>
           <td class="px-0 m-0 border-b border-primary-800/30">
             <button 
               title={doc.docName ?? 'unknown'}
               class="btn flex justify-start items-center bg-surface-500/15 rounded gap-3 mx-0 my-1 px-2 py-1 w-full"
-              on:click={ () => { loadDocCallback(doc.docID); }}
+              on:click={ async () => { await loadDocCallback(doc.docID); }}
             >
               <div class="placeholder w-16 h-12 rounded" />
               <div class="flex flex-col items-start w-64">
@@ -240,7 +153,7 @@
               <button 
                 title="Delete" 
                 class="btn m-1 py-2 px-2 variant-ghost-error" 
-                on:click={ () => { deleteDocCallback(doc.docID ?? 0); }}
+                on:click={ async () => { await deleteDocCallback(doc.docID ?? 0); }}
               >
                 <Icon src="{hero.XMark}" size="20" style="margin: 2px auto;" solid/>
               </button>
@@ -248,6 +161,11 @@
           </td>
         </tr>
         {/each}
+
+
+
+
+
       </tbody>
       </table>
   </div>

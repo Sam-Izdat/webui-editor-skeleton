@@ -5,6 +5,7 @@
   import { Icon, Play, CheckCircle, ExclamationTriangle, ExclamationCircle } from "svelte-hero-icons";
   import { scriptErrorLog } from '$lib/stores'; // Store for message queue
   import { AppRailAnchor } from '@skeletonlabs/skeleton';
+  import * as km from '$lib/keymap';
 
   export let buildCallback = () => {};
 
@@ -72,7 +73,7 @@
 >
 <AppRailAnchor 
   href="#" 
-  title="Build" 
+  title="Build (alt+{km.keyBuild})" 
   class={statusClass} 
   style="display:block;"
   on:click={buildCallback}

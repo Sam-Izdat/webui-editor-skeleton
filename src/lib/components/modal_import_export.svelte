@@ -28,8 +28,6 @@
 
   let tabSet: number              = 0; // DELETEME
 
-  const savedDocuments = ds.listStoredSessions();
-
   const strLoadRemotely: string = "Load from Web";
   const strLoadLocally: string  = "Load Locally";
   const strImportFile: string   = "Import File";
@@ -261,7 +259,7 @@
                 <svelte:fragment slot="content">
 
                   <CodeBlock language="html" code={`<!-- adjust width & height as needed -->\n`+
-                  `<iframe width="300" height="200" allow="fullscreen" src="${shareableURL}" title="${cfg.APP_TITLE}">
+                  `<iframe width="800" height="600" allow="fullscreen" src="${shareableURL}" title="${cfg.APP_TITLE}">
             `}></CodeBlock>
                 </svelte:fragment>
               </AccordionItem>

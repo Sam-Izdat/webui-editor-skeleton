@@ -12,7 +12,7 @@
 
   import { cfg } from '$root/webui.config.js';
   import { Log } from '$lib';
-	import * as ds from '$lib/stores/doc_session';	
+	import * as ds from '$lib/stores/doc_session';
 	import * as km from '$lib/keymap';
 
 	// Global state
@@ -60,15 +60,11 @@
 
   import { drawerContentStore } from '$lib/stores/drawer';
   import DrawerArchive from '$lib/components/drawer_archive.svelte';
-import { get } from 'svelte/store';
+	import { get } from 'svelte/store';
 	const drawerSettings: DrawerSettings = {
-		id: 'example-3',
-		// Provide your property overrides:
-		// bgDrawer: 'bg-purple-900 text-white',
-		// bgBackdrop: 'bg-gradient-to-tr from-indigo-500/50 via-purple-500/50 to-pink-500/50',
+		id: 'archive-drawer',
 		width: 'w-[340px] md:w-[720px]',
 		padding: 'p-0',
-		// rounded: 'rounded',
 		position: 'right',
 	};
 
@@ -95,9 +91,9 @@ import { get } from 'svelte/store';
 
 
   // UI actions		
-	const reqOpenArchiveDrawer = () => {
+	const reqOpenArchiveDrawer = async () => {
 		if (!$drawerStore.open){
-	    docHandler.refreshDocList();
+	    await docHandler.refreshDocList();
 	    drawerContentStore.set({
 	      id: 'archive',
 	      component: DrawerArchive,
@@ -119,10 +115,14 @@ import { get } from 'svelte/store';
   let autoBuildTimeoutID: number;
 
   const reqBuild = () => {
+  	Log.toastInfo('?');
   	Log.clearScriptLog();
 
   	let buildSuccessFul = true;
-  	pulseEditorBackground(buildSuccessFul ? cfg.BUILD_COL_SUCCESS : cfg.BUILD_COL_FAILURE) ;
+  	let flashCol = buildSuccessFul 
+			? ($isDark ? cfg.BUILD_COL_SUCCESS[0] : cfg.BUILD_COL_SUCCESS[1])
+			: ($isDark ? cfg.BUILD_COL_FAILURE[0] : cfg.BUILD_COL_FAILURE[1]);
+  	pulseEditorBackground(flashCol, cfg.BUILD_FLASH_DUR) ;
 
   	// Insert your build code here
 
@@ -147,13 +147,16 @@ import { get } from 'svelte/store';
 		Log.clearScriptLog();
 	};
 
-	const reqLoadDoc = (uuid: string) => {
+	const reqLoadDoc = async (uuid: string) => {
 		if (dsCurrentSession.unsavedChanges){
 			modalStore.trigger({
 				...modals.modalConfirm, 
 				message: "Unsaved changes will be discarded. Load a new script anyway?",
 				txtConfirm: "Load Script",
-				onConfirm: () => { docHandler.loadDoc(uuid); drawerStore.close(); },
+				onConfirm: async () => { 
+					await docHandler.loadDoc(uuid); 
+					drawerStore.close(); 
+				},
 			});
 		} else {
 			docHandler.loadDoc(uuid); 
@@ -207,7 +210,7 @@ import { get } from 'svelte/store';
 	  URL.revokeObjectURL(link.href);
 	};
 
-  const reqSaveDoc = () => {
+  const reqSaveDoc = async () => {
 		if (dsCurrentSession.unsavedChanges) {
 			if (dsCurrentSession.versionActive != dsCurrentSession.versionCount - 1) {
 				modalStore.trigger({
@@ -215,29 +218,35 @@ import { get } from 'svelte/store';
 					message: `You are saving over an old version. Overwrite it?`,
 					txtConfirm: `Overwrite v${dsCurrentSession.versionActive}`,
 					txtCancel: `Save as v${dsCurrentSession.versionCount}`,
-					onConfirm: docHandler.saveDoc,
+					onConfirm: async () => { await docHandler.saveDoc() },
 					onCancel: reqSaveDocNewVersion,
 				});
-			} else { docHandler.saveDoc(); docHandler.refreshDocList(); }
+			} else { 
+				await docHandler.saveDoc(); 
+				await docHandler.refreshDocList(); 
+			}
 		} else { Log.toastInfo('no changes to save') }
 		reqBuild();
 	};
 
-	const reqSaveDocNewVersion = () => {
+	const reqSaveDocNewVersion = async () => {
 		if (dsCurrentSession.unsavedChanges) {
-			docHandler.saveDocNewVersion();
+			await docHandler.saveDocNewVersion();
 			docHandler.loadLastVersion();
     	docHandler.refreshDocList();
 		} else { Log.toastInfo('no changes to save') }
 		reqBuild();
 	};
 
-	const reqDeleteDoc = (uuid: string) => {
+	const reqDeleteDoc = async (uuid: string) => {
 		modalStore.trigger({
 			...modals.modalConfirm, 
 			message: "Delete script?",
 			txtConfirm: "Delete",
-			onConfirm: () => { docHandler.deleteDoc(uuid); docHandler.refreshDocList(); },
+			onConfirm: async () => { 
+				await docHandler.deleteDoc(uuid); 
+				await docHandler.refreshDocList(); 
+			},
 		});
 	};
 
@@ -313,7 +322,8 @@ import { get } from 'svelte/store';
     monacoEditor.onDidChangeModelContent(() => {
       const content = monacoEditor.getValue();
       docHandler.updateDoc(content);
-      if ($isAutoBuild) {		      	
+  		Log.clearScriptLog();
+      if ($isAutoBuild) {
 		  	clearTimeout(autoBuildTimeoutID);  	
 		  	autoBuildTimeoutID = setTimeout(reqBuild, cfg.AUTOBUILD_DELAY);
       }
@@ -342,7 +352,7 @@ import { get } from 'svelte/store';
 
 		// Listen for orientation changes and do initial check
 		window.screen.orientation.onchange = () => {
-			// Don't shorten to just arrow - this has to be in curlies now... for some reason.
+			// Don't shorten to just arrow - this has to be in curlies... for some reason.
 			mobileHandler.orientationChange();
 		};
 		mobileHandler.orientationChange();
@@ -359,6 +369,8 @@ import { get } from 'svelte/store';
     window.addEventListener('archive-shelf', reqOpenArchiveDrawer);
     window.addEventListener('switch-view', navHandler.switchViewEvent);
     window.addEventListener('build-script', reqBuild);
+
+    reqBuild();
 	});
 
 	// Not actually necessary in present state, but just to be thorough.
@@ -535,19 +547,6 @@ import { get } from 'svelte/store';
   		<div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-[100%] w-[100%]">
   			<span class="badge variant-soft">This is where the canvas would be.</span>
   			<span class="badge variant-soft">Current view: {$currentView}</span>
-
-  			<!-- ----------------- -->
-	  		<br/><br/>
-				<div class="badge display-block text-lg">
-				File system access supported? {fileSystemAccessSupported ? 'Yes.' : 'No.'}
-				</div>
-				<br/>
-				<div class="badge display-block text-lg">
-				Persistent storage available? {persistentStorageAvailable ? 'Yes.' : 'No.'}
-				</div> 
-				<!-- ----------------- -->
-
-
   		</div>
   		<!-- / Replace this with actual canvas -->
     </div>	      

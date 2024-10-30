@@ -2,7 +2,7 @@ import { get } from 'svelte/store';
 import * as ds from '$lib/stores/doc_session'; 
 import { Log, strInitialEditorContents } from '$lib'; 
 import { isReadOnly } from '$lib/stores';
-import { savedDocuments } from '$lib/stores';
+import { docListStore } from '$lib/stores';
 // import type DocumentSession from '$lib/doc_types';
 
 export class DocHandler {
@@ -10,7 +10,6 @@ export class DocHandler {
     this.editor = editor;
     this.readonly = get(isReadOnly);
     this.session = get(ds.documentSession);
-    // this.savedDocuments = get(savedDocuments);
     this.unsubscribeAll = [
       isReadOnly.subscribe(readonly => {
         this.readonly = readonly;
@@ -18,19 +17,16 @@ export class DocHandler {
       ds.documentSession.subscribe(session => {
         this.session = session;
       }),
-      // savedDocuments.subscribe(sd => {
-      //   this.savedDocuments = sd;
-      // })
     ];
   }
 
   dispose() { this.unsubscribeAll.forEach(unsub => unsub()); }
 
-  saveDoc = () => {
+  saveDoc = async () => {
     if (!this.session.unsavedChanges) return;
     try {
       ds.commitContentBufferToActiveVersion();
-      ds.saveSession();
+      await ds.saveSession();
       Log.toastSuccess('script saved');
     } catch(e) {
       Log.error(e);
@@ -39,9 +35,9 @@ export class DocHandler {
   };
 
 
-  loadDoc = (uuid:string) => {
+  loadDoc = async (uuid:string) => {
     try {
-      ds.loadSession(uuid);
+      await ds.loadSession(uuid);
       this.editor.setValue(this.session.content[this.session.versionCount - 1] ?? '');
       ds.updateContentBuffer(this.session.content[this.session.versionCount - 1]);
       ds.setActiveVersion(this.session.versionCount - 1);
@@ -80,12 +76,12 @@ export class DocHandler {
     this.loadVersion(this.session.versionCount - 1);
   };
 
-  saveDocNewVersion = () => {
+  saveDocNewVersion = async () => {
     if (!this.session.unsavedChanges) return;
     try {
       ds.newVersion();
       ds.commitContentBufferToLastVersion();
-      ds.saveSession();
+      await ds.saveSession();
       Log.toastSuccess('script saved');
     } catch(e) {
       Log.error(e);
@@ -115,13 +111,13 @@ export class DocHandler {
     return this.editor.getValue();
   }
 
-  refreshDocList = () => {
-    savedDocuments.set(ds.listStoredSessions());
+  refreshDocList = async () => {
+    docListStore.set(await ds.listStoredSessions());
   };
 
-  deleteDoc = (uuid:string) => {
+  deleteDoc = async (uuid:string) => {
     try {
-      ds.deleteStoredSession(uuid);
+      await ds.deleteStoredSession(uuid);
     } catch(e) {
       Log.error(e);
       Log.toastInfo('failed to delete script');

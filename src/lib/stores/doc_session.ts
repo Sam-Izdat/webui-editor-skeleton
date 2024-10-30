@@ -1,11 +1,27 @@
 import { writable } from 'svelte/store';
 import { v4 as uuidv4 } from 'uuid';
-import * as localStorageEngine from '$lib/storage/local';
-import * as remoteStorageEngine from '$lib/storage/remote';
 import type DocumentSession from '$lib/doc_types';
 import { get } from 'svelte/store';
+import { browser } from "$app/environment";
+
+// IndexedDB
+import * as storageAdapterIDB from '$lib/storage/indexedDB';
+
+// LocalStorage
+import * as storageAdapterLS from '$lib/storage/local';
+
+// Server
+import * as storageAdapterRemote from '$lib/storage/remote';
+
 
 // TODO: This should handle remote storage when running a nonstatic build
+
+const peristentStorageAvailable = async () => browser ? await navigator.storage.persist() : false;
+
+// ----------------------------------------------------------------------------
+// These are synchronous and don't need the storage adapter...
+// Errors should be caught by doc handler.
+// ----------------------------------------------------------------------------
 
 export const documentSession = writable<DocumentSession>({
   docID: uuidv4(),
@@ -44,15 +60,6 @@ export const setActiveVersion = (version: number) => {
   });
 };
 
-// TODO: Update active
-export const loadSession = (uuid: string) => {
-  documentSession.set(localStorageEngine.load(uuid));
-  documentSession.update(session => {
-    session.unsavedChanges = false;
-    return session;
-  });
-};
-
 export const updateContentBuffer = (newContent: string) => {
   documentSession.update(session => {
     // pulseEditorBackground();
@@ -82,28 +89,43 @@ export const updateSessionParams = (sessionParams) => {
   });
 };
 
-export const updateName = (newContent: string) => { };
-
 export const getLastVersionContent = (version: int) => documentSession.content[documentSession.versionCount - 1];
 
 export const getVersionContent = (version: int) => documentSession.content[version];
 
-// Active-Session/Storage operations (active session is automatically updated)
+// ----------------------------------------------------------------------------
+// These are asynchronous storage-involved operations... promises, promises.
+// Errors should be caught by doc handler.
+// ----------------------------------------------------------------------------
 
-export const saveSession = () => {
-    documentSession.update(session => {
-      localStorageEngine.save({...session, contentBuffer: '', unsavedChanges: false});  
-      return {...session, unsavedChanges: false}; 
-    });
+export const loadSession = async (uuid: string) => {
+  let sessionLoaded = await storageAdapterIDB.load(uuid);
+  documentSession.set(sessionLoaded);
+  documentSession.update(session => {
+    session.unsavedChanges = false;
+    return session;
+  });
 };
 
+export const saveSession = async () => {
+  if (await peristentStorageAvailable() || true) {
+    await storageAdapterIDB.save({ ...get(documentSession), contentBuffer: '', unsavedChanges: false, adapter: 'idb'}); 
+  } else {
+    await storageAdapterLS.save({ ...get(documentSession), contentBuffer: '', unsavedChanges: false, adapter: 'ls'})
+  }
+  
+  documentSession.update(session => {      
+    session.unsavedChanges = false;
+    return session; 
+  });
+};
 
 // Storage only operations (active session is not automatically updated)
 
-export const deleteStoredSession = (uuid: string) => localStorageEngine.remove(uuid);
+export const deleteStoredSession = async (uuid: string) => await storageAdapterIDB.remove(uuid);
 
-export const renameStoredSession = (uuid: string, newName: string) => localStorageEngine.rename(uuid, newName);
+export const renameStoredSession = async (uuid: string, newName: string) => await storageAdapterIDB.rename(uuid, newName);
 
-export const searchStoredSessions = (substring: string) => localStorageEngine.search(substring);
+export const searchStoredSessions = async (substring: string) => await storageAdapterIDB.search(substring);
 
-export const listStoredSessions = (descending: boolean = true) => localStorageEngine.list(descending);
+export const listStoredSessions = async (descending: boolean = true) => await storageAdapterIDB.list(descending);

@@ -12,4 +12,4 @@ const fetchDocs = async () => {
   } 
 }
 
-await fetchDocs();
+fetchDocs();

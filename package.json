@@ -1,6 +1,6 @@
 {
   "name": "webui-editor-skeleton",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "cross-env BUILD_TYPE=static vite dev",

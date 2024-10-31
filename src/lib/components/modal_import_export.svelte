@@ -225,8 +225,9 @@
                 <svelte:fragment slot="summary"><p class="font-semibold text-base">{strImportRawURL}</p></svelte:fragment>
                 <svelte:fragment slot="content">
                   <p class="text-sm">
-                    You can import externally-hosted scripts if you have a URL to a raw script file or a gist ID. 
-                    The import link generated will be shareable and will stay up tp date if the file changes on the external host. 
+                    You can import externally-hosted scripts if you have a URL to a raw script file or a 
+                    <a href="https://gist.github.com/" target="_blank">gist</a> ID. 
+                    The import link generated will be shareable and will stay up to date if the file changes on the external host. 
                     You can also embed this editor with its external resource in an iframe - e.g. to post on a blog.
                   </p>
                 </svelte:fragment>
